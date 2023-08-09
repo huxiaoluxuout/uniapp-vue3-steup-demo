@@ -79,9 +79,14 @@ $main-color: #fff;
   min-height: calc(100vh - var(--window-top));
   box-sizing: border-box;
   border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
+  //border-bottom: 1px solid transparent;
   @include flex-column();
 
+}
+.navbar-img{
+  background-color: transparent;
+  background-size: 100%;
+  background-repeat: no-repeat;
 }
 
 .flex-column-container {

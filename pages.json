@@ -10,7 +10,8 @@
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "uni-app",
-				"navigationBarTextStyle": "black"
+        "navigationBarTextStyle": "black",
+        "navigationStyle": "custom"
       }
     },
     {
@@ -19,19 +20,19 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false,
         "navigationStyle": "custom",
-				"navigationBarTextStyle": "black",
-				"mp-alipay": {
-				  "transparentTitle": "always",
-				  "titlePenetrate": "YES",
-				  "allowsBounceVertical": "NO"
-				}
+        "navigationBarTextStyle": "black",
+        "mp-alipay": {
+          "transparentTitle": "always",
+          "titlePenetrate": "YES",
+          "allowsBounceVertical": "NO"
+        }
       }
     },
     {
       "path": "pages/news/news",
       "style": {
         "navigationBarTitleText": "消息",
-				"navigationBarTextStyle": "black",
+        "navigationBarTextStyle": "black",
         "enablePullDownRefresh": false
       }
     }

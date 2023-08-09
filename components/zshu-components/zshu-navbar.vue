@@ -1,12 +1,12 @@
 <template>
-  <view class="ylx-navbar" :style="{'--navbar-height':zshuBavbarHeight+'px'}">
-    <view class="ylx-navbar-wrap" :style="zshuNavbarStyle">
+  <view class="zshu-navbar" :style="{'--navbar-height':zshuBavbarHeight+'px'}">
+    <view class="zshu-navbar-wrap" :style="zshuNavbarStyle">
       <view class="navbar-content__container">
-        <view class="ylx-navbar-container" :style="zahuNavbarContainerStyle">
-          <view class="ylx-navbar-container__left" v-if="configNavBar_.isTabBarPage">
+        <view class="zshu-navbar-container" :style="zahuNavbarContainerStyle">
+          <view class="zshu-navbar-container__left" v-if="configNavBar_.isTabBarPage">
             <slot name="left"></slot>
           </view>
-          <view class="ylx-navbar-container__left" v-else>
+          <view class="zshu-navbar-container__left" v-else>
             <template v-if="isTabBarPage">
               <slot name="left_back_home"></slot>
             </template>
@@ -24,13 +24,13 @@
             </template>
           </view>
 
-          <view class="ylx-navbar-container__center">
-            <view class="ylx-navbar-content-title">
+          <view class="zshu-navbar-container__center">
+            <view class="zshu-navbar-content-title">
               <view class="title" :style="{color:iconColor}">{{ configNavBar_.title }}</view>
               <slot name="center"></slot>
             </view>
           </view>
-          <view class="ylx-navbar-container__right" v-if="configNavBar_.right">
+          <view class="zshu-navbar-container__right" v-if="configNavBar_.right">
             <slot name="right"></slot>
           </view>
         </view>
@@ -41,6 +41,8 @@
 </template>
 <script setup>
 import {computed, defineExpose, onMounted, ref} from "vue"
+import {filterPath} from "@/utils/tools";
+import pagesConfig from "@/pages.json";
 
 
 const props = defineProps({
@@ -73,27 +75,34 @@ const props = defineProps({
     default: 0
   },
 
-  isTabBarPage: {
+  /*isTabBarPage: {
     type: Boolean,
     default: false
-  },
+  },*/
   // 显示跳转首页icon
   showHomeIcon: {
     type: Boolean,
     default: false
   },
 })
+const {tabBar: {list: tabBarPages}} = pagesConfig
+const pages = getCurrentPages();
+const pagePath = pages[pages.length - 1]['route']
+
+
+const isTabBarPage = tabBarPages.map(item => filterPath(item.pagePath)).includes(filterPath(pagePath));
+
 const configNavBar_ = computed(() => {
   return Object.assign({
     title: props.title,//标题名称
-    isTabBarPage: props.isTabBarPage,
+    isTabBarPage: isTabBarPage,
     right: false,
   }, props.configNavBar);
 })
 
 
 let menuButtonWidth = ref(0), menuButtonTop = ref(10),
-    menuButtonHeight = ref(20), statusBarHeight = ref(0);
+    menuButtonHeight = ref(24), statusBarHeight = ref(0);
 let pageHierarchy = ref(1), zshuBavbarHeight = ref(44);
 // navbar 高度
 const emits = defineEmits(['update:navbarHeight', 'update:bgColor', 'update:opacity'])
@@ -153,7 +162,7 @@ onMounted(() => {
   // #ifdef APP-PLUS
   statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight;
   // #endif
-  const pages = getCurrentPages();
+
   pageHierarchy.value = pages.length;
 });
 
@@ -170,11 +179,11 @@ defineExpose({
 })
 </script>
 <style scoped lang="scss">
-.ylx-navbar {
+.zshu-navbar {
   box-sizing: border-box;
 }
 
-.ylx-navbar-wrap {
+.zshu-navbar-wrap {
   position: fixed;
   top: var(--window-top);
   left: 0;
@@ -198,7 +207,7 @@ defineExpose({
 }
 
 
-.ylx-navbar-container {
+.zshu-navbar-container {
   box-sizing: border-box;
   word-break: break-all;
   display: flex;
@@ -208,7 +217,7 @@ defineExpose({
   left: 0;
 }
 
-.ylx-navbar-container__left:not(:empty) {
+.zshu-navbar-container__left:not(:empty) {
   min-width: 1em;
   border-radius: 50%;
   box-sizing: border-box;
@@ -217,19 +226,19 @@ defineExpose({
 }
 
 
-.ylx-navbar-container__center {
+.zshu-navbar-container__center {
   flex: 1;
   display: flex;
   justify-content: center;
 }
 
-.ylx-navbar-container__right {
+.zshu-navbar-container__right {
   min-width: 1em;
   display: flex;
   justify-content: flex-end;
 }
 
-.ylx-navbar-content-title {
+.zshu-navbar-content-title {
   font-size: 16px;
   color: #fff;
   display: flex;

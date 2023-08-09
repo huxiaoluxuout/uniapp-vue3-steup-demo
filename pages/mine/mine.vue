@@ -3,7 +3,7 @@
     <zshu-navbar
         ref="refNavbar"
         v-model:bgColor="bgColor"
-        :configNavBar="{isTabBarPage:true}"
+        :configNavBar="{}"
         title="我的"
     />
 
