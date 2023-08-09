@@ -1,0 +1,10 @@
+/node_modules
+/.hbuilderx
+/unpackage
+/.idea
+*.DS_Store
+/证书
+*.zip
+*.rar
+/config.js
+*.vite
