@@ -1,27 +1,24 @@
 <template>
   <view class="zshu-navbar" :style="{'--navbar-height':zshuBavbarHeight+'px'}">
-    <view class="zshu-navbar-wrap" :style="zshuNavbarStyle">
+    <view class="zshu-navbar-wrap" :style="navbarStyle_">
       <view class="navbar-content__container">
         <view class="zshu-navbar-container" :style="zahuNavbarContainerStyle">
           <view class="zshu-navbar-container__left" v-if="configNavBar_.isTabBarPage">
             <slot name="left"></slot>
           </view>
           <view class="zshu-navbar-container__left" v-else>
-            <template v-if="isTabBarPage">
-              <slot name="left_back_home"></slot>
+
+            <template v-if="!showHomeIcon&&pageHierarchy>1">
+              <slot name="left_back_icon">
+                <uni-icons type="back" :color="iconColor" size="24" @click="leftIconClick"></uni-icons>
+              </slot>
             </template>
-            <template v-else>
-              <template v-if="!showHomeIcon&&pageHierarchy>1">
-                <slot name="left_back">
-                  <uni-icons type="back" :color="iconColor" size="24" @click="leftIconClick"></uni-icons>
-                </slot>
-              </template>
-              <template v-else-if="showHomeIcon||pageHierarchy===1">
-                <slot name="left_back">
-                  <uni-icons type="home-filled" :color="iconColor" size="24" @click="leftIconClick"></uni-icons>
-                </slot>
-              </template>
+            <template v-else-if="showHomeIcon||pageHierarchy===1">
+              <slot name="left_back_icon">
+                <uni-icons type="home-filled" :color="iconColor" size="24" @click="leftIconClick"></uni-icons>
+              </slot>
             </template>
+
           </view>
 
           <view class="zshu-navbar-container__center">
@@ -65,26 +62,13 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  // 显示跳转首页icon
+  // 显示跳转到首页的icon
   showHomeIcon: {
     type: Boolean,
     default: false
   },
 })
 
-onMounted(() => {
-  // #ifdef MP-WEIXIN || MP-ALIPAY
-  const menuButtonInfoALI = uni.getMenuButtonBoundingClientRect();
-  menuButtonTop.value = Math.ceil(menuButtonInfoALI.top);
-  menuButtonHeight.value = Math.ceil(menuButtonInfoALI.height);
-  menuButtonWidth.value = Math.ceil(menuButtonInfoALI.width);
-  // #endif
-  // #ifdef APP-PLUS
-  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight;
-  // #endif
-
-  pageHierarchy.value = pages.length;
-});
 
 const {tabBar: {list: tabBarPages}} = pagesConfig
 const pages = getCurrentPages();
@@ -105,6 +89,28 @@ const menuButtonWidth = ref(0), menuButtonTop = ref(10),
     menuButtonHeight = ref(24), statusBarHeight = ref(0);
 const pageHierarchy = ref(1), zshuBavbarHeight = ref(44);
 
+const zahuNavbarContainerStyle = computed(() => {
+  return {
+    minHeight: menuButtonHeight.value + 'px',
+    right: menuButtonWidth.value + 'px',
+    top: menuButtonTop.value + statusBarHeight.value + 'px',
+  }
+})
+
+onMounted(() => {
+  // #ifdef MP-WEIXIN || MP-ALIPAY
+  const menuButtonInfoALI = uni.getMenuButtonBoundingClientRect();
+  menuButtonTop.value = Math.ceil(menuButtonInfoALI.top);
+  menuButtonHeight.value = Math.ceil(menuButtonInfoALI.height);
+  menuButtonWidth.value = Math.ceil(menuButtonInfoALI.width);
+  // #endif
+  // #ifdef APP-PLUS
+  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight;
+  // #endif
+
+  pageHierarchy.value = pages.length;
+});
+
 // navbar 高度
 const emits = defineEmits(['update:navbarHeight'])
 const zshuNavbarTempViewStyle = computed(() => {
@@ -115,33 +121,9 @@ const zshuNavbarTempViewStyle = computed(() => {
   }
 })
 
-
-const iconColor = computed(() => {
-  // console.log('props.navbarStyle',props.navbarStyle)
-  const cssKey = {background: 'linear-gradient', backgroundImage: 'url',}
-  if (!!Object.keys(props.navbarStyle).length) {
-    for (const navbarStyleKey in props.navbarStyle) {
-      for (const cssKeyKey in cssKey) {
-        if (navbarStyleKey === cssKeyKey) {
-          return props.navbarStyle[navbarStyleKey].indexOf(cssKey[cssKeyKey]) !== -1 ? '#fff' : '#333'
-        }
-      }
-    }
-  } else {
-    return '#333'
-  }
-})
-
-const zahuNavbarContainerStyle = computed(() => {
-  return {
-    minHeight: menuButtonHeight.value + 'px',
-    right: menuButtonWidth.value + 'px',
-    top: menuButtonTop.value + statusBarHeight.value + 'px',
-  }
-})
-
 // navbar背景色
-const zshuNavbarStyle = computed(() => {
+const bgColor = ref('transparent')
+const navbarStyle_ = computed(() => {
   return Object.assign({
     ...zshuNavbarTempViewStyle.value,
     background: bgColor.value,
@@ -151,25 +133,63 @@ const zshuNavbarStyle = computed(() => {
 })
 
 
-const leftIconClick = () => {
-  console.log('pageHierarchy.value', pageHierarchy.value)
-  if (pageHierarchy.value > 1) {
-    uni.navigateBack({delta: 1})
-  } else {
-    uni.switchTab({url: '/pages/index/index'})
+const iconColor = computed(() => {
+  return calculateIconColor(props.navbarStyle)
+})
+const calculateIconColor = (navbarStyle) => {
+  const cssKeyValuePairs = [
+    {key: 'background', keyword: /linear-gradient|url/},
+    {key: 'backgroundImage', keyword: /url/},
+    // 添加更多的属性和匹配关键字对
+    // { key: 'anotherProperty', keyword: /anotherKeyword/ },
+  ];
+
+  for (const {key, keyword} of cssKeyValuePairs) {
+
+    if (key in navbarStyle) {
+      const cssValue = navbarStyle[key];
+      if (keyword.test(cssValue)) {
+        return '#fff';
+      }
+    }
   }
-}
+
+  return '#333';
+};
+
+const ROUTE_HOME = '/pages/index/index';
+
+const leftIconClick = () => {
+  try {
+    if (pageHierarchy.value > 1) {
+      uni.navigateBack({delta: 1});
+    } else {
+      navigateToHome();
+    }
+  } catch (error) {
+    console.error('Error while handling leftIconClick:', error);
+  }
+};
+const navigateToHome = () => {
+  try {
+    uni.switchTab({url: ROUTE_HOME});
+  } catch (error) {
+    console.error('Error while navigating to home:', error);
+  }
+};
 
 // 页面上下滚动
-const bgColor = ref('transparent')
 const handlePageScroll = (e) => {
   bgColor.value = `rgba(255,255,255,${Math.ceil(e.scrollTop / zshuBavbarHeight.value)})`
 };
 //
 
+
 defineExpose({
   handlePageScroll
 })
+
+
 </script>
 <style scoped lang="scss">
 .zshu-navbar {
@@ -252,13 +272,5 @@ defineExpose({
 
 }
 
-.ellipsis-double {
-  overflow: hidden;
-  word-break: break-all;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2
-}
 
 </style>

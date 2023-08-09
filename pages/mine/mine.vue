@@ -2,9 +2,9 @@
   <view class="has-tabbar">
     <zshu-navbar
         ref="refNavbar"
-        :configNavBar="{}"
         title="我的"
-    />
+    >
+    </zshu-navbar>
 
     <view class="flex-column-container">
       bgColor:{{ bgColor }}
@@ -15,6 +15,7 @@
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+<!--      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
@@ -38,8 +39,7 @@
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?-->
       zzz
     </view>
     <tabbar :flag="2"></tabbar>

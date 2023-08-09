@@ -74,7 +74,7 @@ $main-color: #fff;
 
 
 .has-tabbar {
-  //background-color: tan;
+  background-color: tan;
   position: relative;
   min-height: calc(100vh - var(--window-top));
   box-sizing: border-box;
@@ -91,6 +91,8 @@ $main-color: #fff;
 
 .flex-column-container {
   flex: 1;
+  background-color: #8cd2ca;
+
 }
 
 .card {
