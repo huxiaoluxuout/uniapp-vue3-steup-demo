@@ -96,6 +96,7 @@ const navigateTo = (pagePath) => {
             url: filterPath(pagePath),
             fail: function (fail) {
                 $msg(fail.errMsg)
+                console.error(fail.errMsg);
             }
         })
     })

@@ -35,6 +35,28 @@
         "navigationBarTextStyle": "black",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/page1/page1",
+      "style": {
+        "navigationBarTitleText": "page1",
+        "enablePullDownRefresh": false,
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/pages2/pages2",
+      "style": {
+        "navigationBarTitleText": "pages2",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/pages3/pages3",
+      "style": {
+        "navigationBarTitleText": "pages3",
+        "enablePullDownRefresh": false
+      }
     }
   ],
   "tabBar": {

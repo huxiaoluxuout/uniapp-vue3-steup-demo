@@ -5,13 +5,15 @@
         }"
   >
     <zshu-navbar
-        :isTabBarPage="true"
         title="首页"
         :navbarStyle="{
           backgroundImage: 'url('+baseImgURL+'/p9Ivd56.png'+')',
         }"
     ></zshu-navbar>
     <view class="flex-column-container container">
+      <button @click="navigateTo('pages/page1/page1')">page1</button>
+      <button @click="navigateTo('pages/pages2/pages2')">page2</button>
+      <button @click="navigateTo('pages/pages3/pages3')">page3</button>
       <!--      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iste!
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iste!
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, iste!
@@ -51,6 +53,8 @@
 </template>
 
 <script setup>
+import {navigateTo} from "@/utils/tools";
+
 const baseURL = 'https://xcx.jxgxsmt.com'
 const baseImgURL = baseURL + '/static/images'
 

@@ -23,7 +23,8 @@
 
           <view class="zshu-navbar-container__center">
             <view class="zshu-navbar-content-title">
-              <view class="title" :style="{color:iconColor}">{{ configNavBar_.title }}</view>
+              <view class="title">{{ configNavBar_.title }}</view>
+<!--              <view class="title" :style="{color:iconColor}">{{ configNavBar_.title }}</view>-->
               <slot name="center"></slot>
             </view>
           </view>
@@ -128,7 +129,7 @@ const navbarStyle_ = computed(() => {
     ...zshuNavbarTempViewStyle.value,
     background: bgColor.value,
     backgroundPosition: 'top',
-    backgroundSize: 'cover'
+    backgroundSize: 'cover',
   }, props.navbarStyle)
 })
 
@@ -148,6 +149,8 @@ const calculateIconColor = (navbarStyle) => {
 
     if (key in navbarStyle) {
       const cssValue = navbarStyle[key];
+      console.log(key,cssValue)
+
       if (keyword.test(cssValue)) {
         return '#fff';
       }
@@ -269,6 +272,8 @@ defineExpose({
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+  //color: #333333;
+  mix-blend-mode: hard-light;
 
 }
 
