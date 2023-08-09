@@ -44,7 +44,6 @@ import {computed, defineExpose, onMounted, ref} from "vue"
 import {filterPath} from "@/utils/tools";
 import pagesConfig from "@/pages.json";
 
-
 const props = defineProps({
   configNavBar: {
     type: Object,
@@ -62,33 +61,34 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  bgColor: {
-    type: String,
-    default: 'transparent'
-  },
   backgroundImage: {
     type: String,
     default: ''
   },
-  opacity: {
-    type: [String, Number],
-    default: 0
-  },
-
-  /*isTabBarPage: {
-    type: Boolean,
-    default: false
-  },*/
   // 显示跳转首页icon
   showHomeIcon: {
     type: Boolean,
     default: false
   },
 })
+
+onMounted(() => {
+  // #ifdef MP-WEIXIN || MP-ALIPAY
+  const menuButtonInfoALI = uni.getMenuButtonBoundingClientRect();
+  menuButtonTop.value = Math.ceil(menuButtonInfoALI.top);
+  menuButtonHeight.value = Math.ceil(menuButtonInfoALI.height);
+  menuButtonWidth.value = Math.ceil(menuButtonInfoALI.width);
+  // #endif
+  // #ifdef APP-PLUS
+  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight;
+  // #endif
+
+  pageHierarchy.value = pages.length;
+});
+
 const {tabBar: {list: tabBarPages}} = pagesConfig
 const pages = getCurrentPages();
-const pagePath = pages[pages.length - 1]['route']
-
+const pagePath = pages[pages.length - 1]['route'];
 
 const isTabBarPage = tabBarPages.map(item => filterPath(item.pagePath)).includes(filterPath(pagePath));
 
@@ -101,11 +101,12 @@ const configNavBar_ = computed(() => {
 })
 
 
-let menuButtonWidth = ref(0), menuButtonTop = ref(10),
+const menuButtonWidth = ref(0), menuButtonTop = ref(10),
     menuButtonHeight = ref(24), statusBarHeight = ref(0);
-let pageHierarchy = ref(1), zshuBavbarHeight = ref(44);
+const pageHierarchy = ref(1), zshuBavbarHeight = ref(44);
+
 // navbar 高度
-const emits = defineEmits(['update:navbarHeight', 'update:bgColor', 'update:opacity'])
+const emits = defineEmits(['update:navbarHeight'])
 const zshuNavbarTempViewStyle = computed(() => {
   zshuBavbarHeight.value = (menuButtonHeight.value + menuButtonTop.value + statusBarHeight.value + 12)
   emits('update:navbarHeight', zshuBavbarHeight.value)
@@ -114,12 +115,6 @@ const zshuNavbarTempViewStyle = computed(() => {
   }
 })
 
-// 页面上下滚动
-const handlePageScroll = (e) => {
-  emits('update:bgColor', `rgba(255,255,255,${Math.ceil(e.scrollTop / zshuBavbarHeight.value)})`)
-  emits('update:opacity', `${Math.ceil(e.scrollTop / zshuBavbarHeight.value)}`)
-};
-//
 
 const iconColor = computed(() => {
   // console.log('props.navbarStyle',props.navbarStyle)
@@ -136,6 +131,7 @@ const iconColor = computed(() => {
     return '#333'
   }
 })
+
 const zahuNavbarContainerStyle = computed(() => {
   return {
     minHeight: menuButtonHeight.value + 'px',
@@ -143,28 +139,17 @@ const zahuNavbarContainerStyle = computed(() => {
     top: menuButtonTop.value + statusBarHeight.value + 'px',
   }
 })
+
 // navbar背景色
 const zshuNavbarStyle = computed(() => {
   return Object.assign({
     ...zshuNavbarTempViewStyle.value,
-    background: props.bgColor,
+    background: bgColor.value,
     backgroundPosition: 'top',
     backgroundSize: 'cover'
   }, props.navbarStyle)
 })
-onMounted(() => {
-  // #ifdef MP-WEIXIN || MP-ALIPAY
-  const menuButtonInfoALI = uni.getMenuButtonBoundingClientRect();
-  menuButtonTop.value = Math.ceil(menuButtonInfoALI.top);
-  menuButtonHeight.value = Math.ceil(menuButtonInfoALI.height);
-  menuButtonWidth.value = Math.ceil(menuButtonInfoALI.width);
-  // #endif
-  // #ifdef APP-PLUS
-  statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight;
-  // #endif
 
-  pageHierarchy.value = pages.length;
-});
 
 const leftIconClick = () => {
   console.log('pageHierarchy.value', pageHierarchy.value)
@@ -174,6 +159,14 @@ const leftIconClick = () => {
     uni.switchTab({url: '/pages/index/index'})
   }
 }
+
+// 页面上下滚动
+const bgColor = ref('transparent')
+const handlePageScroll = (e) => {
+  bgColor.value = `rgba(255,255,255,${Math.ceil(e.scrollTop / zshuBavbarHeight.value)})`
+};
+//
+
 defineExpose({
   handlePageScroll
 })
