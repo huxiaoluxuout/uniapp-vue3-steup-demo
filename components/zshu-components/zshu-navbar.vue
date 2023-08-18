@@ -133,7 +133,22 @@ const navbarStyle_ = computed(() => {
   }, props.navbarStyle)
 })
 
+//
 
+/*const defaultNavbarStyle = {
+  backgroundPosition: 'top',
+  backgroundSize: 'cover',
+  background: bgColor.value,
+};
+const navbarStyle_ = computed(() => {
+
+  return {
+    ...defaultNavbarStyle,
+    ...zshuNavbarTempViewStyle.value,
+    ...props.navbarStyle
+  }
+})*/
+//
 const iconColor = computed(() => {
   return calculateIconColor(props.navbarStyle)
 })
