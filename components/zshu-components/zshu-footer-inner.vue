@@ -10,7 +10,7 @@
 
   <slot name="addBtn"></slot>
   <button class="button button-custom" :style="style(item)" v-if="stop" @click.stop="btnClick(item)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>
-  <button class="button button-custom" :style="style(item)" v-else @click="btnClick(item)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>
+  <button class="button button-custom" :style="style(item)" v-else @click="btnClick(item)" v-for="(item,index) in buttonList" :key="index+1">{{ item.text }}</button>
 
 </template>
 
