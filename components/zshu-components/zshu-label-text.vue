@@ -1,98 +1,87 @@
 <template>
   <view class="label-view">
-    <text class="label-text" :class="{'active': activeIds.includes(item.id),'check-label':checkLabel}" :style="style"
-          v-for="(item ,index) in labelList" :key="index" @click="enable&&chooseLabel(item.id)">{{ item.text }}
-    </text>
+    <template v-if="stop">
+      <text class="label-text" style="" :class="{'active': activeIds.includes(item.id)}" :style="attributeStyler"
+            v-for="(item ,index) in labelList" :key="index" @click.stop="chooseLabel(item.id)">{{ item.text }}
+      </text>
+    </template>
+    <template v-else>
+      <text class="label-text" style="" :class="{'active': activeIds.includes(item.id)}" :style="attributeStyler"
+            v-for="(item ,index) in labelList" :key="index" @click="chooseLabel(item.id)">{{ item.text }}
+      </text>
+    </template>
+
   </view>
 </template>
 
 <script setup>
-import {computed} from 'vue'
-import {setEmptyData} from "@/utils/tools";
+import {computed} from 'vue';
+import {attributeStylers} from "@/components/zshu-components/attributeStylers";
 
+const emits = defineEmits(['update:modelValue'])
 const props = defineProps({
   labelList: {
     type: Array,
-    default: () => {
-      return [
-        {id: 1, text: 'XXX'},
-        {id: 2, text: 'XXX'},
-      ]
-    }
-  },
-  labelStyle: {
-    type: Object,
-    default: () => {
-      return {}
-    }
-  },
-  color: {
-    type: String,
-    // default: '#FD814A'
-    background: '#F9F9F9'
+    default: () => []
 
   },
-  bgColor: {
-    type: String,
-    default: '#fff'
-  },
-  checkLabel: Boolean,
-  // 开启多选
-  checkbox: Boolean,
-  // 多选限制
-  limit: {
-    type:[String,Number],
-    default:-1
-  },
-  // 选择功能开启
-  enable: Boolean,
-  // 选中的id
-  currentIds: {
+  activeIds: {
     type: Array,
     default: () => []
+
+  },
+  checkbox: Boolean, // 多选选模式
+  disabled: Boolean, // 禁用选择
+  stop: Boolean, // 阻止事件冒泡
+
+  limit: {
+    type: [Number, String],
+    default: Number.MAX_SAFE_INTEGER    // 示默认的限制值
+  },
+
+
+})
+const attributeStyler = computed(() => {
+  return (item, keyMap = []) => attributeStylers(item, keyMap)
+});
+
+// 选择标签
+// const event = 'click'
+const event = 'click.stop'
+const chooseLabel = (ID) => {
+  if (props.disabled) {
+    return;
   }
 
-})
-const style = computed(() => {
-  return Object.assign({
-    color: props.color,
-    background: props.bgColor
-  }, props.labelStyle)
-  /*{
-    color:props.color,
-    background:props.bgColor
-  }*/
-})
-const emits = defineEmits(['update:activeIds'])
-const activeIds = computed(() => props.currentIds)
+  const hasSame = props.activeIds.includes(ID);
+  const index = props.activeIds.findIndex(itemId => itemId === ID);
 
-// 标签选择
-const chooseLabel = (ID) => {
-  const hasSame = activeIds.value.some(itemId => itemId === ID);
-  const index = activeIds.value.findIndex(itemId => itemId === ID);
   // 多选
   if (props.checkbox) {
-    // console.log('多选',hasSame)
     if (hasSame) {
       // 取消
-      activeIds.value.splice(index, 1);
-      emits('update:activeIds', activeIds.value)
+      props.activeIds.splice(index, 1);
     } else {
-      if(Number(props.limit)!==-1&&Number(props.limit)<=activeIds.value.length-1) return
-      activeIds.value.push(ID);
-      emits('update:activeIds', activeIds.value)
+      if (props.limit && props.limit <= props.activeIds.length) {
+        console.warn(`最多可选${props.limit}个`)
+        return;
+      }
+      props.activeIds.push(ID);
     }
   } else {
     // 单选
-    // console.log('单选')
-    setEmptyData(activeIds.value)
-    activeIds.value.push(ID)
-    emits('update:activeIds', activeIds.value)
+    if (hasSame) {
+      props.activeIds = []
+    } else {
+      props.activeIds = [ID];
+    }
   }
-}
+};
+
 </script>
 
 <style scoped lang="scss">
+
 .label-view {
   display: flex;
   margin-top: 20rpx;
@@ -100,7 +89,7 @@ const chooseLabel = (ID) => {
 
 
   .label-text {
-    padding: 6rpx 22rpx;
+    padding: 6px 10px;
     box-sizing: border-box;
     margin-right: 5px;
     border-radius: 100px;
@@ -117,6 +106,7 @@ const chooseLabel = (ID) => {
     &:nth-child(-n +4) {
       margin-top: 0;
     }
+
     &:nth-child(4n) {
       margin-right: 0;
     }
@@ -124,14 +114,9 @@ const chooseLabel = (ID) => {
 
 }
 
-.check-label {
-  border-radius: 5px !important;
-  padding: 16rpx 26rpx !important;
-  font-size: 12px !important;
-}
 
 .active.active.active {
-  background-color: #FFDCCC !important;
+  background-color: #FFDCCC;
   color: #FD814A;
   border: 1px solid #FD814A;
 }
