@@ -15,8 +15,8 @@ const props = defineProps({
     type: Array,
     default: () => {
       return [
-        {id: 1, text: 'XXX1-3年经验'},
-        {id: 2, text: 'XXX学历不限制'},
+        {id: 1, text: 'XXX'},
+        {id: 2, text: 'XXX'},
       ]
     }
   },
@@ -78,7 +78,7 @@ const chooseLabel = (ID) => {
       activeIds.value.splice(index, 1);
       emits('update:activeIds', activeIds.value)
     } else {
-      if(Number(props.limit)!==-1&&Number(props.limit)<=activeIds.value.length) return
+      if(Number(props.limit)!==-1&&Number(props.limit)<=activeIds.value.length-1) return
       activeIds.value.push(ID);
       emits('update:activeIds', activeIds.value)
     }

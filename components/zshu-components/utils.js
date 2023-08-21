@@ -1,6 +1,7 @@
 import {baseURL} from '@/http/request'
 import {uploadFile} from '@/http/apis/common'
 
+
 const uploadsFile = (filePaths, config = {
     url: baseURL + uploadFile,
     formData: {
@@ -82,4 +83,7 @@ const $msg = (title, duration = 1500, mask = true, icon = 'none') => {
         icon
     });
 }
-export {uploadsFile, filterPath, $msg}
+
+export {
+    uploadsFile, filterPath, $msg,
+}
