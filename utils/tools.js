@@ -24,19 +24,22 @@ const $msg = (title, duration = 1500, mask = true, icon = 'none') => {
         icon
     });
 }
-// 获取当前页面路由
-const getCurrentPgePath = () => {
+
+// 获取页面栈
+const getPages = (callback, task = 1) => {
     const pages = getCurrentPages();
-    console.log('pages', pages)
-    return {
-        page: pages[pages.length - 1],
-        pagePath: pages[pages.length - 1]['route']
+    if (pages.length < task + 1) {
+        console.error('获取的页面不在栈内')
+        return
     }
+    const {$vm, options, onLoad, route, $page: {fullPath}} = pages[pages.length - 1 - task];
+    callback && callback({...$vm, options, route, onLoad, fullPath});
+
 }
+
+// 登录 code
 const getLoginCode = () => {
     return new Promise((resolve, reject) => {
-
-
         // #ifdef MP-WEIXIN
         uni.login({
             provider: 'weixin',
@@ -51,27 +54,38 @@ const getLoginCode = () => {
 
     });
 };
-const clickHandler = (slots, emits, pagePath, isNeedLogin) => {
 
-    if (!!Object.keys(slots).length) {
-        emits('click')
-        return
-    }
-    isNeedLogin ? needLogin(navigateTo, pagePath) : navigateTo(pagePath)
-
+//微信支付
+const payMoney = function (data) {
+    return new Promise((resolve, reject) => {
+        uni.requestPayment({
+            'timeStamp': data.timeStamp,
+            'nonceStr': data.nonceStr,
+            'package': data.package,
+            'signType': data.signType,
+            'paySign': data.paySign,
+            'success': function (success) {
+                resolve(success);
+            },
+            'fail': function (fail) {
+                resolve(fail);
+            }
+        });
+    })
 }
 
+// 页面路由跳转 --start
 
 import pagesConfig from "@/pages.json";
 
-
 const {tabBar: {list: tabBarPages}} = pagesConfig
-// 页面路由跳转 --start
+
 // 路径补全
 const filterPath = (path) => {
     return /^\//.test(path) ? path : '/' + path
 };
-const toPage = (pagePath, callback) => {
+
+const toTargetPage = (pagePath, callback) => {
     console.log('pagePath', pagePath)
     if (!pagePath) {
         return;
@@ -90,8 +104,10 @@ const toPage = (pagePath, callback) => {
         callback && callback()
     }
 }
+
+
 const navigateTo = (pagePath) => {
-    toPage(pagePath, () => {
+    toTargetPage(pagePath, () => {
         uni.navigateTo({
             url: filterPath(pagePath),
             fail: function (fail) {
@@ -104,7 +120,7 @@ const navigateTo = (pagePath) => {
 
 
 const redirectTo = (pagePath) => {
-    toPage(pagePath, () => {
+    toTargetPage(pagePath, () => {
         uni.redirectTo({
             url: filterPath(pagePath),
             fail: function (fail) {
@@ -113,7 +129,9 @@ const redirectTo = (pagePath) => {
         })
     })
 }
+
 // 页面路由跳转 --end
+
 
 const queryString = (params) => {
     return '&' + Object.keys(params)
@@ -133,25 +151,6 @@ const stringObject = (options) => {
         decodedObj[key] = decodeURIComponent(value);
     }
     return decodedObj;
-}
-
-//微信支付
-const payMoney = function (data) {
-    return new Promise((resolve, reject) => {
-        uni.requestPayment({
-            'timeStamp': data.timeStamp,
-            'nonceStr': data.nonceStr,
-            'package': data.package,
-            'signType': data.signType,
-            'paySign': data.paySign,
-            'success': function (success) {
-                resolve(success);
-            },
-            'fail': function (fail) {
-                resolve(fail);
-            }
-        });
-    })
 }
 
 
@@ -249,40 +248,6 @@ const getChooseLocation = () => {
     });
 }
 
-
-// 倒计时
-const countDown = (start_time, last_time) => {
-
-    if (last_time < start_time) {
-        console.warn('参数不对！！')
-
-        return
-    }
-
-// 将时间戳转换为日期对象
-    let startDate = new Date(start_time * 1000);
-    let endDate = new Date(last_time * 1000);
-
-// 计算时间差（单位为毫秒）
-    let diff = endDate - startDate;
-
-// 将时间差转换为天数、小时数、分钟数和秒数
-    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-// 在个位数前补零
-    let formattedDays = days.toString().padStart(2, '0');
-    let formattedHours = hours.toString().padStart(2, '0');
-    let formattedMinutes = minutes.toString().padStart(2, '0');
-    let formattedSeconds = seconds.toString().padStart(2, '0');
-    return {
-        days: formattedDays,
-        hours: formattedHours,
-        minutes: formattedMinutes,
-        seconds: formattedSeconds
-    }
-}
 
 // 封装语音授权判断和引导函数
 function checkAndGuideRecordAuth() {
@@ -412,33 +377,14 @@ function guideUserToEnableLocationAuth() {
     });
 }
 
-// 置空数
-const innitData = (dataList) => {
-    // dataList = [];
-    dataList.length = 0;
-    return dataList.length === 0
-}
-const setEmptyData = (dataList, callback) => {
-    const isDataListEmpty = innitData(dataList);
-    if (isDataListEmpty) {
-        console.log('dataList 已被清空');
-        setTimeout(() => {
-            callback && callback()
-        }, 100)
-    } else {
-        console.log('dataList 未被清空');
-        innitData(dataList)
-    }
-}
+
 export {
     throttle,
     debounce,
     getIOSBottomHeight,
     filterPath,
     $msg,
-    getCurrentPgePath,
     getLoginCode,
-    clickHandler,
     navigateTo,
     redirectTo,
     objectString,
@@ -446,10 +392,9 @@ export {
     payMoney,
     getMyLocation,
     getChooseLocation,
-    countDown,
     checkAndGuideRecordAuth,
     checkAndGuideLocationAuth,
-    setEmptyData,
-    queryString
+    queryString,
+    getPages
 }
 
