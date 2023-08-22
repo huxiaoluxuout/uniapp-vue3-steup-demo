@@ -1,1 +1,1 @@
-# uniapp-vue3-steup-demo
+# uniapp-vue3-setup-demo
