@@ -46,8 +46,6 @@ const attributeStyler = computed(() => {
 });
 
 // 选择标签
-// const event = 'click'
-const event = 'click.stop'
 const chooseLabel = (ID) => {
   if (props.disabled) {
     return;

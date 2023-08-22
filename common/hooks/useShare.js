@@ -1,7 +1,6 @@
 import {ref} from 'vue';
 import {onShareAppMessage} from "@dcloudio/uni-app";
-import {getCurrentPgePath, queryString} from "@/utils/tools";
-import {getMyUserInfo} from "@/utils/customMethods";
+import {filterPath, getCacheUserInfo, getPages} from "@/utils/tools";
 
 
 /*onReady((options) => {
@@ -12,7 +11,7 @@ import {getMyUserInfo} from "@/utils/customMethods";
         // menus: ['shareAppMessage', 'shareTimeline']//开启转发好友和转发朋友圈按钮
     })
 })*/
-const useShare = () => {
+export const useShare = () => {
     const title = ref('聚心共享');
 
     const imageUrl = ref('');
@@ -23,7 +22,6 @@ const useShare = () => {
     };
 
     const onShareAppMessageHandler = () => {
-
         onShareAppMessage((res) => {
             console.log(res.from)
             if (res.from === "menu") {
@@ -32,22 +30,38 @@ const useShare = () => {
 
             }
 
+            let userInfo = {},
+                pagePathStr = '',
+                fullPathStr = '';
 
-            const {pagePath, page} = getCurrentPgePath()
-            console.log('queryString', queryString(page.options))
-            const userInfo = getMyUserInfo()
+            getCacheUserInfo().then(result => {
+                userInfo = result
+            })
+
+
+            getPages(({pagePath, fullPath}) => {
+                pagePathStr = filterPath(pagePath)
+                fullPathStr = fullPath
+            })
+
+
             return {
                 title: title.value,
-                path: '/' + pagePath + '?inviteId=' + userInfo.id + queryString(page.options),
+                path: pagePathStr + fullPathStr + '&inviteId=' + userInfo.id,
                 imageUrl: imageUrl.value,
             }
 
         })
     }
 
+    /**
+     *  import {useShare} from "@/common/hooks/useShare";
+     *  const {onShareAppMessageHandler} = useShare();
+     *  onShareAppMessageHandler()
+     */
+
     return {
         setShareConfig,
         onShareAppMessageHandler,
     };
 }
-export {useShare}
