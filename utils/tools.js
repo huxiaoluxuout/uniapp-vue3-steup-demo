@@ -1,4 +1,130 @@
-import {needLogin} from "@/common/hooks/useCheckToken";
+// 封装语音授权判断和引导函数
+function checkAndGuideRecordAuth() {
+    return new Promise((resolve, reject) => {
+        uni.getSetting({
+            success(res) {
+                if (!res.authSetting['scope.record']) {
+                    // 未授权，请求授权或引导用户开启授权
+                    uni.authorize({
+                        scope: 'scope.record',
+                        success() {
+                            resolve(true);
+                        },
+                        fail() {
+                            guideUserToEnableRecordAuth()
+                                .then((enabled) => {
+                                    resolve(enabled);
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+                        },
+                    });
+                } else {
+                    resolve(true);
+                }
+            },
+            fail(err) {
+                reject(err);
+            },
+        });
+    });
+}
+
+// 引导用户开启语音授权
+function guideUserToEnableRecordAuth() {
+    return new Promise((resolve, reject) => {
+        uni.showModal({
+            title: '授权提示',
+            content: '为了正常使用语音功能，请点击确定前往开启语音授权。',
+            success(res) {
+                if (res.confirm) {
+                    uni.openSetting({
+                        success(settingRes) {
+                            if (settingRes.authSetting['scope.record']) {
+                                resolve(true);
+                            } else {
+                                resolve(false);
+                            }
+                        },
+                        fail() {
+                            resolve(false);
+                        },
+                    });
+                } else {
+                    resolve(false);
+                }
+            },
+            fail(err) {
+                reject(err);
+            },
+        });
+    });
+}
+
+// 封装位置授权判断和引导函数
+function checkAndGuideLocationAuth() {
+    return new Promise((resolve, reject) => {
+        uni.getSetting({
+            success(res) {
+                if (!res.authSetting['scope.userLocation']) {
+                    // 未授权，请求授权或引导用户开启授权
+                    uni.authorize({
+                        scope: 'scope.userLocation',
+                        success() {
+                            resolve(true);
+                        },
+                        fail() {
+                            guideUserToEnableLocationAuth()
+                                .then((enabled) => {
+                                    resolve(enabled);
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+                        },
+                    });
+                } else {
+                    resolve(true);
+                }
+            },
+            fail(err) {
+                reject(err);
+            },
+        });
+    });
+}
+
+// 引导用户开启位置授权
+function guideUserToEnableLocationAuth() {
+    return new Promise((resolve, reject) => {
+        uni.showModal({
+            title: '授权提示',
+            content: '为了获取您的位置信息，请点击确定前往开启位置授权。',
+            success(res) {
+                if (res.confirm) {
+                    uni.openSetting({
+                        success(settingRes) {
+                            if (settingRes.authSetting['scope.userLocation']) {
+                                resolve(true);
+                            } else {
+                                resolve(false);
+                            }
+                        },
+                        fail() {
+                            resolve(false);
+                        },
+                    });
+                } else {
+                    resolve(false);
+                }
+            },
+            fail(err) {
+                reject(err);
+            },
+        });
+    });
+}
 
 // IOS 底部兼容
 const getIOSBottomHeight = () => {
@@ -10,33 +136,6 @@ const getIOSBottomHeight = () => {
         return 0
     }
 };
-
-
-//统一提示方便全局修改
-const $msg = (title, duration = 1500, mask = true, icon = 'none') => {
-    if (Boolean(title) === false) {
-        return;
-    }
-    uni.showToast({
-        title,
-        duration,
-        mask,
-        icon
-    });
-}
-
-// 获取页面栈
-const getPages = (callback, task = 1) => {
-    const pages = getCurrentPages();
-    if (pages.length < task + 1) {
-        console.error('获取的页面不在栈内')
-        return
-    }
-    const {$vm, options, onLoad, route, $page: {fullPath}} = pages[pages.length - 1 - task];
-    callback && callback({...$vm, options, route, onLoad, fullPath});
-
-}
-
 // 登录 code
 const getLoginCode = () => {
     return new Promise((resolve, reject) => {
@@ -72,6 +171,72 @@ const payMoney = function (data) {
             }
         });
     })
+}
+
+// 获取当前位置
+const getMyLocation = () => {
+    return new Promise((resolve, reject) => {
+        uni.getLocation({
+            type: 'gcj02',
+            isHighAccuracy: 'true',
+            geocode: 'true',
+            success: (res) => {
+                console.log('res', res)
+                resolve(res);
+            },
+            fail: (fail) => {
+                console.log(fail)
+            }
+        })
+    });
+
+}
+
+// 打开地图选择位置
+const getChooseLocation = () => {
+    return new Promise((resolve, reject) => {
+        uni.chooseLocation({
+            success: (res) => {
+                const addressInfo = {
+
+                    province: res.address.slice(0, res.address.indexOf('省') + 1),
+                    city: res.address.slice(res.address.indexOf('省') + 1, res.address.indexOf('市') + 1),
+                    area: res.address.slice(res.address.indexOf('市') + 1, res.address.indexOf('区') + 1)
+                }
+                resolve(Object.assign(res, addressInfo));
+                console.log('res', res)
+
+            },
+            fail: function (err) {
+                reject(err);
+            }
+        });
+    });
+}
+
+//统一提示方便全局修改
+const $msg = (title, duration = 1500, mask = true, icon = 'none') => {
+    if (Boolean(title) === false) {
+        return;
+    }
+    uni.showToast({
+        title,
+        duration,
+        mask,
+        icon
+    });
+}
+
+// 获取页面栈
+const getPages = (callback, task = 1) => {
+    const pages = getCurrentPages();
+    if (pages.length < task + 1) {
+        console.error('获取的页面不在栈内')
+        return
+    }
+    const {$vm, options, route: pagePath, onLoad, $page: {fullPath}} = pages[pages.length - 1 - task];
+    callback && callback({...$vm, options, pagePath, onLoad, fullPath});
+
 }
 
 // 页面路由跳转 --start
@@ -207,176 +372,15 @@ const debounce = (func, delay = 500, immediate = true) => {
     };
 }
 
-// 获取当前位置
-const getMyLocation = () => {
-    return new Promise((resolve, reject) => {
-        uni.getLocation({
-            type: 'gcj02',
-            isHighAccuracy: 'true',
-            geocode: 'true',
-            success: (res) => {
-                console.log('res', res)
-                resolve(res);
-            },
-            fail: (fail) => {
-                console.log(fail)
-            }
-        })
-    });
+// 获取缓存数据
+const getCacheUserInfo = () => {
+
+    return new Promise(resolve => {
+        const userInfo = uni.getStorageSync('MY_USER_INFO') || {}
+        resolve(userInfo)
+    })
 
 }
-
-// 打开地图选择位置
-const getChooseLocation = () => {
-    return new Promise((resolve, reject) => {
-        uni.chooseLocation({
-            success: (res) => {
-                const addressInfo = {
-
-                    province: res.address.slice(0, res.address.indexOf('省') + 1),
-                    city: res.address.slice(res.address.indexOf('省') + 1, res.address.indexOf('市') + 1),
-                    area: res.address.slice(res.address.indexOf('市') + 1, res.address.indexOf('区') + 1)
-                }
-                resolve(Object.assign(res, addressInfo));
-                console.log('res', res)
-
-            },
-            fail: function (err) {
-                reject(err);
-            }
-        });
-    });
-}
-
-
-// 封装语音授权判断和引导函数
-function checkAndGuideRecordAuth() {
-    return new Promise((resolve, reject) => {
-        uni.getSetting({
-            success(res) {
-                if (!res.authSetting['scope.record']) {
-                    // 未授权，请求授权或引导用户开启授权
-                    uni.authorize({
-                        scope: 'scope.record',
-                        success() {
-                            resolve(true);
-                        },
-                        fail() {
-                            guideUserToEnableRecordAuth()
-                                .then((enabled) => {
-                                    resolve(enabled);
-                                })
-                                .catch((error) => {
-                                    reject(error);
-                                });
-                        },
-                    });
-                } else {
-                    resolve(true);
-                }
-            },
-            fail(err) {
-                reject(err);
-            },
-        });
-    });
-}
-
-// 引导用户开启语音授权
-function guideUserToEnableRecordAuth() {
-    return new Promise((resolve, reject) => {
-        uni.showModal({
-            title: '授权提示',
-            content: '为了正常使用语音功能，请点击确定前往开启语音授权。',
-            success(res) {
-                if (res.confirm) {
-                    uni.openSetting({
-                        success(settingRes) {
-                            if (settingRes.authSetting['scope.record']) {
-                                resolve(true);
-                            } else {
-                                resolve(false);
-                            }
-                        },
-                        fail() {
-                            resolve(false);
-                        },
-                    });
-                } else {
-                    resolve(false);
-                }
-            },
-            fail(err) {
-                reject(err);
-            },
-        });
-    });
-}
-
-// 封装位置授权判断和引导函数
-function checkAndGuideLocationAuth() {
-    return new Promise((resolve, reject) => {
-        uni.getSetting({
-            success(res) {
-                if (!res.authSetting['scope.userLocation']) {
-                    // 未授权，请求授权或引导用户开启授权
-                    uni.authorize({
-                        scope: 'scope.userLocation',
-                        success() {
-                            resolve(true);
-                        },
-                        fail() {
-                            guideUserToEnableLocationAuth()
-                                .then((enabled) => {
-                                    resolve(enabled);
-                                })
-                                .catch((error) => {
-                                    reject(error);
-                                });
-                        },
-                    });
-                } else {
-                    resolve(true);
-                }
-            },
-            fail(err) {
-                reject(err);
-            },
-        });
-    });
-}
-
-// 引导用户开启位置授权
-function guideUserToEnableLocationAuth() {
-    return new Promise((resolve, reject) => {
-        uni.showModal({
-            title: '授权提示',
-            content: '为了获取您的位置信息，请点击确定前往开启位置授权。',
-            success(res) {
-                if (res.confirm) {
-                    uni.openSetting({
-                        success(settingRes) {
-                            if (settingRes.authSetting['scope.userLocation']) {
-                                resolve(true);
-                            } else {
-                                resolve(false);
-                            }
-                        },
-                        fail() {
-                            resolve(false);
-                        },
-                    });
-                } else {
-                    resolve(false);
-                }
-            },
-            fail(err) {
-                reject(err);
-            },
-        });
-    });
-}
-
 
 export {
     throttle,
@@ -395,6 +399,7 @@ export {
     checkAndGuideRecordAuth,
     checkAndGuideLocationAuth,
     queryString,
-    getPages
+    getPages,
+    getCacheUserInfo
 }
 
