@@ -18,7 +18,7 @@
       "path": "pages/mine/mine",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false,
+        "enablePullDownRefresh": true,
         "navigationStyle": "custom",
         "navigationBarTextStyle": "black",
         "mp-alipay": {
@@ -55,6 +55,13 @@
       "path": "pages/pages3/pages3",
       "style": {
         "navigationBarTitleText": "pages3",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录注册",
         "enablePullDownRefresh": false
       }
     }

@@ -1,14 +1,24 @@
-
 import {onPullDownRefresh} from "@dcloudio/uni-app";
-import {getNewPower} from "@/common/hooks/useCheckToken";
+import useDoQueue from "@/common/hooks/useuseDoQueue"
 
-const updateUserInfo = async () => {
-    await getNewPower(() => {
-        uni.stopPullDownRefresh();
-    })
+const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
+
+
+const funQueue = () => {
+    console.log('000')
+    DoFunQueue()
+    console.log('111')
+    uni.stopPullDownRefresh();
+
 }
 
-export default function (){
-    onPullDownRefresh(updateUserInfo)
+
+// 下拉刷新
+export default function () {
+    onPullDownRefresh(funQueue);
+    return {
+        setFunctions,
+        addFunctions
+    }
 
 }

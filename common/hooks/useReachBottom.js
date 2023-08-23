@@ -15,22 +15,7 @@ export default function useReachBottomHandler(dataList) {
 
     // 是否正在加载中
     const isLoading = ref(false)
-    const optionsPrams = reactive({})
 
-    watch(isLoading, (newVal) => {
-        // console.log('isLoading', newVal)
-        if (newVal) {
-            uni.showLoading()
-        } else {
-            uni.hideLoading()
-        }
-    })
-    onLoad((options) => {
-        Object.assign(optionsPrams, options)
-        // funcListHandler()
-        updateReload(reload)
-
-    })
 
     function funcListHandler() {
         // console.log('funcListHandler', funcList)
@@ -43,7 +28,7 @@ export default function useReachBottomHandler(dataList) {
 
     const innitData = () => {
         dataList.length=0;
-        isLoading.value = false
+
         page.value = 1
         pageSize.value = 10
         return dataList.length === 0
@@ -76,9 +61,7 @@ export default function useReachBottomHandler(dataList) {
         } else {
             isLoading.value = false; // 加载失败，标记为不在加载中
         }
-        setTimeout(() => {
-            uni.stopPullDownRefresh();
-        }, 800)
+
     }
 
     // 触底加载下一页数据
@@ -93,22 +76,16 @@ export default function useReachBottomHandler(dataList) {
             }
         }))
     }
-    // 下拉刷新
-    const pullDownRefreshHandler = () => {
-        onPullDownRefresh(() => {
-            reload()
-        })
-    }
 
     // 返回封装后的函数和响应式变量
     return {
         page,
         pageSize,
         reachBottomHandler,
-        pullDownRefreshHandler,
+
         responseDataList,
         reload,
-        optionsPrams,
+
         isLoading,
         setFunctions,
     };

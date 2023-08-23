@@ -2,7 +2,7 @@
   <view class="tabbar-root-view" :style="{ '--ios-bottom-height':iosBottomHeight +'px','--tabbar-height': 56+'px'}">
     <view class="tabbar-container">
       <view class="item-wrapper" v-for="(item, index) in list" :key="item.text"
-            @click="navigateTo(item.pagePath)">
+            @click="clickHandler(navigateTo,item.pagePath)">
         <image v-if="flag ===index" mode="widthFix" class="icon-item" :class="{'icon-item-big':index===1}"
                :src="filterPath(item.selectedIconPath)"/>
         <image v-else mode="widthFix" class="icon-item" :class="{'icon-item-big':index===1}"
@@ -14,13 +14,10 @@
   </view>
 </template>
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {onMounted} from "vue";
 
 import {onHide, onShow,} from "@dcloudio/uni-app";
 
-import {useStore} from "vuex";
-
-const store = useStore();
 
 import {getIOSBottomHeight, navigateTo, filterPath} from '@/utils/tools';
 
@@ -42,13 +39,19 @@ defineProps({
     default: 1,
   }
 })
+import {getAllAreaList, webConfig} from "@/http/apis/common";
 
 
 const emits = defineEmits(['click'])
-
-
-// 消息角标(站内)
-const count = computed(() => store.state.count)
+const clickHandler = (fun, pagePath) => {
+  fun(pagePath)
+  webConfig().then(res => {
+    console.log('webConfig', res)
+  })
+  getAllAreaList().then(res => {
+    console.log('getAllAreaList', res)
+  })
+}
 
 
 onMounted(() => {
