@@ -2,8 +2,7 @@ export default function useDoQueue() {
     let funcList = []
     let addFuncList = []
 
-
-    const DoFunQueue = () => {
+    const DoFunQueue = function() {
 
         const allHandlers = [...addFuncList, ...funcList];
 
@@ -11,10 +10,9 @@ export default function useDoQueue() {
             const {func, args} = allHandlers.pop();
             func(...args)
         }
-
         uni.stopPullDownRefresh();
 
-    }
+    };
 
     const setFunctions = (func, ...args) => {
         funcList = [{func, args}]

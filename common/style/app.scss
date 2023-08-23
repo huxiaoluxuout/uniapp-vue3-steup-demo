@@ -39,31 +39,6 @@
 $theme-color: #F97D01;
 $main-color: #fff;
 
-// 文字超出显示...
-@mixin oneLine {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  word-break: break-all;
-}
-
-@mixin moreLine($count:2) {
-  text-overflow: -o-ellipsis-lastline;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: $count;
-  line-clamp: $count;
-  -webkit-box-orient: vertical;
-}
-
-@mixin grayLine($width:622rpx) {
-  width: $width;
-  height: 1rpx;
-  background: rgba(235, 237, 240, 1);
-}
-
-
 .root-view {
   min-height: calc(100vh - var(--window-top));
   background-color: #F9F9F9;

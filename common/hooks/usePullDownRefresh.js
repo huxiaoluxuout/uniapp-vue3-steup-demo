@@ -5,9 +5,9 @@ const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
 
 const funQueue = () => {
-    console.log('000')
+
     DoFunQueue()
-    console.log('111')
+
     uni.stopPullDownRefresh();
 
 }

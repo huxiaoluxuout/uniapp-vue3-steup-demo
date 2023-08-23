@@ -7,41 +7,16 @@
     </zshu-navbar>
 
     <view class="flex-column-container">
-      bgColor:{{ bgColor }}
-      000Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      <!--      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?-->
-      zzz
 
+      <view class="fixed-top">
+        <hr>
+        <view v-for="(item,index) in dataListView" :key="index">
+          item: {{ item }}
+        </view>
+        <hr>
+
+      </view>
+      bgColor:{{ bgColor }}
 
       <!--      <button class="button button-custom" :style="AttributeStyler(item,item.keyMap)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>-->
       <view @click="clickOn">
@@ -60,6 +35,41 @@
       </view>
 
       currentIds:{{ currentIds }}
+
+      000Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+      zzz
+
 
     </view>
     <tabbar :flag="2"></tabbar>
@@ -80,7 +90,11 @@ onPageScroll((e) => refNavbar.value.handlePageScroll(e))
 // ============
 
 
-const buttonList = reactive([{id: 2, text: '交流', type: 'communication'}, {id: 1, text: '交流', type: 'communication'}]);
+const buttonList = reactive([{id: 2, text: '交流', type: 'communication'}, {
+  id: 1,
+  text: '交流',
+  type: 'communication'
+}]);
 
 setTimeout(() => {
 
@@ -111,7 +125,7 @@ const clickOn = () => {
 // ======================================================================
 
 // ======================================================================
-import useDataReady from "@/common/hooks/useDataReady";
+/*import useDataReady from "@/common/hooks/useDataReady";
 
 const {dataReady, callData} = useDataReady();
 const loadData = []
@@ -128,20 +142,57 @@ dataReady(() => {
   console.log('数据已经准备好，可以执行相应操作');
   // 在这里执行数据就绪后的操作
   console.log('loadData', loadData)
-});
+});*/
 
 // ======================================================================
 
 
 // ======================================================================
 import usePullDownRefresh from "@/common/hooks/usePullDownRefresh";
+
 const foo = (cc) => {
-  console.log('foo',cc)
+  console.log('foo', cc)
 }
-const {setFunctions,addFunctions} = usePullDownRefresh()
-setFunctions(foo,666)
-addFunctions(foo,444)
+const pullDownRefreshContext = usePullDownRefresh()
+
+pullDownRefreshContext.setFunctions(foo, 444)
+pullDownRefreshContext.addFunctions(foo, 666)
+
 // ======================================================================
+
+// ======================================================================
+
+const dataListView = ref([])
+
+import {nextPageManager} from "@/common/hooks/nextPageManager";
+
+const that = nextPageManager;
+
+pullDownRefreshContext.addFunctions(that.reload.bind(that), 666)
+
+that.reachBottomHandler();
+
+const getDataListApi = () => {
+  let resDataLit = [{
+    name: 'xixi'
+  }]
+
+  console.log(that.page, that.pageSize)
+
+  if (that.page <= 4) {
+
+    that.page++
+
+  }
+  that.dataList = [...that.dataList, ...resDataLit]
+  dataListView.value = that.dataList
+
+  // console.log('dataList', that.dataList)
+
+}
+that.nexPageSetFunctions(getDataListApi)
+// ======================================================================
+
 
 </script>
 

@@ -390,10 +390,11 @@
 /* 定位 - 固定顶部 */
 .fixed-top {
     position: fixed;
-    top: 0;
+    top: 30vh;
     right: 0;
     left: 0;
     z-index: 1030;
+    background-color: #fff;
 }
 /* 定位 - 固定底部 */
 .fixed-bottom {
