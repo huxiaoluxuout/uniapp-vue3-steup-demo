@@ -251,7 +251,7 @@ const filterPath = (path) => {
 };
 
 const toTargetPage = (pagePath, callback) => {
-    console.log('pagePath', pagePath)
+    // console.log('pagePath', pagePath)
     if (!pagePath) {
         return;
     }
@@ -326,7 +326,7 @@ const stringObject = (options) => {
  * @returns {(function(): void)|*}
  */
 const throttle = (func, delay = 200) => {
-    console.log('throttle')
+    // console.log('throttle')
     let timerId;
 
     return function () {

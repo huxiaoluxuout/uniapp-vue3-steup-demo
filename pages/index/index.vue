@@ -54,9 +54,7 @@
 
 <script setup>
 import {navigateTo} from "@/utils/tools";
-
-const baseURL = 'https://xcx.jxgxsmt.com'
-const baseImgURL = baseURL + '/static/images'
+import {baseImgURL} from "@/http/config";
 
 </script>
 
