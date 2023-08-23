@@ -73,7 +73,6 @@ import {computed, onMounted, reactive, ref} from "vue"
 
 import {onPageScroll} from "@dcloudio/uni-app";
 
-
 // ============
 const refNavbar = ref(null)
 const bgColor = ref('transparent')
@@ -110,6 +109,40 @@ const clickOn = () => {
   console.log('clickOn')
 }
 // ======================================================================
+
+// ======================================================================
+import useDataReady from "@/common/hooks/useDataReady";
+
+const {dataReady, callData} = useDataReady();
+const loadData = []
+// 模拟异步数据加载
+setTimeout(() => {
+  // 加载完成后调用数据就绪回调
+  loadData.push({name: 'xl'})
+  callData();
+}, 1000);
+
+
+// 当数据准备好时的回调函数
+dataReady(() => {
+  console.log('数据已经准备好，可以执行相应操作');
+  // 在这里执行数据就绪后的操作
+  console.log('loadData', loadData)
+});
+
+// ======================================================================
+
+
+// ======================================================================
+import usePullDownRefresh from "@/common/hooks/usePullDownRefresh";
+const foo = (cc) => {
+  console.log('foo',cc)
+}
+const {setFunctions,addFunctions} = usePullDownRefresh()
+setFunctions(foo,666)
+addFunctions(foo,444)
+// ======================================================================
+
 </script>
 
 <style scoped lang="scss">

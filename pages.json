@@ -18,7 +18,7 @@
       "path": "pages/mine/mine",
       "style": {
         "navigationBarTitleText": "",
-        "enablePullDownRefresh": false,
+        "enablePullDownRefresh": true,
         "navigationStyle": "custom",
         "navigationBarTextStyle": "black",
         "mp-alipay": {
@@ -57,17 +57,15 @@
         "navigationBarTitleText": "pages3",
         "enablePullDownRefresh": false
       }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录注册",
+        "enablePullDownRefresh": false
+      }
     }
-      ,{
-            "path" : "pages/login/login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "登录注册",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+  ],
   "tabBar": {
     "selectedColor": "#FD814A",
     "color": "#999999",
