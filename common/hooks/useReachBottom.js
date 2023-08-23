@@ -85,7 +85,7 @@ export default function useReachBottomHandler(dataList) {
 
         responseDataList,
         reload,
-        optionsPrams,
+
         isLoading,
         setFunctions,
     };
