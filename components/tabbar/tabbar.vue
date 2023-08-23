@@ -14,13 +14,10 @@
   </view>
 </template>
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {onMounted} from "vue";
 
 import {onHide, onShow,} from "@dcloudio/uni-app";
 
-import {useStore} from "vuex";
-
-const store = useStore();
 
 import {getIOSBottomHeight, navigateTo, filterPath} from '@/utils/tools';
 
@@ -51,13 +48,10 @@ const clickHandler = (fun, pagePath) => {
   webConfig().then(res => {
     console.log('webConfig', res)
   })
-  getAllAreaList().then(res=>{
-    console.log('getAllAreaList',res)
+  getAllAreaList().then(res => {
+    console.log('getAllAreaList', res)
   })
 }
-
-// 消息角标(站内)
-const count = computed(() => store.state.count)
 
 
 onMounted(() => {

@@ -2,6 +2,8 @@ import {baseURL,TOKEN_EXPIRY_INTERVAL} from "@/http/config";
 
 
 import {getLoginCode} from "@/utils/tools";
+
+
 // Token 相关操作模块
 export const TokenManager = {
     getToken() {
@@ -31,6 +33,7 @@ export const TokenManager = {
 
     // 添加一个队列来存储因为 Token 失效而中断的请求
     requestQueue: [],
+
     async fetchToken() {
         const {code} = await getLoginCode()
         const response = await uni.request({
@@ -60,7 +63,7 @@ export const TokenManager = {
                     reject(new Error(resData.msg));
                 }
             } catch (error) {
-                console.error('请求失败', error);
+                console.error('TokenManager-请求失败', error);
                 reject(error);
             }
         }

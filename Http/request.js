@@ -4,9 +4,11 @@ import {baseURL} from "@/http/config";
 import {TokenManager} from "./TokenManager";
 
 
+
 // 请求函数
 export const request = async (options) => {
-    console.log('options', options)
+    console.log('options', options);
+
 
     options.url = baseURL + options.url;
     options.data = {};
@@ -31,7 +33,19 @@ export const request = async (options) => {
             return new Promise((resolve, reject) => {
                 // 将因为 Token 失效而中断的请求暂存起来
                 TokenManager.requestQueue.push({options, resolve, reject});
-                TokenManager.fetchToken(); // 获取新 Token
+
+                /*const tempInviteId = uni.getStorageSync('inviteId')
+
+                uni.clearStorageSync()
+
+                uni.setStorageSync('inviteId', tempInviteId)*/
+
+
+
+                // uni.redirectTo({url: '/pages/login/login'});
+
+
+                // TokenManager.fetchToken(); // 获取新 Token
             });
         } else {
             console.error(resData.msg);

@@ -58,7 +58,16 @@
         "enablePullDownRefresh": false
       }
     }
-  ],
+      ,{
+            "path" : "pages/login/login",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "登录注册",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
   "tabBar": {
     "selectedColor": "#FD814A",
     "color": "#999999",
