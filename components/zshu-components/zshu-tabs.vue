@@ -1,24 +1,27 @@
 <template>
-  <view id="zshu-tabs" class="flex zshu-tabs" :style="positionStyle" v-if="listTabs.length">
-    <scroll-view :scroll-x="true" scroll-with-animation :scroll-into-view="'id-'+viewId" class="scroll-row">
-      <view class="flex tabs">
-        <view :id="'id-'+item.id" class="tabs-container" v-for="item in listTabs" :key="item.id" @click="toggleId(item.id)">
-          <view class="item-text" :class="{'active-opacity':item.id===currentId,'item-num-text':countNum}">{{ item.text }}
-            <text v-if="item.type==='item-num'&&count" :class="{'item-num':count}">{{ count > 9 ? '9+' : count }}</text>
-
+  <view v-show="listTabs.length">
+    <view id="zshu-tabs" class="zshu-tabs" :style="zshuTabStyle">
+      <scroll-view class="scroll-row" :scroll-x="true" scroll-with-animation :scroll-into-view="'id-'+viewId">
+        <view class="tabs" :style="{'--n':listTabs.length>5?5:listTabs.length}">
+          <view :id="'id-'+item.id" class="tabs-container" v-for="item in listTabs" :key="item.id" @click="clickId(item.id)">
+            <view class="item-text" :class="{'active-opacity':item.id===activeId}">{{ item.text }}</view>
           </view>
-<!--          <text class="active-item" v-show="item.id===currentId"></text>-->
         </view>
-      </view>
 
-    </scroll-view>
+      </scroll-view>
+
+    </view>
+
+    <view v-show="!isRelative" :style="{height: rectHeight+'px'}"></view>
+
   </view>
-  <view v-if="listTabs.length&&position==='fixed'" :style="{height: rectHeight+'px'}"></view>
+
 </template>
 <script setup>
+
 import {computed, ref, nextTick, getCurrentInstance} from "vue";
 import {onReady} from "@dcloudio/uni-app";
-import {debounce, throttle} from "@/utils/tools";
+
 
 const instance = getCurrentInstance(); // 获取组件实例上下文
 const rectHeight = ref(44)
@@ -26,52 +29,50 @@ const rectTop = ref(44)
 
 
 const props = defineProps({
-  configNavBar: {
-    type: Object,
-    default: () => {
-      return {}
-    }
-  },
-  count: {
-    type: Number,
-    default: 0,
-  },
-  countNum: Boolean,
-  currentId: {
-    type: Number,
-    default: 1,
-  },
-  position: {
-    type: String,
-    default: 'fixed',// fixed|relative
-  },
   listTabs: {
     type: Array,
     default: () => {
       return [
-        /*  {
-            id: 1,
-            text: '共享订单',
-            check: true
-          }, {
-            id: 2,
-            text: '共享工厂',
-            check: false
-          },*/
+        {
+          id: 1,
+          text: '共享订单',
+        }, {
+          id: 2,
+          text: '共享工厂1',
+        }, {
+          id: 3,
+          text: '共享工厂2',
+        }, {
+          id: 4,
+          text: '共享工厂3',
+        }, {
+          id: 5,
+          text: '共享工厂4',
+        },
 
       ]
     }
   },
+
+  activeId: {
+    type: Number,
+    default: 1,
+  },
+
+  // isFixed: Boolean,
+  isRelative: Boolean,
 })
-const viewId = ref('')
-const emits = defineEmits(['changeTabId'])
+
+const viewId = ref('1')
+const emits = defineEmits(['update:activeId'])
+
 onReady(() => {
   nextTick(() => {
     props.listTabs.length && uni.createSelectorQuery()
         .in(instance.proxy)
         .select('#zshu-tabs')
         .boundingClientRect((rect) => {
-          // console.log('rect', rect)
+          console.log('rect', rect)
           rectTop.value = Math.ceil(rect?.top)
           rectHeight.value = Math.ceil(rect?.height)
         })
@@ -79,17 +80,20 @@ onReady(() => {
   });
 })
 
-const toggleId = (id => {
-  // emits('changeTabId', id)
+
+const clickId = (id) => {
   viewId.value = id
-  props.currentId !== id && emits('changeTabId', id)
-});
-const positionStyle = computed(() => {
-  if (props.position === 'fixed') {
+  props.activeId !== id && emits('update:activeId', id)
+
+}
+
+const zshuTabStyle = computed(() => {
+
+  if (!props.isRelative) {
     return {
       position: 'fixed',
-      borderBottom: `1px solid #f9f9f9`,
-      top: 'var(--window-top)'
+      borderBottom: `1px solid #f4f4f4`,
+      top: `calc(var(--window-top))`
     }
   }
 });
@@ -97,34 +101,48 @@ const positionStyle = computed(() => {
 
 </script>
 <style scoped lang="scss">
-.scroll-row {
-  white-space: nowrap;
-  overflow-x: auto;
-
-}
-.scroll-view::-webkit-scrollbar-horizontal {
-  display: none;
-}
-.tabs{
-
-}
 .zshu-tabs {
-  justify-content: space-around;
+
   background-color: #fff;
   padding-top: 20rpx;
   padding-bottom: 20rpx;
-  width: 100%;
-  right: 0;
   z-index: 1000;
+  position: relative;
+  width: 100%;
 
+  .scroll-row {
+    white-space: nowrap;
+    overflow-x: auto;
+
+  }
+}
+
+
+.tabs {
+  display: flex;
+  //gap:30rpx;
+  gap: calc((100vw / var(--n)) / var(--n));
+  //justify-content: center;
+  //border: 1px solid brown;
+
+  .tabs-container:first-child:before {
+    content: '';
+    height: 100%;
+    width: 30rpx;
+  }
+
+  .tabs-container:last-child:after {
+    content: '';
+    height: 100%;
+    width: 30rpx;
+  }
 
   .tabs-container {
     display: flex;
     align-content: center;
-    margin-left: 30rpx;
-    margin-right: 30rpx;
+    //border: 1px solid red;
     position: relative;
-    justify-content: center;
+
   }
 
   .tabs-item {
@@ -138,8 +156,9 @@ const positionStyle = computed(() => {
     font-size: 14px;
     position: relative;
   }
+
   .item-text:after {
-    content:'';
+    content: '';
     height: 6px;
     width: 100%;
     position: absolute;
@@ -150,19 +169,22 @@ const positionStyle = computed(() => {
     opacity: 0;
   }
 
-  .active-opacity{
+  .active-opacity {
     font-size: 16px;
     font-weight: bold;
     color: #FD814A;
   }
-  .active-opacity:after{
+
+  .active-opacity:after {
     opacity: .4;
   }
-  .item-num-text{
+
+  .item-num-text {
     margin-top: 16rpx;
     font-size: 20px;
   }
-  .item-num{
+
+  .item-num {
     position: absolute;
     right: -40rpx;
     top: -14rpx;
@@ -177,22 +199,6 @@ const positionStyle = computed(() => {
     line-height: 2;
   }
 
- /* .active-item {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #FD814A;
-    height: 6px;
-    border-radius: 100rpx;
-    opacity: .4;
-  }
-
-  .active-item-text {
-    color: #FD814A;
-    font-size: 16px;
-    font-weight: bold;
-  }*/
 }
 
 </style>

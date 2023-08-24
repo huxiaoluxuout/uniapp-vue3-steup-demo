@@ -8,14 +8,8 @@
 
     <view class="flex-column-container">
 
-      <view class="fixed-top">
-        <hr>
-        <view v-for="(item,index) in dataListView" :key="index">
-          item: {{ item }}
-        </view>
-        <hr>
+<!--      <view class="fixed-top"></view>-->
 
-      </view>
       bgColor:{{ bgColor }}
 
       <!--      <button class="button button-custom" :style="AttributeStyler(item,item.keyMap)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>-->
@@ -36,22 +30,11 @@
 
       currentIds:{{ currentIds }}
 
-      000Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      zzz
+      <hr>
+      <view v-for="(item,index) in dataListView" :key="index">
+        <view style="line-height: 80px;">{{index}}--{{ item.title }}</view>
+      </view>
+      <hr>
 
 
     </view>
@@ -152,6 +135,7 @@ reloadPullDownRefresh(() => {
 const dataListView = ref([])
 
 import {nextPageManager} from "@/common/hooks/nextPageManager";
+import {getNoticeList} from "@/http/apis/message";
 
 const that = nextPageManager;
 
@@ -162,21 +146,19 @@ that.nexPageAddDataReady(() => {
   dataListView.value = []
 })
 
+
 const getDataListApi = () => {
-
-  let resDataLit = [{
-    name: 'xixi'
-  }]
-
-  console.log('page', that.page)
-
-  that.page++
-
-  that.dataList = [...that.dataList, ...resDataLit]
-  dataListView.value = that.dataList
-
-  console.log('dataList', that.dataList)
-
+  console.log(that.page)
+  getNoticeList({
+    page: that.page,
+    page_size: that.pageSize
+  }).then(res => {
+    console.log('getNoticeList', res);
+    let resDataList = res.data?.data
+    that.page++
+    that.dataList = [...that.dataList, ...resDataList]
+    dataListView.value = that.dataList
+  })
 }
 
 getDataListApi()

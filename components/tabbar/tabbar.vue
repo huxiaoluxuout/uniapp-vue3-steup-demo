@@ -45,12 +45,12 @@ import {getAllAreaList, webConfig} from "@/http/apis/common";
 const emits = defineEmits(['click'])
 const clickHandler = (fun, pagePath) => {
   fun(pagePath)
-  webConfig().then(res => {
+/*  webConfig().then(res => {
     console.log('webConfig', res)
   })
   getAllAreaList().then(res => {
     console.log('getAllAreaList', res)
-  })
+  })*/
 }
 
 

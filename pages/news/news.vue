@@ -1,6 +1,8 @@
 <template>
   <view class="has-tabbar">
     <view class="flex-column-container">
+
+      <zshu-tabs v-model:activeId="currentId"></zshu-tabs>
       000Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
@@ -20,30 +22,33 @@
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-
       zzz
-    </view>
 
+
+
+
+    </view>
     <tabbar :flag="0"></tabbar>
   </view>
 </template>
 
 <script setup>
-import {onLoad, onReachBottom, onPullDownRefresh} from "@dcloudio/uni-app";
 
-import {throttle} from "@/utils/tools";
+import ZshuTabs from "@/components/zshu-components/zshu-tabs.vue";
+import {ref, watch} from "vue";
+import {getNoticeList} from "@/http/apis/message";
+// ------------------------------
+const currentId = ref(1);
+watch(currentId,(newVale)=>{
+  console.log('currentId',newVale)
+})
+// --------------------------------
 
 
-onReachBottom(throttle(() => {
-
-  console.log('加载下一页数据')
-
-}))
 </script>
 
-<style>
-
+<style scoped>
+.flex-column-container {
+  background-color: #fafafa;
+}
 </style>

@@ -7,6 +7,7 @@ import useDoQueue from "@/common/hooks/useuseDoQueue"
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
 import useDataReady from "@/common/hooks/useDataReady"
+import {watch} from "vue";
 
 const {dataReady, callData} = useDataReady();
 
@@ -38,8 +39,13 @@ export const nextPageManager = {
 
     },
 
+
     nexPageSetFunctions: setFunctions,
     nexPageAddFunctions: addFunctions,
     nexPageAddDataReady: dataReady,
 
 }
+//  TODO page变化
+watch(() => [nextPageManager.page,], ([newPage]) => {
+    console.log('newPage',newPage)
+});

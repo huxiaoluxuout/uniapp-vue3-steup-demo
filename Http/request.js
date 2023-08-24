@@ -4,14 +4,11 @@ import {baseURL} from "@/http/config";
 import {TokenManager} from "./TokenManager";
 
 
-
 // 请求函数
 export const request = async (options) => {
     console.log('options', options);
 
-
     options.url = baseURL + options.url;
-    options.data = {};
 
     await TokenManager.updateToken();
     const token = TokenManager.getToken();
@@ -39,7 +36,6 @@ export const request = async (options) => {
                 uni.clearStorageSync()
 
                 uni.setStorageSync('inviteId', tempInviteId)*/
-
 
 
                 // uni.redirectTo({url: '/pages/login/login'});

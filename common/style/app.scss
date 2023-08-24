@@ -49,7 +49,7 @@ $main-color: #fff;
 
 
 .has-tabbar {
-  background-color: tan;
+  //background-color: tan;
   position: relative;
   min-height: calc(100vh - var(--window-top));
   box-sizing: border-box;
@@ -67,7 +67,7 @@ $main-color: #fff;
 
 .flex-column-container {
   flex: 1;
-  background-color: #8cd2ca;
+  //background-color: #8cd2ca;
 
 }
 
@@ -109,7 +109,7 @@ $main-color: #fff;
   z-index: 1001;
 }
 
-/*每个页面公共css */
+
 /* 解决小程序和app滚动条的问题 */
 /* #ifdef MP-WEIXIN || APP-PLUS */
 ::-webkit-scrollbar {

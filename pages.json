@@ -6,12 +6,21 @@
     }
   },
   "pages": [
+
     {
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "uni-app",
         "navigationBarTextStyle": "black",
         "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/news/news",
+      "style": {
+        "navigationBarTitleText": "消息",
+        "navigationBarTextStyle": "black",
+        "enablePullDownRefresh": false
       }
     },
     {
@@ -28,14 +37,7 @@
         }
       }
     },
-    {
-      "path": "pages/news/news",
-      "style": {
-        "navigationBarTitleText": "消息",
-        "navigationBarTextStyle": "black",
-        "enablePullDownRefresh": false
-      }
-    },
+
     {
       "path": "pages/page1/page1",
       "style": {
