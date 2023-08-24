@@ -8,7 +8,7 @@
 
     <view class="flex-column-container">
 
-<!--      <view class="fixed-top"></view>-->
+      <view class="fixed-top" @click="updateDate">{{dataListView.length}}后台更新数据isUpdate:{{ isUpdate }}</view>
 
       bgColor:{{ bgColor }}
 
@@ -32,7 +32,7 @@
 
       <hr>
       <view v-for="(item,index) in dataListView" :key="index">
-        <view style="line-height: 80px;">{{index}}--{{ item.title }}</view>
+        <view style="line-height: 80px;">index:{{ index  }}--{{ item.msg }}</view>
       </view>
       <hr>
 
@@ -147,17 +147,57 @@ nexPageContext.nexPageReload(() => {
   getDataListApi()
 
 })
-
+const isUpdate = ref(false);
+const updateDate = () => {
+  isUpdate.value = true
+}
 
 const getDataListApi = () => {
-  console.log(nexPageContext.page)
+
   getNoticeList({
     page: nexPageContext.page,
     page_size: nexPageContext.pageSize
   }).then(res => {
-    console.log('getNoticeList', res);
-    let resDataList = res.data?.data
-    nexPageContext.setDataList([...nexPageContext.dataList, ...resDataList])
+    let arr = [
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 22,
+        is_del: 0,
+        is_read: 1,
+        msg: "不通过:ok",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "www系统通知",
+        user_id: 6,
+      },
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 23,
+        is_del: 0,
+        is_read: 1,
+        msg: "不通过:ok",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "qqq系统通知",
+        user_id: 6,
+      },
+    ]
+
+    let resData = res.data?.data;
+
+    if (isUpdate.value) {
+      resData.push(...arr)
+    }
+
+    nexPageContext.setDataList([...nexPageContext.dataList, ...resData])
 
     dataListView.value = nexPageContext.dataList
   })
