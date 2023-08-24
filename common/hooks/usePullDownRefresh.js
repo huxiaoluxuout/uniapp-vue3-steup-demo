@@ -26,7 +26,7 @@ export default function () {
         pullDownRefreshSetFunctions: setFunctions,
         pullDownRefreshAddFunctions: addFunctions,
         // 刷新重置回调
-        reloadPullDownRefresh: dataReady,
+        pullDownRefreshReload: dataReady,
     }
 
 }

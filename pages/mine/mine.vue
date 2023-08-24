@@ -119,12 +119,12 @@ import usePullDownRefresh from "@/common/hooks/usePullDownRefresh";
 const foo = (cc) => {
   console.log('foo', cc)
 }
-const {pullDownRefreshSetFunctions, pullDownRefreshAddFunctions, reloadPullDownRefresh} = usePullDownRefresh()
+const {pullDownRefreshSetFunctions, pullDownRefreshAddFunctions, pullDownRefreshReload} = usePullDownRefresh()
 
 pullDownRefreshSetFunctions(foo, 444)
 
 
-reloadPullDownRefresh(() => {
+pullDownRefreshReload(() => {
   currentIds.value = [1]
 })
 
@@ -137,35 +137,37 @@ const dataListView = ref([])
 import {nextPageManager} from "@/common/hooks/nextPageManager";
 import {getNoticeList} from "@/http/apis/message";
 
-const that = nextPageManager;
+const nexPageContext = nextPageManager;
 
-that.reachBottomHandler();
+nexPageContext.reachBottomHandler();
 
-that.nexPageAddDataReady(() => {
-  that.dataList = []
+nexPageContext.nexPageReload(() => {
+  nexPageContext.dataList = []
   dataListView.value = []
+  getDataListApi()
+
 })
 
 
 const getDataListApi = () => {
-  console.log(that.page)
+  console.log(nexPageContext.page)
   getNoticeList({
-    page: that.page,
-    page_size: that.pageSize
+    page: nexPageContext.page,
+    page_size: nexPageContext.pageSize
   }).then(res => {
     console.log('getNoticeList', res);
     let resDataList = res.data?.data
-    that.page++
-    that.dataList = [...that.dataList, ...resDataList]
-    dataListView.value = that.dataList
+    nexPageContext.setDataList([...nexPageContext.dataList, ...resDataList])
+
+    dataListView.value = nexPageContext.dataList
   })
 }
 
 getDataListApi()
 
-that.nexPageSetFunctions(getDataListApi)
+nexPageContext.nexPageSetFunctions(getDataListApi)
 
-pullDownRefreshAddFunctions(that.reload.bind(that), 666)
+pullDownRefreshAddFunctions(nexPageContext.reload.bind(nexPageContext))
 
 // ======================================================================
 
