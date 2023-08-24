@@ -6,6 +6,10 @@ import useDoQueue from "@/common/hooks/useuseDoQueue"
 
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
+import useDataReady from "@/common/hooks/useDataReady"
+
+const {dataReady, callData} = useDataReady();
+
 export const nextPageManager = {
     // 当前页码
     page: 1,
@@ -24,13 +28,18 @@ export const nextPageManager = {
     },
     // 重新加载
     reload() {
-        // console.log('重新加载===',this)
         this.page = 1
         this.pageSize = 10
-        this.dataList = [];
+        // this.dataList = [];
+        console.log('重新加载===',this)
+        callData();
+
+        // uni.$emit('reloadHandler')
 
     },
+
     nexPageSetFunctions: setFunctions,
     nexPageAddFunctions: addFunctions,
+    nexPageAddDataReady: dataReady,
 
 }

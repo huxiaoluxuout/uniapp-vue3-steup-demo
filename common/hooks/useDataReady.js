@@ -5,7 +5,7 @@ export default function useDataReady() {
     const dataIsReady = ref(false); // 新增一个标志，表示数据是否已准备好
 
     const callData = () => {
-        console.log('获取到数据...');
+        console.log('callData...');
         dataIsReady.value = true; // 标记数据已准备好
         dataReadyCallbacks.value.forEach(callback => {
             if (typeof callback === 'function') {

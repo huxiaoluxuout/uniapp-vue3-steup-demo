@@ -3,12 +3,18 @@ import useDoQueue from "@/common/hooks/useuseDoQueue"
 
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
+import useDataReady from "@/common/hooks/useDataReady"
+
+const {dataReady, callData} = useDataReady();
+
 
 const funQueue = () => {
 
     DoFunQueue()
 
     uni.stopPullDownRefresh();
+
+    callData()
 
 }
 
@@ -17,8 +23,10 @@ const funQueue = () => {
 export default function () {
     onPullDownRefresh(funQueue);
     return {
-        setFunctions,
-        addFunctions
+        pullDownRefreshSetFunctions: setFunctions,
+        pullDownRefreshAddFunctions: addFunctions,
+        // 刷新重置回调
+        reloadPullDownRefresh: dataReady,
     }
 
 }

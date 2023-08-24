@@ -51,23 +51,6 @@
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       zzz
 
 
@@ -78,7 +61,7 @@
 
 <script setup>
 
-import {computed, onMounted, reactive, ref} from "vue"
+import {computed, onMounted, reactive, ref, watch} from "vue"
 
 
 import {onPageScroll} from "@dcloudio/uni-app";
@@ -153,10 +136,14 @@ import usePullDownRefresh from "@/common/hooks/usePullDownRefresh";
 const foo = (cc) => {
   console.log('foo', cc)
 }
-const pullDownRefreshContext = usePullDownRefresh()
+const {pullDownRefreshSetFunctions, pullDownRefreshAddFunctions, reloadPullDownRefresh} = usePullDownRefresh()
 
-pullDownRefreshContext.setFunctions(foo, 444)
-pullDownRefreshContext.addFunctions(foo, 666)
+pullDownRefreshSetFunctions(foo, 444)
+
+
+reloadPullDownRefresh(() => {
+  currentIds.value = [1]
+})
 
 // ======================================================================
 
@@ -168,29 +155,36 @@ import {nextPageManager} from "@/common/hooks/nextPageManager";
 
 const that = nextPageManager;
 
-pullDownRefreshContext.addFunctions(that.reload.bind(that), 666)
-
 that.reachBottomHandler();
 
+that.nexPageAddDataReady(() => {
+  that.dataList = []
+  dataListView.value = []
+})
+
 const getDataListApi = () => {
+
   let resDataLit = [{
     name: 'xixi'
   }]
 
-  console.log(that.page, that.pageSize)
+  console.log('page', that.page)
 
-  if (that.page <= 4) {
+  that.page++
 
-    that.page++
-
-  }
   that.dataList = [...that.dataList, ...resDataLit]
   dataListView.value = that.dataList
 
-  // console.log('dataList', that.dataList)
+  console.log('dataList', that.dataList)
 
 }
+
+getDataListApi()
+
 that.nexPageSetFunctions(getDataListApi)
+
+pullDownRefreshAddFunctions(that.reload.bind(that), 666)
+
 // ======================================================================
 
 
