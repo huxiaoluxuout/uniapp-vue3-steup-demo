@@ -16,8 +16,8 @@ export const nextPageManager = {
     pageSize: 10,
     // 列表数据
     dataList: [],
-    flag: false,
-    diffLastNum: 0,
+    isNotFullPage: false,
+
 
     // 触底加载下一页
     reachBottomHandler() {
@@ -40,74 +40,58 @@ export const nextPageManager = {
 
     },
 
-    watchDataList(newValue, oldValue) {
-        if (Array.isArray((newValue))) {
-            console.log(oldValue.length, '--->', newValue.length)
-            let targetLength = this.page * this.pageSize
-            // console.log('targetLength', targetLength)
-            // console.log('实际长度', newValue.length)
+    updateDataList(newResData, oldValue) {
+        if (!Array.isArray(newResData)) {
+            console.error('传入数据只能是数组');
+            return;
+        }
+        console.log('新数据', newResData);
+        console.log('旧数据', oldValue);
+
+        const isFullPage = newResData.length % this.pageSize === 0;
 
 
-            if (targetLength === newValue.length) {
-                this.page++
-                this.dataList = newValue;
-                this.flag = false
+        if (isFullPage) {
+
+            if (!this.isNotFullPage) {
+                // 新数据填充一页
+                this.page++;
+                this.dataList = oldValue.concat(newResData)
 
             } else {
-
-                if (this.flag) {
-                    const middleIndex = [(this.page - 1) * this.pageSize]
-                    console.log('middleIndex', middleIndex)
-                    const diffNum = (newValue.length % this.pageSize) / 2
-
-                    console.log('diffNum', this.diffLastNum, diffNum)
-
-                    const firstHalf = newValue.slice(0, middleIndex);   // 获取数组的前半部分
-                    const secondHalf = newValue.slice(middleIndex);     // 获取数组的后半部分
-
-                    console.log('firstHalf', firstHalf);
-                    let i = diffNum
-                    while (i > 0) {
-                        secondHalf.shift()
-                        i--
-                    }
-                    console.log('secondHalf', secondHalf);
-
-
-                    // let cc= newValue.splice(middleIndex, diffNum,...newValue.slice(-diffNum));
-                    //  console.log(newValue)
-                    //  console.log(cc)
-
-                    if (this.diffLastNum === diffNum) { // 没有新增数据
-                        console.log('没有新增数据')
-
-
-                    } else {
-                        console.log('有新增数据')
-                        // newValue.splice(index, sum, newValue.slice(-sum));
-                        // TODO 问题不能判断真实新增的数据
-
-                    }
-                    this.dataList = [...firstHalf, ...secondHalf];
-
-
-                } else {
-                    this.dataList = newValue;
-                    this.flag = true
-                    this.diffLastNum = newValue.length % this.pageSize
-                }
+                this.upDateList(newResData, oldValue)
+                this.isNotFullPage = false;
+                this.page++;
 
             }
 
         } else {
-            console.error('传入数据只能是数组', newValue)
+            if (!this.isNotFullPage) {
+                // 非完整页的第一次填充
+                this.dataList = oldValue.concat(newResData)
+                this.isNotFullPage = true;
+            } else {
+                // 非完整页的后续填充
+                this.upDateList(newResData, oldValue)
+            }
         }
 
+
+    },
+    upDateList(newResData, oldValue) {
+        const middleIndex = (this.page - 1) * this.pageSize;
+        console.log('middleIndex', middleIndex);
+
+        const firstHalf = oldValue.slice(0, middleIndex);
+        console.log('firstHalf', firstHalf);
+
+        this.dataList.length = 0;
+        this.dataList.push(...firstHalf, ...newResData);
     },
 
     // 设置列表数据
-    setDataList(newData) {
-        this.watchDataList(newData, this.dataList);
+    setDataList(newResData) {
+        this.updateDataList(newResData, this.dataList);
     },
 
 

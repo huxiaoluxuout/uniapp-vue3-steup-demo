@@ -8,7 +8,10 @@
 
     <view class="flex-column-container">
 
-      <view class="fixed-top" @click="updateDate">{{dataListView.length}}后台更新数据isUpdate:{{ isUpdate }}</view>
+      <view class="fixed-top" style="border: 1px solid blueviolet;" @click="updateDate">
+        <view style="padding: 4px; color:red;">{{ dataListView.length }}</view>
+        <view>isUpdate:{{ isUpdate }}</view>
+      </view>
 
       bgColor:{{ bgColor }}
 
@@ -32,7 +35,7 @@
 
       <hr>
       <view v-for="(item,index) in dataListView" :key="index">
-        <view style="line-height: 80px;">index:{{ index  }}--{{ item.msg }}</view>
+        <view style="line-height: 80px;">id:{{ item.id }}---{{ item.msg }}</view>
       </view>
       <hr>
 
@@ -142,8 +145,10 @@ const nexPageContext = nextPageManager;
 nexPageContext.reachBottomHandler();
 
 nexPageContext.nexPageReload(() => {
-  nexPageContext.dataList = []
   dataListView.value = []
+  nexPageContext.dataList = []
+  isUpdate.value = false
+
   getDataListApi()
 
 })
@@ -164,10 +169,10 @@ const getDataListApi = () => {
         add_time_text: "08-17 16:35",
         extra: null,
         factory_id: 0,
-        id: 22,
+        id: 1000,
         is_del: 0,
         is_read: 1,
-        msg: "不通过:ok",
+        msg: "模拟数据111111",
         notice_status: 1,
         notice_type: "factory",
         read_time: 1692346045,
@@ -179,16 +184,124 @@ const getDataListApi = () => {
         add_time_text: "08-17 16:35",
         extra: null,
         factory_id: 0,
-        id: 23,
+        id: 2000,
         is_del: 0,
         is_read: 1,
-        msg: "不通过:ok",
+        msg: "模拟数据2222",
         notice_status: 1,
         notice_type: "factory",
         read_time: 1692346045,
         title: "qqq系统通知",
         user_id: 6,
       },
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 1000,
+        is_del: 0,
+        is_read: 1,
+        msg: "模拟数据111111",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "www系统通知",
+        user_id: 6,
+      },
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 2000,
+        is_del: 0,
+        is_read: 1,
+        msg: "模拟数据2222",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "qqq系统通知",
+        user_id: 6,
+      },
+
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 1000,
+        is_del: 0,
+        is_read: 1,
+        msg: "模拟数据111111",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "www系统通知",
+        user_id: 6,
+      },
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 2000,
+        is_del: 0,
+        is_read: 1,
+        msg: "模拟数据2222",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "qqq系统通知",
+        user_id: 6,
+      },
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 1000,
+        is_del: 0,
+        is_read: 1,
+        msg: "模拟数据111111",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "www系统通知",
+        user_id: 6,
+      },
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 2000,
+        is_del: 0,
+        is_read: 1,
+        msg: "模拟数据2222",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "qqq系统通知",
+        user_id: 6,
+      },
+
+      {
+        add_time: 1692261328,
+        add_time_text: "08-17 16:35",
+        extra: null,
+        factory_id: 0,
+        id: 2000,
+        is_del: 0,
+        is_read: 1,
+        msg: "模拟数据2222",
+        notice_status: 1,
+        notice_type: "factory",
+        read_time: 1692346045,
+        title: "qqq系统通知",
+        user_id: 6,
+      },
+
     ]
 
     let resData = res.data?.data;
@@ -197,7 +310,7 @@ const getDataListApi = () => {
       resData.push(...arr)
     }
 
-    nexPageContext.setDataList([...nexPageContext.dataList, ...resData])
+    nexPageContext.setDataList(resData)
 
     dataListView.value = nexPageContext.dataList
   })
