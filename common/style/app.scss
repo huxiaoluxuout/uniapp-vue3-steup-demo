@@ -1,39 +1,26 @@
-@mixin flex {
+.flex-container {
   display: flex;
-}
-
-@mixin flexcenter {
-  @include flex();
-  align-items: center;
-}
-
-@mixin flexCj($jus:space-between) {
-  justify-content: $jus;
-  @include flexcenter();
-}
-
-@mixin flexWrap {
-  @include flexcenter();
-  justify-content: space-between;
   flex-wrap: wrap;
-}
-
-
-@mixin flex-column {
-  @include flex();
-  flex-direction: column;
-}
-
-@mixin wrap($topicWidth:686rpx) {
-  width: $topicWidth;
-  margin: 0 auto;
-}
-
-@mixin wrapPadding($topPadding, $bottomPadding) {
-  width: 750rpx;
+  --num-columns: 2;
+  --gap: 30px;
+  --item-width: calc(100% / var(--num-columns) - var(--gap));
+  gap: var(--gap);
+  margin-right: calc(-1 * var(--gap));
   box-sizing: border-box;
-  padding: $topPadding 32rpx $bottomPadding;
+  padding: var(--gap);
+  border: 1px solid red;
+
+  .flex-item {
+    width: var(--item-width);
+    box-sizing: border-box;
+    position: relative;
+    border: 1px solid #000;
+  }
+
 }
+
+
+
 
 // 主题颜色
 $theme-color: #F97D01;
@@ -55,7 +42,9 @@ $main-color: #fff;
   box-sizing: border-box;
   border-top: 1px solid transparent;
   //border-bottom: 1px solid transparent;
-  @include flex-column();
+  display: flex;
+  flex-direction: column;
+
 
 }
 

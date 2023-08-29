@@ -10,19 +10,16 @@
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
+
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       zzz
+      <view class="flex-container foo">
+        <view class="flex-item">1</view>
+        <view class="flex-item">2</view>
+        <view class="flex-item">3</view>
+        <view class="flex-item">4</view>
+      </view>
 
 
 
@@ -64,8 +61,15 @@ const listTabs=ref([
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .flex-column-container {
   background-color: #fafafa;
 }
+
+.foo{
+  --num-columns: 3;
+  --gap: 20px;
+
+}
+
 </style>
