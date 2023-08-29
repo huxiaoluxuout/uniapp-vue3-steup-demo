@@ -2,7 +2,7 @@
   <view v-show="listTabs.length">
     <view id="zshu-tabs" class="zshu-tabs" :style="zshuTabStyle">
       <scroll-view class="scroll-row" :scroll-x="true" scroll-with-animation :scroll-into-view="'id-'+viewId">
-        <view class="tabs" :style="{'--n':listTabs.length>5?5:listTabs.length}">
+        <view class="tabs">
           <view :id="'id-'+item.id" class="tabs-container" v-for="item in listTabs" :key="item.id" @click="clickId(item.id)">
             <view class="item-text" :class="{'active-opacity':item.id===activeId}">{{ item.text }}</view>
           </view>
@@ -120,36 +120,26 @@ const zshuTabStyle = computed(() => {
 
 .tabs {
   display: flex;
-  //gap:30rpx;
-  gap: calc((100vw / var(--n)) / var(--n));
-  //justify-content: center;
-  //border: 1px solid brown;
+  gap: 34rpx;
 
-  .tabs-container:first-child:before {
+  --gap-l-r: 30rpx;
+
+  .tabs-container:first-child:before, .tabs-container:last-child:after {
     content: '';
     height: 100%;
-    width: 30rpx;
+    width: var(--gap-l-r);
+
   }
 
-  .tabs-container:last-child:after {
-    content: '';
-    height: 100%;
-    width: 30rpx;
-  }
 
   .tabs-container {
     display: flex;
     align-content: center;
-    //border: 1px solid red;
+    justify-content: center;
     position: relative;
-
+    flex: 1;
   }
 
-  .tabs-item {
-
-    position: relative;
-
-  }
 
   .item-text {
     color: #666666;
@@ -160,9 +150,10 @@ const zshuTabStyle = computed(() => {
   .item-text:after {
     content: '';
     height: 6px;
-    width: 100%;
+    width: 80%;
     position: absolute;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 2px;
     background-color: #FD814A;
     border-radius: 100rpx;
@@ -170,7 +161,7 @@ const zshuTabStyle = computed(() => {
   }
 
   .active-opacity {
-    font-size: 16px;
+
     font-weight: bold;
     color: #FD814A;
   }
@@ -178,27 +169,6 @@ const zshuTabStyle = computed(() => {
   .active-opacity:after {
     opacity: .4;
   }
-
-  .item-num-text {
-    margin-top: 16rpx;
-    font-size: 20px;
-  }
-
-  .item-num {
-    position: absolute;
-    right: -40rpx;
-    top: -14rpx;
-    background-color: #fd5958;
-    color: #fff;
-    border-radius: 50%;
-    font-size: 9px;
-    box-sizing: border-box;
-    width: 2em;
-    height: 2em;
-    text-align: center;
-    line-height: 2;
-  }
-
 }
 
 </style>

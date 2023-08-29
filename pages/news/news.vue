@@ -2,7 +2,7 @@
   <view class="has-tabbar">
     <view class="flex-column-container">
 
-      <zshu-tabs v-model:activeId="currentId"></zshu-tabs>
+      <zshu-tabs :list-tabs="listTabs" v-model:activeId="currentId"></zshu-tabs>
       000Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque, laboriosam?
@@ -43,7 +43,24 @@ watch(currentId,(newVale)=>{
   console.log('currentId',newVale)
 })
 // --------------------------------
-
+const listTabs=ref([
+  {
+    id: 1,
+    text: '共享订单',
+  }, {
+    id: 2,
+    text: '共享工厂1',
+  }/*, {
+    id: 3,
+    text: '共享工厂2',
+  }*//*, {
+    id: 4,
+    text: '共享工厂3',
+  }, {
+    id: 5,
+    text: '共享工厂4',
+  },*/
+])
 
 </script>
 
