@@ -44,7 +44,7 @@
 import ZshuTabs from "@/components/zshu-components/zshu-tabs.vue";
 import {ref, watch} from "vue";
 
-import ZshuFlexContainer from "@/components/zshu-components/zshu-flex-container.vue";
+import ZshuFlexContainer from "@/components/zshu-components/zshu-layout-flex-container.vue";
 // ------------------------------
 const currentId = ref(1);
 watch(currentId, (newVale) => {
