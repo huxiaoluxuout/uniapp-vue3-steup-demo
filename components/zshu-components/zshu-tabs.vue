@@ -111,14 +111,13 @@ const zshuTabStyle = computed(() => {
 
   --gap-l-r: var(--page-gap);
   --gap: 34rpx;
-
+  //margin:0  calc(-1 * var(--gap));
 }
 
 .zshu-tabs {
 
   background-color: #fff;
-  padding-top: 20rpx;
-  padding-bottom: 20rpx;
+
   z-index: 1000;
   position: relative;
   width: 100%;
@@ -126,7 +125,8 @@ const zshuTabStyle = computed(() => {
   .scroll-row {
     white-space: nowrap;
     overflow-x: auto;
-
+    padding-top: 20rpx;
+    padding-bottom: 20rpx;
   }
 }
 

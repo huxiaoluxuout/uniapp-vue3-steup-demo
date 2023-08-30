@@ -2,6 +2,14 @@ page {
   --page-gap: 30rpx
 }
 
+.page-gap-margin{
+  margin: 0 var(--page-gap);
+}
+
+.page-gap-padding{
+  padding: 0 var(--page-gap);
+}
+
 .flex-container {
 
   --num-columns: 2;
@@ -14,8 +22,8 @@ page {
   display: flex;
   flex-wrap: wrap;
   box-sizing: border-box;
-  padding: var(--gap);
-  border: 1px solid red;
+  //padding: var(--gap) 0 var(--gap) var(--gap);
+  //border: 1px solid red;
 
   .flex-item {
     width: var(--item-width);
@@ -35,10 +43,7 @@ page {
   padding-bottom: calc(var(--ios-bottom-height) + var(--window-top) + var(--tabbar-height));
 
   .flex-column-container {
-    --gap: var(--page-gap);
-    padding: 0 var(--gap);
 
-    overflow-x: hidden;
     flex: 1;
     //background-color: #8cd2ca;
 
@@ -49,25 +54,24 @@ page {
 .has-custom-tabbar {
 
 
-  //background-color: tan;
+
   position: relative;
   min-height: calc(100vh - var(--window-top));
   box-sizing: border-box;
   border-top: 1px solid transparent;
-  //border-bottom: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+
   display: flex;
   flex-direction: column;
 
   .flex-column-container {
-    --gap: var(--page-gap);
-    padding: 0 var(--gap);
 
-    overflow-x: hidden;
     flex: 1;
-    //background-color: #8cd2ca;
+
 
   }
 }
+
 
 .has-custom-tabbar.navbar-img {
   background-color: transparent;
