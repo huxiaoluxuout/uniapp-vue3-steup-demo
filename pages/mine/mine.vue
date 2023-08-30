@@ -1,5 +1,5 @@
 <template>
-  <view class="has-tabbar">
+  <view class="has-custom-tabbar">
     <zshu-navbar
         ref="refNavbar"
         title="我的"

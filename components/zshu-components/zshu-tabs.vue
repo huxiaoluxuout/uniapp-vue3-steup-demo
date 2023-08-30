@@ -1,5 +1,5 @@
 <template>
-  <view v-show="listTabs.length">
+  <view class="root-zshu-tabs" :style="cssVar" v-show="listTabs.length">
     <view id="zshu-tabs" class="zshu-tabs" :style="zshuTabStyle">
       <scroll-view class="scroll-row" :scroll-x="true" scroll-with-animation :scroll-into-view="'id-'+viewId">
         <view class="tabs">
@@ -27,6 +27,7 @@ const instance = getCurrentInstance(); // 获取组件实例上下文
 const rectHeight = ref(44)
 const rectTop = ref(44)
 
+import {cssVar as cssVar_} from "@/components/zshu-components/cssVar"
 
 const props = defineProps({
   listTabs: {
@@ -61,6 +62,10 @@ const props = defineProps({
 
   // isFixed: Boolean,
   isRelative: Boolean,
+
+  // css 变量
+  cssVar:cssVar_
+
 })
 
 const viewId = ref('1')
@@ -101,6 +106,14 @@ const zshuTabStyle = computed(() => {
 
 </script>
 <style scoped lang="scss">
+
+.root-zshu-tabs {
+
+  --gap-l-r: var(--page-gap);
+  --gap: 34rpx;
+
+}
+
 .zshu-tabs {
 
   background-color: #fff;
@@ -120,9 +133,8 @@ const zshuTabStyle = computed(() => {
 
 .tabs {
   display: flex;
-  gap: 34rpx;
 
-  --gap-l-r: 30rpx;
+  gap: var(--gap);
 
   .tabs-container:first-child:before, .tabs-container:last-child:after {
     content: '';

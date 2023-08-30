@@ -1,11 +1,18 @@
+page {
+  --page-gap: 30rpx
+}
+
 .flex-container {
-  display: flex;
-  flex-wrap: wrap;
+
   --num-columns: 2;
-  --gap: 30px;
+  --gap: var(--page-gap);
   --item-width: calc(100% / var(--num-columns) - var(--gap));
+
+
   gap: var(--gap);
   margin-right: calc(-1 * var(--gap));
+  display: flex;
+  flex-wrap: wrap;
   box-sizing: border-box;
   padding: var(--gap);
   border: 1px solid red;
@@ -20,22 +27,28 @@
 }
 
 
-
-
-// 主题颜色
-$theme-color: #F97D01;
-$main-color: #fff;
-
 .root-view {
   min-height: calc(100vh - var(--window-top));
   background-color: #F9F9F9;
   box-sizing: border-box;
   position: relative;
   padding-bottom: calc(var(--ios-bottom-height) + var(--window-top) + var(--tabbar-height));
+
+  .flex-column-container {
+    --gap: var(--page-gap);
+    padding: 0 var(--gap);
+
+    overflow-x: hidden;
+    flex: 1;
+    //background-color: #8cd2ca;
+
+  }
 }
 
 
-.has-tabbar {
+.has-custom-tabbar {
+
+
   //background-color: tan;
   position: relative;
   min-height: calc(100vh - var(--window-top));
@@ -45,28 +58,23 @@ $main-color: #fff;
   display: flex;
   flex-direction: column;
 
+  .flex-column-container {
+    --gap: var(--page-gap);
+    padding: 0 var(--gap);
 
+    overflow-x: hidden;
+    flex: 1;
+    //background-color: #8cd2ca;
+
+  }
 }
 
-.navbar-img {
+.has-custom-tabbar.navbar-img {
   background-color: transparent;
   background-size: 100%;
   background-repeat: no-repeat;
 }
 
-.flex-column-container {
-  flex: 1;
-  //background-color: #8cd2ca;
-
-}
-
-.card {
-  margin: 30rpx 30rpx 0;
-  padding: 30rpx;
-  background-color: #fff;
-  box-sizing: border-box;
-  border-radius: 20rpx;
-}
 
 .button {
   padding-left: 8px;

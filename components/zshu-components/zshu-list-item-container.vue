@@ -1,23 +1,20 @@
 <template>
-  <view class="list-item-container" @click="clickHandler(slots,emits,pagePath)">
-    <slot>
-      <image class="icon-image" :src="iconUrl"></image>
-      <text class="list-item-left-text">{{ text }}</text>
-      <view class="list-item-left-right">
-        <view class="right-text" v-if="rightText">{{ rightText }}</view>
-        <uni-icons type="right" :color="color" size="18"></uni-icons>
-      </view>
-    </slot>
+  <view class="list-item-container" @click="navigateTo(item.pagePath)">
+    <image class="icon-image" :src="item.iconUrl"></image>
+    <text class="list-item-left-text">{{ item.text }}</text>
+    <view class="list-item-left-right">
+      <view class="right-text" v-if="item.rightText">{{ item.rightText }}</view>
+      <uni-icons type="right" :color="color" size="18"></uni-icons>
+    </view>
+
   </view>
 </template>
 
 <script setup>
-import {useSlots ,computed ,defineExpose } from 'vue'
 
-const slots = useSlots()
-const emits = defineEmits(['click'])
-import {clickHandler} from "@/utils/tools"
-import {baseImgURL} from "@/http/request";
+import {baseImgURL} from "@/http/config";
+import {navigateTo} from "@/utils/tools";
+
 
 const props = defineProps({
 
@@ -25,40 +22,23 @@ const props = defineProps({
     type: String,
     default: '919199'
   },
-  iconUrl: {
-    type: String,
-    default: baseImgURL+'/mine/icon-list-item-1.png'
-  },
-  text: {
-    type: String,
-    default: '我的收藏'
-  },
-  rightText: {
-    type: String,
-    default: ''
-  },
-  pagePath: {
-    type: String,
-    default: ''
-  },
-})
-const iconUrl_=computed(()=>{
-  return props.iconUrl
-})
 
-
-// 将组件中的属性暴露出去，这样父组件可以获取
-defineExpose({
-    sex:'男'
-
+  item: {
+    type: Object,
+    default: () => ({
+      iconUrl: baseImgURL + '/mine/icon-list-item-1.png',
+      text: '我的收藏',
+      rightText: '',
+      pagePath: ''
+    })
+  }
 })
 
 
 </script>
 
 <style scoped lang="scss">
-//======
-//底部边框
+
 .border__bottom {
   position: relative
 }
@@ -74,7 +54,7 @@ defineExpose({
 }
 
 .list-item-container {
-  margin-left: 30rpx;
+  margin-left: var(--page-gap);
   margin-right: 30rpx;
   box-sizing: border-box;
   padding: 30rpx;
@@ -107,6 +87,4 @@ defineExpose({
     }
   }
 }
-
-//======
 </style>
