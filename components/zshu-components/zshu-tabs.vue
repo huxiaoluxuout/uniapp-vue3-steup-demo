@@ -118,7 +118,7 @@ const zshuTabStyle = computed(() => {
 
   background-color: #fff;
 
-  z-index: 1000;
+  z-index: 10;
   position: relative;
   width: 100%;
 
@@ -162,7 +162,7 @@ const zshuTabStyle = computed(() => {
   .item-text:after {
     content: '';
     height: 6px;
-    width: 80%;
+    width: 100%;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);

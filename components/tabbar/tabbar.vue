@@ -1,13 +1,22 @@
 <template>
-  <view class="tabbar-root-view" :style="{ '--ios-bottom-height':iosBottomHeight +'px','--tabbar-height': 56+'px'}">
+  <view class="root-tabbar" :style="{ '--ios-bottom-height':iosBottomHeight +'px'}">
     <view class="tabbar-container">
       <view class="item-wrapper" v-for="(item, index) in list" :key="item.text"
             @click="clickHandler(navigateTo,item.pagePath)">
-        <image v-if="flag ===index" mode="widthFix" class="icon-item" :class="{'icon-item-big':index===1}"
-               :src="filterPath(item.selectedIconPath)"/>
-        <image v-else mode="widthFix" class="icon-item" :class="{'icon-item-big':index===1}"
-               :src="filterPath(item.iconPath)"/>
-        <view class="foot-text" :style="{color:flag === index?selectedColor:color}">{{ item.text }}</view>
+
+        <view class="item-container">
+
+          <image v-if="flag ===index" mode="aspectFit" class="icon-item" :class="{'icon-item-big':index===1}"
+                 :src="filterPath(item.selectedIconPath)"/>
+
+          <image v-else mode="aspectFit" class="icon-item" :class="{'icon-item-big':index===1}"
+                 :src="filterPath(item.iconPath)"/>
+
+          <view class="foot-text" :style="{color:flag === index?selectedColor:color}">{{ item.text }}</view>
+
+          <view class="notice" v-show="false">0</view>
+
+        </view>
       </view>
     </view>
     <view class="ios__bottom-tabbar__height"></view>
@@ -45,12 +54,12 @@ import {getAllAreaList, webConfig} from "@/http/apis/common";
 const emits = defineEmits(['click'])
 const clickHandler = (fun, pagePath) => {
   fun(pagePath)
-/*  webConfig().then(res => {
-    console.log('webConfig', res)
-  })
-  getAllAreaList().then(res => {
-    console.log('getAllAreaList', res)
-  })*/
+  /*  webConfig().then(res => {
+      console.log('webConfig', res)
+    })
+    getAllAreaList().then(res => {
+      console.log('getAllAreaList', res)
+    })*/
 }
 
 
@@ -71,22 +80,11 @@ onHide(() => {
 
 
 <style lang="scss" scoped>
-.notice {
-  position: absolute;
-  top: -2px;
-  right: 0;
-  background-color: #fd5958;
-  color: #fff;
-  border-radius: 50%;
-  font-size: 10px;
-  box-sizing: border-box;
-  width: 2em;
-  height: 2em;
-  text-align: center;
-  line-height: 2em;
-}
 
-.tabbar-root-view {
+
+.root-tabbar {
+  --icon-width: 26px;
+  --inc: 20px
 }
 
 .ios__bottom-tabbar__height {
@@ -120,30 +118,54 @@ onHide(() => {
   box-sizing: border-box;
 }
 
+.item-container {
+  width: calc(var(--icon-width) + var(--inc));
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .foot-text {
-  margin-top: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
   font-size: 14px;
+  color: #D0D4DD;
 }
 
 .icon-item {
-  width: 26px;
-  height: 26px;
+  width: var(--icon-width);
+  height: var(--icon-width);
   display: block;
 }
 
 .icon-item-big {
-  width: 46px;
-  height: 46px;
-  position: absolute;
-  left: 50%;
-  top: -50%;
-  transform: translateX(-50%);
+  width: calc(var(--icon-width) + var(--inc));
+  height: calc(var(--icon-width) + var(--inc));
+  display: block;
+  transform: translateY(-50%);
 }
 
-.icon-item-big + .foot-text {
+// 角标
+.notice {
   position: absolute;
-  bottom: 0;
-}
+  top: 0;
+  right: 0;
+  background-color: #fd5958;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 10px;
+  box-sizing: border-box;
+  width: 1.4em;
+  height: 1.4em;
+  text-align: center;
+  line-height: 1.4em;
+  transform: translate(50%,-50%);
 
+}
 
 </style>
