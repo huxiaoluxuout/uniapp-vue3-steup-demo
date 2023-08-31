@@ -1,7 +1,7 @@
 <template>
   <view class="root-zshu-grid">
 
-    <zshu-flex-container cssVar="--num-columns:4" :dataList="list">
+    <zshu-flex-container :cssVar="`--num-columns:${list.length}`" :dataList="list">
       <template #default="{item}">
         <view class="zshu-grid__container" @click="clickHandler(item.id)">
 
@@ -67,6 +67,15 @@ const clickHandler = (ID) => {
 }
 </script>
 
+<style>
+// #ifdef  MP
+[is$='zshu-grid'] {
+  width: 100%;
+}
+
+// #endif
+
+</style>
 <style scoped lang="scss">
 
 .root-zshu-grid {
@@ -90,8 +99,8 @@ const clickHandler = (ID) => {
 
 
     .up-icon {
-      width: 40px;
-      height: 40px;
+      width: 26px;
+      height: 26px;
       display: block;
     }
   }

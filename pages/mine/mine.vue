@@ -14,8 +14,10 @@
       </view>
 
       bgColor:{{ bgColor }}
+            <view style="display:flex;">
+              <button class="button button-custom" :style="attributeStylers(item,item.keyMap)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>
 
-      <!--      <button class="button button-custom" :style="AttributeStyler(item,item.keyMap)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>-->
+            </view>
       <view @click="clickOn">
 
 
@@ -72,6 +74,7 @@ setTimeout(() => {
     buttonToUpdate.color = 'blue';
     buttonToUpdate.backgroundColor = '#b9b9b9';
     buttonToUpdate.fontSize = '20px';
+    buttonToUpdate.flex =3;
     buttonToUpdate.keyMap = ['fontSize', 'backgroundColor', 'color']
 
   }
@@ -139,6 +142,7 @@ const dataListView = ref([])
 
 import {nextPageManager} from "@/common/hooks/nextPageManager";
 import {getNoticeList} from "@/http/apis/message";
+import {attributeStylers} from "@/components/zshu-components/attributeStylers";
 
 const nexPageContext = nextPageManager;
 

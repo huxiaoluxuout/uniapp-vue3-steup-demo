@@ -18,10 +18,9 @@
 
       <zshu-grid v-model:gridId="gridId"></zshu-grid>
 
-
       <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
       <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
-      <!--      <button @click="navigateTo('pages/pages3/pages3')">page3</button>-->
+            <button @click="navigateTo('pages/pages3/pages3')">page3</button>
 
 
     </view>
