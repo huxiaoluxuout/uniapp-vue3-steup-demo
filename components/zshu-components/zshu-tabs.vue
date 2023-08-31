@@ -28,6 +28,7 @@ const rectHeight = ref(44)
 const rectTop = ref(44)
 
 import {cssVar as cssVar_} from "@/components/zshu-components/cssVar"
+import {getViewInfo} from "@/common/hooks/useGetViewInfo";
 
 const props = defineProps({
   listTabs: {
@@ -64,27 +65,20 @@ const props = defineProps({
   isRelative: Boolean,
 
   // css 变量
-  cssVar:cssVar_
+  cssVar: cssVar_
 
 })
 
 const viewId = ref('1')
 const emits = defineEmits(['update:activeId'])
 
-onReady(() => {
-  nextTick(() => {
-    props.listTabs.length && uni.createSelectorQuery()
-        .in(instance.proxy)
-        .select('#zshu-tabs')
-        .boundingClientRect((rect) => {
-          console.log('rect', rect)
-          rectTop.value = Math.ceil(rect?.top)
-          rectHeight.value = Math.ceil(rect?.height)
-        })
-        .exec()
-  });
-})
+getViewInfo('#zshu-tabs', (rect) => {
 
+  rectTop.value = Math.ceil(rect?.top);
+
+  rectHeight.value = Math.ceil(rect?.height);
+
+})
 
 const clickId = (id) => {
   viewId.value = id

@@ -54,7 +54,7 @@ const { $test1 } = getCurrentInstance().appContext.config.globalProperties
 const emits = defineEmits(['click'])
 const clickHandler = (fun, pagePath) => {
   fun(pagePath)
-  $test1()
+  // $test1()
 
   /*  webConfig().then(res => {
       console.log('webConfig', res)

@@ -27,6 +27,7 @@ import {onReady} from "@dcloudio/uni-app";
 import ZshuFlexContainer from "@/components/zshu-components/zshu-layout-flex-container.vue";
 import {attributeStylers} from "@/components/zshu-components/attributeStylers";
 import ZshuGrid from "@/components/zshu-components/zshu-grid.vue";
+import {getViewInfo} from "@/common/hooks/useGetViewInfo";
 
 const iosBottomHeight = getIOSBottomHeight()
 
@@ -46,19 +47,11 @@ const instance = getCurrentInstance(); // 获取组件实例上下文
 
 const rectHeight = ref(70)
 
-/*onReady(() => {
-  nextTick(() => {
-    uni.createSelectorQuery()
-        .in(instance.proxy)
-        .select('#footer-container-inner')
-        .boundingClientRect((rect) => {
-          console.log('rect', rect)
+getViewInfo('#footer-container-inner', (rect) => {
 
-          rectHeight.value = Math.ceil(rect?.height)
-        })
-        .exec()
-  });
-})*/
+  rectHeight.value = Math.ceil(rect?.height);
+
+})
 
 
 const list = [
