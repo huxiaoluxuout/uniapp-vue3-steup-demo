@@ -30,6 +30,16 @@ const props = defineProps({
 
 </template>
 
+<style>
+/*  #ifdef  MP  */
+
+[is$='zshu-layout-flex-container'] {
+  width: 200%;
+}
+
+/*  #endif  */
+
+</style>
 <style scoped lang="scss">
 
 .root-flex-container {
@@ -37,6 +47,7 @@ const props = defineProps({
   --num-columns: 2;
   --item-width: calc(100% / var(--num-columns) - var(--gap));
   overflow-x: hidden;
+  width: 100%;
 }
 
 /*.flex-container {

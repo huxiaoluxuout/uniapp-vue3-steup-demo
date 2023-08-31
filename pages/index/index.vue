@@ -13,18 +13,15 @@
     <view class="flex-column-container container">
 
 
-      <zshu-nav-list v-for="item in list" :item="item" :key="item.id" />
+      <zshu-nav-list v-for="item in list" :item="item" :key="item.id"/>
 
 
-
-      <button @click="navigateTo('pages/page1/page1')">page1</button>
-<!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
-<!--      <button @click="navigateTo('pages/pages3/pages3')">page3</button>-->
+      <zshu-grid v-model:gridId="gridId"></zshu-grid>
 
 
-
-
-
+      <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
+      <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
+      <!--      <button @click="navigateTo('pages/pages3/pages3')">page3</button>-->
 
 
     </view>
@@ -35,6 +32,8 @@
 <script setup>
 import {navigateTo} from "@/utils/tools";
 import {baseImgURL} from "@/http/config";
+import ZshuGrid from "@/components/zshu-components/zshu-grid.vue";
+import {computed, ref, watch} from "vue";
 
 const list = [
   {id: 1, iconUrl: baseImgURL + '/mine/icon-list-item-1.png', text: '我的收藏', pagePath: 'subpages_mine/my_collections'},
@@ -46,6 +45,11 @@ const list = [
   // {id: 8, iconUrl: baseImgURL + '/mine/icon-list-item-8.png', text: '联系平台', pagePath: 'subpages_mine/contact_platform'},
 ]
 
+const gridId = ref(0)
+watch(gridId, (newVal) => {
+  console.log('newVal', newVal)
+})
+const slotName = computed(() => (id) => `down${id}`)
 </script>
 
 <style scoped lang="scss">

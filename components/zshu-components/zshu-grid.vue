@@ -1,91 +1,112 @@
 <template>
+  <view class="root-zshu-grid">
 
-  <view class="zshu-gird flex flex-column align-center" v-if="stop" @click.stop="clickHandler(slots,emits,pagePath,isNeedLogin)">
-    <slot>
-      <image class="zshu-gird-icon" :src="iconUrl"></image>
-<!--      <view class="zshu-gird-text-box">-->
-        <text class="zshu-gird-text mt-1 font">{{ text }}</text>
-<!--      </view>-->
-    </slot>
+    <zshu-flex-container cssVar="--num-columns:4" :dataList="list">
+      <template #default="{item}">
+        <view class="zshu-grid__container" @click="clickHandler(item.id)">
+
+          <view class="container__up">
+
+            <image class="up-icon" :src="item.iconUrl"/>
+
+          </view>
+          <view class="container__down">
+
+            <text class="down-text">{{ item.text }}</text>
+
+          </view>
+
+        </view>
+      </template>
+    </zshu-flex-container>
 
   </view>
-    <view class="zshu-gird flex flex-column align-center" v-else @click="clickHandler(slots,emits,pagePath,isNeedLogin)">
-    <slot>
-      <image class="zshu-gird-icon" :src="iconUrl"></image>
-<!--      <view class="zshu-gird-text-box">-->
-        <text class="zshu-gird-text mt-1 font">{{ text }}</text>
-<!--      </view>-->
-    </slot>
-
-  </view>
-
 
 </template>
 
 <script setup>
-import {useSlots} from 'vue'
 
-const slots = useSlots()
-const emits = defineEmits(['click'])
-import {clickHandler} from "@/utils/tools"
-import {baseImgURL} from "@/http/request";
+
+import ZshuFlexContainer from "@/components/zshu-components/zshu-layout-flex-container.vue";
+
+const emits = defineEmits(['update:gridId', 'clickGrid',])
 
 const props = defineProps({
-  iconUrl: {
-    type: String,
-    default: baseImgURL+'/avatar.png'
-  },
-  text: {
-    type: String,
-    default: '张天师'
-  },
-  pagePath: {
-    type: String,
-    default: ''
-  },
-  isNeedLogin:Boolean,
-  stop:Boolean,
+
+  list: {
+
+    type: Object,
+    default: () => ([
+      {
+        id: 1,
+        text: '我的收藏',
+        iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',
+      }, {
+        id: 2,
+        text: '我的收藏',
+        iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-2.png',
+      }, {
+        id: 3,
+        text: '我的收藏',
+        iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-3.png',
+      }, {
+        id: 4,
+        text: '我的收藏',
+        iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',
+      }
+    ])
+  }
+
 })
 
 
+const clickHandler = (ID) => {
+  console.log(ID)
+  emits('update:gridId', ID)
+  emits('clickGrid', ID)
+}
 </script>
 
 <style scoped lang="scss">
-.zshu-gird {
-  display: block;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  position: relative;
+
+.root-zshu-grid {
+  display: flex;
+  gap: 20rpx;
+  background-color: #fff;
+
 }
 
-// #ifdef MP-WEIXIN
-::v-deep > view {
+.zshu-grid__container {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  gap: 8rpx;
   align-items: center;
+  padding: 10rpx;
+  box-sizing: border-box;
+
+
+  .container__up {
+
+
+    .up-icon {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+  }
+
+  .container__down {
+
+
+    .down-text {
+      font-size: 12px;
+      color: #3a3a3a;
+      text-align: center;
+    }
+
+  }
 }
 
-// #endif
-
-
-.zshu-gird-icon {
-  width: 50px;
-  height: 50px;
-  display: block;
-  margin: auto;
-}
-
-
-.zshu-gird-text {
-  font-size: 13px;
-  margin-top: 5px;
-  color: #6a6a6a;
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  text-align: center;
-
-}
 </style>
+
