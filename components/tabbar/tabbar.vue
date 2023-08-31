@@ -23,7 +23,7 @@
   </view>
 </template>
 <script setup>
-import {onMounted} from "vue";
+import {getCurrentInstance, onMounted} from "vue";
 
 import {onHide, onShow,} from "@dcloudio/uni-app";
 
@@ -49,11 +49,13 @@ defineProps({
   }
 })
 import {getAllAreaList, webConfig} from "@/http/apis/common";
-
+const { $test1 } = getCurrentInstance().appContext.config.globalProperties
 
 const emits = defineEmits(['click'])
 const clickHandler = (fun, pagePath) => {
   fun(pagePath)
+  $test1()
+
   /*  webConfig().then(res => {
       console.log('webConfig', res)
     })

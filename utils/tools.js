@@ -381,6 +381,11 @@ const getCacheUserInfo = () => {
     })
 
 }
+const test = () => {
+
+    console.log('test')
+
+}
 
 export {
     throttle,
@@ -400,6 +405,7 @@ export {
     checkAndGuideLocationAuth,
     queryString,
     getPages,
-    getCacheUserInfo
+    getCacheUserInfo,
+    test
 }
 
