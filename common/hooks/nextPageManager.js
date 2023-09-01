@@ -18,6 +18,8 @@ export const nextPageManager = {
     dataList: [],
     isNotFullPage: false,
 
+    notFullLen: 0,
+
 
     // 触底加载下一页
     reachBottomHandler() {
@@ -40,15 +42,43 @@ export const nextPageManager = {
 
     },
 
-    updateDataList(newResData, oldValue) {
-        if (!Array.isArray(newResData)) {
+    updateDataList(newResDataList, oldDataList) {
+        // 检查传入的数据是否为数组
+        if (!Array.isArray(newResDataList)) {
             console.error('传入数据只能是数组');
             return;
         }
-        console.log('新数据', newResData);
-        console.log('旧数据', oldValue);
 
-        const isFullPage = newResData.length % this.pageSize === 0;
+        // 检查数据是否发生改变
+        if (this.notFullLen !== newResDataList.length) {
+            console.log('数据改变了');
+        }
+
+        // 检查是否是满页数据
+        const isFullPage = newResDataList.length % this.pageSize === 0;
+
+        if (isFullPage && this.pageSize !== 0) {
+            // 如果是满页数据且每页大小不为0，则增加页数
+            this.page++;
+            this.notFullLen = 0;
+            this.dataList = [...oldDataList, ...newResDataList];
+        } else {
+            if (!this.notFullLen) {
+                // 如果不是满页数据且上一页数据已显示完整，则更新数据列表并更新未显示数据的长度
+                this.dataList = [...oldDataList, ...newResDataList];
+                this.notFullLen = newResDataList.length;
+            }
+        }
+    },
+    /*updateDataList(newResDataList, oldDataList) {
+        if (!Array.isArray(newResDataList)) {
+            console.error('传入数据只能是数组');
+            return;
+        }
+        console.log('新数据', newResDataList);
+        console.log('旧数据', oldDataList);
+
+        const isFullPage = newResDataList.length % this.pageSize === 0;
 
 
         if (isFullPage) {
@@ -56,10 +86,10 @@ export const nextPageManager = {
             if (!this.isNotFullPage) {
                 // 新数据填充一页
                 this.page++;
-                this.dataList = oldValue.concat(newResData)
+                this.dataList = oldDataList.concat(newResDataList)
 
             } else {
-                this.upDateList(newResData, oldValue)
+                this.upDateList(newResDataList, oldDataList)
                 this.isNotFullPage = false;
                 this.page++;
 
@@ -68,16 +98,17 @@ export const nextPageManager = {
         } else {
             if (!this.isNotFullPage) {
                 // 非完整页的第一次填充
-                this.dataList = oldValue.concat(newResData)
+                this.dataList = oldDataList.concat(newResDataList)
                 this.isNotFullPage = true;
             } else {
                 // 非完整页的后续填充
-                this.upDateList(newResData, oldValue)
+                this.upDateList(newResDataList, oldDataList)
             }
         }
 
 
-    },
+    },*/
+
     upDateList(newResData, oldValue) {
         const middleIndex = (this.page - 1) * this.pageSize;
         console.log('middleIndex', middleIndex);
