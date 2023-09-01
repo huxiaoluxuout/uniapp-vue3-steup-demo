@@ -8,16 +8,16 @@
 
     <view class="flex-column-container">
 
-      <view class="fixed-top" style="border: 1px solid blueviolet;" @click="updateDate">
+      <view class="fixed-top" style="border: 1px solid blueviolet;" >
         <view style="padding: 4px; color:red;">{{ dataListView.length }}</view>
-        <view>isUpdate:{{ isUpdate }}</view>
+
       </view>
 
       bgColor:{{ bgColor }}
-            <view style="display:flex;">
-              <button class="button button-custom" :style="attributeStylers(item,item.keyMap)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>
+      <view style="display:flex;">
+        <!--        <button class="button button-custom" :style="attributeStylers(item,item.keyMap)" v-for="(item,index) in buttonList" :key="index">{{ item.text }}</button>-->
 
-            </view>
+      </view>
       <view @click="clickOn">
 
 
@@ -74,7 +74,7 @@ setTimeout(() => {
     buttonToUpdate.color = 'blue';
     buttonToUpdate.backgroundColor = '#b9b9b9';
     buttonToUpdate.fontSize = '20px';
-    buttonToUpdate.flex =3;
+    buttonToUpdate.flex = 3;
     buttonToUpdate.keyMap = ['fontSize', 'backgroundColor', 'color']
 
   }
@@ -142,24 +142,23 @@ const dataListView = ref([])
 
 import {nextPageManager} from "@/common/hooks/nextPageManager";
 import {getNoticeList} from "@/http/apis/message";
-import {attributeStylers} from "@/components/zshu-components/attributeStylers";
+// import {attributeStylers} from "@/components/zshu-components/attributeStylers";
+
 
 const nexPageContext = nextPageManager;
 
-nexPageContext.reachBottomHandler();
+pullDownRefreshAddFunctions(nexPageContext.reload.bind(nexPageContext))
 
-nexPageContext.nexPageReload(() => {
+nexPageContext.onReachBottom()
+
+nexPageContext.onNexPageReload(() => {
   dataListView.value = []
   nexPageContext.dataList = []
-  isUpdate.value = false
 
   getDataListApi()
 
 })
-const isUpdate = ref(false);
-const updateDate = () => {
-  isUpdate.value = true
-}
+
 
 const getDataListApi = () => {
 
@@ -167,43 +166,16 @@ const getDataListApi = () => {
     page: nexPageContext.page,
     page_size: nexPageContext.pageSize
   }).then(res => {
-    let arr = [
-      {
-        add_time: 1692261328,
-        add_time_text: "08-17 16:35",
-        extra: null,
-        factory_id: 0,
-        id: 1000,
-        is_del: 0,
-        is_read: 1,
-        msg: "模拟数据新数据1",
-        notice_status: 1,
-        notice_type: "factory",
-        read_time: 1692346045,
-        title: "新数据1",
-        user_id: 6,
-      },
-
-
-    ]
-
-    let resData = res.data?.data;
-
-    if (isUpdate.value) {
-      resData.push(...arr)
-    }
-
-    nexPageContext.setDataList(resData)
-
-    dataListView.value = nexPageContext.dataList
+    const resData = res.data?.data;
+    dataListView.value = nexPageContext.setDataList(resData).dataList
   })
 }
 
-getDataListApi()
 
-nexPageContext.nexPageSetFunctions(getDataListApi)
+nexPageContext.nexPageSetFunName(getDataListApi).nexPageDoFunQueue()
 
-pullDownRefreshAddFunctions(nexPageContext.reload.bind(nexPageContext))
+
+
 
 // ======================================================================
 

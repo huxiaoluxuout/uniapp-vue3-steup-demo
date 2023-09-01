@@ -7,7 +7,7 @@ import useDataReady from "@/common/hooks/useDataReady"
 
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
-const {dataReady, callData} = useDataReady();
+const {onEmitCallback, emitCallback} = useDataReady();
 
 export const nextPageManager = {
     // 当前页码
@@ -16,18 +16,19 @@ export const nextPageManager = {
     pageSize: 10,
     // 列表数据
     dataList: [],
-    isNotFullPage: false,
+
 
     notFullLen: 0,
 
 
-    // 触底加载下一页
-    reachBottomHandler() {
+    // 初始化监听触底加载下一页
+    onReachBottom() {
         onReachBottom(throttle(() => {
             // 加载下一页数据
             console.log('加载下一页数据')
-            DoFunQueue()
+            this.nexPageDoFunQueue()
         }))
+        return this
     },
 
     // 重新加载
@@ -35,8 +36,9 @@ export const nextPageManager = {
         this.page = 1
         this.pageSize = 10
         // this.dataList = [];
-        console.log('重新加载===', this)
-        callData();
+        // console.log('重新加载===', this)
+        emitCallback();
+        return this
 
         // uni.$emit('reloadHandler')
 
@@ -54,27 +56,44 @@ export const nextPageManager = {
 
             this.page++;
             this.notFullLen = 0;
-            this.dataList = [...oldDataList, ...newResDataList];
+            this.dataList = oldDataList.concat(newResDataList);
+
         } else {
             if (!this.notFullLen) {
-                // 如果不是满页数据且上一页数据已显示完整，则更新数据列表并更新未显示数据的长度
-                this.dataList = [...oldDataList, ...newResDataList];
+
+                this.dataList = oldDataList.concat(newResDataList);
+
                 this.notFullLen = newResDataList.length;
             } else {
-                // console.error('已经到底了,尝试刷新吧')
-                throw new Error('传入数据只能是数组');
+
+                throw new Error('数据加载完成，尝试刷新页面');
             }
         }
+
     },
     // 设置列表数据
     setDataList(newResData) {
         this.updateDataList(newResData, this.dataList);
+        return this
     },
 
 
-    nexPageSetFunctions: setFunctions,
-    nexPageAddFunctions: addFunctions,
-    nexPageReload: dataReady,
+    nexPageSetFunName(func, args) {
+        setFunctions(func, args)
+        return this
+    },
+    nexPageSetFunNames(func, args) {
+        addFunctions(func, args)
+        return this
+    },
+
+    // 执行函数的调用
+    nexPageDoFunQueue() {
+        DoFunQueue()
+    },
+
+    // 响应重新加载
+    onNexPageReload: onEmitCallback
 
 
 }
