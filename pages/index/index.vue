@@ -13,17 +13,17 @@
     <view class="flex-column-container container">
 
 
-      <zshu-nav-list v-for="item in list" :item="item" :key="item.id"/>
+      <zshu-nav-list v-for="item in navList" :item="item" :key="item.id"/>
 
 
       <zshu-grid v-model:gridId="gridId"></zshu-grid>
 
       <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
       <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
-            <button @click="navigateTo('pages/pages3/pages3')">page3</button>
-<view>
-  111111
-</view>
+      <button @click="navigateTo('pages/pages3/pages3')">page3</button>
+      <view>
+        111111
+      </view>
 
     </view>
     <tabbar :flag="1"></tabbar>
@@ -34,10 +34,10 @@
 import {navigateTo} from "@/utils/tools";
 import {baseImgURL} from "@/http/config";
 import ZshuGrid from "@/components/zshu-components/zshu-grid.vue";
-import {computed, ref, watch} from "vue";
+import {computed, nextTick, onMounted, ref, watch, watchEffect} from "vue";
 
-const list = [
-  {id: 1, iconUrl: baseImgURL + '/mine/icon-list-item-1.png', text: '我的收藏', pagePath: 'subpages_mine/my_collections'},
+const navList = [
+  {id: 1, iconUrl: baseImgURL + '/mine/icon-list-item-1.png', text: '我的收藏', pagePath: 'pages/pages3/pages3'},
   // {id: 2, iconUrl: baseImgURL + '/mine/icon-list-item-2.png', text: '浏览记录', pagePath: 'subpages_mine/browse_records'},
   // {id: 3, iconUrl: baseImgURL + '/mine/icon-list-item-3.png', text: '我的名片', pagePath: 'subpages_mine/roles'},
   // {id: 4, iconUrl: baseImgURL + '/mine/icon-list-item-4.png', text: '名片记录', pagePath: 'subpages_mine/business_card_record'},
@@ -47,9 +47,13 @@ const list = [
 ]
 
 const gridId = ref(0)
-watch(gridId, (newVal) => {
-  console.log('newVal', newVal)
+
+
+watch(gridId, (newID) => {
+  console.log(newID)
+
 })
+
 const slotName = computed(() => (id) => `down${id}`)
 </script>
 
@@ -61,4 +65,5 @@ const slotName = computed(() => (id) => `down${id}`)
   border-radius: 20rpx 20rpx 0 0;
 
 }
+
 </style>

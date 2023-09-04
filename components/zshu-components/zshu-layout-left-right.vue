@@ -1,7 +1,7 @@
 <template>
   <view class="root-zshu-layout-left-right">
 
-    <view class="section-wrapper">
+    <view class="section-wrapper" :style="cssVar">
 
       <view class="section-wrapper__left">
         <slot name="left"></slot>
@@ -26,52 +26,60 @@
 <script setup>
 
 
-const props = defineProps({})
+import {cssVar as cssVar_} from "@/components/zshu-components/cssVar";
+
+const props = defineProps({
+  cssVar: cssVar_,
+
+})
 </script>
 <style scoped lang="scss">
 
 .root-zshu-layout-left-right {
   width: 100%;
   --bdrs: 6px;
+  --flex-left: 1;
+  --flex-middle: 1;
+  --flex-right: 2
 
 }
 
 .section-wrapper {
   display: flex;
-  //align-items: center;
-  border: 1px solid yellow;
-
+  align-items: center;
   box-sizing: content-box;
   gap: 10px;
 }
 
 .section-wrapper__left {
-
   display: flex;
-  //align-items: center;
+  align-items: center;
   position: relative;
-  border: 1px solid red;
-  flex: 1;
+  flex: var(--flex-left);
+
 }
 
 .section-wrapper__middle {
   align-self: stretch;
   display: flex;
   flex-direction: column;
+  flex: var(--flex-middle);
 
 
 }
 
 .section-wrapper__right {
-  align-self: flex-start;
   display: flex;
   align-items: center;
-  flex: 2;
-  border: 1px solid #000;
+  flex: var(--flex-right);
+
 }
 
+.section-wrapper__left.section-wrapper__left:empty,
+.section-wrapper__middle.section-wrapper__middle:empty,
 .section-wrapper__right.section-wrapper__right:empty {
   display: none;
 }
+
 
 </style>

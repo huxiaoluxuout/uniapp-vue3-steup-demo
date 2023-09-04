@@ -57,7 +57,7 @@
       "path": "pages/pages3/pages3",
       "style": {
         "navigationBarTitleText": "pages3",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     },
     {

@@ -91,8 +91,8 @@ const clickHandler = (ID) => {
 
 
     .up-icon {
-      width: 26px;
-      height: 26px;
+      width: 30px;
+      height: 30px;
       display: block;
     }
   }

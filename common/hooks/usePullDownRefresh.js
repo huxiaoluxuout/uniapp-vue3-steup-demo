@@ -7,7 +7,7 @@ import useDataReady from "@/common/hooks/useDataReady"
 
 const {onEmitCallback, emitCallback} = useDataReady();
 
-
+// 下拉刷新完成
 const funQueue = () => {
 
     DoFunQueue()
@@ -15,7 +15,7 @@ const funQueue = () => {
     uni.stopPullDownRefresh();
 
     emitCallback()
-
+    console.log('下拉刷新完成')
 }
 
 

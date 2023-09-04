@@ -1,14 +1,21 @@
 <template>
-  <view class="section-wrapper border_bottom_padding">
-    <view class="section-wrapper__left">
-      <image class="left-icon-image" v-if="item.iconUrl" :src="item.iconUrl"></image>
-      <text class="left-text">{{ item.text }}</text>
-    </view>
-    <view class="section-wrapper__middle"></view>
-    <view class="section-wrapper__right" @click="navigateTo(item.pagePath)">
-      <view class="right-text" v-if="item.rightText">{{ item.rightText }}</view>
-      <uni-icons type="right" :color="color" size="18"></uni-icons>
-    </view>
+  <view class="nav-list border_bottom_padding" @click="navigateTo(item.pagePath)">
+    <zshu-layout-left-right :cssVar="cssVar">
+      <template #left>
+        <view class="nav-list__left">
+          <image class="left-icon-image" v-if="item.iconUrl" :src="item.iconUrl"></image>
+          <text class="left-text">{{ item.text }}</text>
+        </view>
+      </template>
+<!--      <template #middle></template>-->
+      <template #right>
+        <view class="nav-list__right" >
+          <view class="right-text" v-if="item.rightText">{{ item.rightText }}</view>
+          <uni-icons type="right" :color="color" size="18"></uni-icons>
+        </view>
+      </template>
+    </zshu-layout-left-right>
+
 
   </view>
 
@@ -19,11 +26,13 @@
 
 import {navigateTo} from "@/utils/tools";
 
+const cssVar = `--flex-left:${1};--flex-right:${0};`
+
 const props = defineProps({
 
   color: {
     type: String,
-    default: '919199'
+    default: '#919199'
   },
 
   item: {
@@ -50,10 +59,10 @@ const props = defineProps({
   transform: translateX(-50%);
   height: 1px;
   width: calc(100% - (2 * var(--padding)));
-  background-color: red;
+  background-color: #f5f5f5;
 }
 
-.section-wrapper {
+.nav-list {
   --padding: 20rpx;
 
   display: flex;
@@ -65,7 +74,7 @@ const props = defineProps({
   background-color: #fff;
 }
 
-.section-wrapper__left {
+.nav-list__left {
   display: flex;
   align-items: center;
   position: relative;
@@ -84,20 +93,9 @@ const props = defineProps({
   }
 }
 
-.section-wrapper__middle {
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  //border: 1px solid blue;
-  flex: 1;
+.nav-list__right {
+  //border: 1px solid red;
 }
 
-.section-wrapper__right {
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  border: 1px solid red;
-}
 </style>
 
