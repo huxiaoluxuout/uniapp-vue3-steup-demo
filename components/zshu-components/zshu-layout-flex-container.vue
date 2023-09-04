@@ -22,24 +22,17 @@ const props = defineProps({
 <template>
   <view class="root-flex-container">
     <view class=" flex-container" :style="cssVar">
-      <view class="flex-item" v-for="(slotItem,index) in dataList" :key="slotItem.id">
-        <slot :item="slotItem"></slot>
+      <view class="flex-item is__view__root" v-for="(slotItem,index) in dataList" :key="slotItem.id">
+        <slot title :item="slotItem"></slot>
       </view>
     </view>
   </view>
 
 </template>
 
-<style>
-// #ifdef  MP
-[is$='zshu-layout-flex-container'] {
-  width: 100%;
-}
-
-// #endif
-
-</style>
 <style scoped lang="scss">
+
+
 
 .root-flex-container {
   --gap: var(--page-gap);

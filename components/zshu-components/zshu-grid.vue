@@ -67,18 +67,11 @@ const clickHandler = (ID) => {
 }
 </script>
 
-<style>
-// #ifdef  MP
-[is$='zshu-grid'] {
-  width: 100%;
-}
 
-// #endif
-
-</style>
 <style scoped lang="scss">
 
 .root-zshu-grid {
+  width: 100%;
   display: flex;
   gap: 20rpx;
   background-color: #fff;
@@ -91,9 +84,8 @@ const clickHandler = (ID) => {
   flex-direction: column;
   gap: 8rpx;
   align-items: center;
-  padding: 10rpx;
+  padding: 8rpx;
   box-sizing: border-box;
-
 
   .container__up {
 
@@ -106,8 +98,7 @@ const clickHandler = (ID) => {
   }
 
   .container__down {
-
-
+    display: inline-flex;
     .down-text {
       font-size: 12px;
       color: #3a3a3a;

@@ -28,26 +28,18 @@
 
 const props = defineProps({})
 </script>
-<style>
-// #ifdef  MP
-[is$='zshu-layout-left-right'] {
-  width: 100%;
-}
-
-// #endif
-
-</style>
-
 <style scoped lang="scss">
 
 .root-zshu-layout-left-right {
+  width: 100%;
   --bdrs: 6px;
 
 }
 
 .section-wrapper {
   display: flex;
-  align-items: center;
+  //align-items: center;
+  border: 1px solid yellow;
 
   box-sizing: content-box;
   gap: 10px;
@@ -56,9 +48,9 @@ const props = defineProps({})
 .section-wrapper__left {
 
   display: flex;
-  align-items: center;
+  //align-items: center;
   position: relative;
-  border: 1px solid blueviolet;
+  border: 1px solid red;
   flex: 1;
 }
 
@@ -75,7 +67,7 @@ const props = defineProps({})
   display: flex;
   align-items: center;
   flex: 2;
-  border: 1px solid blue;
+  border: 1px solid #000;
 }
 
 .section-wrapper__right.section-wrapper__right:empty {

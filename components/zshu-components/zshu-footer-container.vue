@@ -69,7 +69,7 @@ const list = [
     bottom: var(--ios-bottom-height);
     left: 0;
     width: 100%;
-    height: var(--rect-height);
+    min-height: var(--rect-height);
     display: flex;
     flex-direction: row;
     z-index: 999;
@@ -87,7 +87,7 @@ const list = [
   width: 100%;
   display: flex;
   align-items: center;
-  border: 1px solid red;
+  //border: 1px solid red;
 
 
 }

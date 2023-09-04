@@ -4,13 +4,28 @@ page {
 
 }
 
-.page-gap-margin{
+.page-gap-margin {
   margin: 0 var(--page-gap);
 }
 
-.page-gap-padding{
+.page-gap-padding {
   padding: 0 var(--page-gap);
 }
+
+// #ifdef  MP
+
+// 组件标签
+[is] {
+  display: contents;
+}
+
+// 组件插槽标签
+.is__view__root :first-child:not([class]):last-child:not([class]) {
+  display: contents;
+}
+
+// #endif
+
 
 .flex-container {
 
@@ -54,7 +69,6 @@ page {
 
 
 .has-custom-tabbar {
-
 
 
   position: relative;

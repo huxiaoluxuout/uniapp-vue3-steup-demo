@@ -21,7 +21,9 @@
       <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
       <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
             <button @click="navigateTo('pages/pages3/pages3')">page3</button>
-
+<view>
+  111111
+</view>
 
     </view>
     <tabbar :flag="1"></tabbar>
