@@ -24,8 +24,9 @@ import {attributeStylers} from "@/components/zshu-components/attributeStylers";
 const cssVar = `--flex-left:${1};--flex-right:${2};`
 
 const gridList = [
-  {id: 1, text: '我的', iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',},
-  {id: 2, text: '收藏', iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',}
+  // {id: 1, text: '我的', iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',},
+  {id: 2, text: '收藏', iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',},
+  {id: 3, text: '分享', isShare: true, iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',},
 ];
 
 const gridId = ref(0);
@@ -34,7 +35,7 @@ const selectedItem = computed(() => {
   return gridList.find(item => item.id === gridId.value);
 });
 
-watch(selectedItem, (newItem)=>{
+watch(selectedItem, (newItem) => {
   console.log('newItem', newItem)
 })
 

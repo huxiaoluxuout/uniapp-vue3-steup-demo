@@ -1,20 +1,22 @@
 <template>
   <view class="root-zshu-grid">
 
-    <zshu-flex-container :cssVar="`--num-columns:${list.length}`" :dataList="list">
+    <zshu-flex-container :cssVar="`--num-columns:${list?.length}`" :dataList="list">
       <template #default="{item}">
-        <view class="zshu-grid__container" @click="clickHandler(item.id)">
+        <view class="zshu-grid__container" @click="clickHandler(item?.id)">
 
           <view class="container__up">
 
-            <image class="up-icon" :src="item.iconUrl"/>
+            <image class="up-icon" :src="item?.iconUrl"/>
 
           </view>
           <view class="container__down">
 
-            <text class="down-text">{{ item.text }}</text>
+            <text class="down-text">{{ item?.text }}</text>
 
           </view>
+          <!--分享-->
+          <button v-if="item?.isShare" class="share" open-type="share" @click.stop="()=>{}"></button>
 
         </view>
       </template>
@@ -35,7 +37,7 @@ const props = defineProps({
 
   list: {
 
-    type: Object,
+    type: Array,
     default: () => ([
       {
         id: 1,
@@ -61,7 +63,7 @@ const props = defineProps({
 
 
 const clickHandler = (ID) => {
-  console.log(ID)
+  console.log('clickHandler', ID)
   emits('update:gridId', ID)
   emits('clickGrid', ID)
 }
@@ -86,6 +88,7 @@ const clickHandler = (ID) => {
   align-items: center;
   padding: 8rpx;
   box-sizing: border-box;
+  position: relative;
 
   .container__up {
 
@@ -99,12 +102,25 @@ const clickHandler = (ID) => {
 
   .container__down {
     display: inline-flex;
+
     .down-text {
       font-size: 12px;
       color: #3a3a3a;
       text-align: center;
     }
 
+  }
+}
+
+.share {
+  background-color: transparent;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+
+  &:after {
+    border: none;
   }
 }
 
