@@ -23,7 +23,7 @@
 
         <zshu-label-text
             stop
-            checkbox
+
             limit="3"
             :label-list="labelList"
             :active-ids="currentIds"
