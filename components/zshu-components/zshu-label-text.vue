@@ -2,12 +2,12 @@
   <view class="label-view">
     <template v-if="stop">
       <text class="label-text" style="" :class="{'active': activeIds.includes(item.id)}" :style="attributeStyler"
-            v-for="(item ,index) in labelList" :key="index" @click.stop="chooseLabel(item.id)">{{ item.text }}
+            v-for="(item) in labelList" :key="item.id" @click.stop="chooseLabel(item.id)">{{ item.text }}
       </text>
     </template>
     <template v-else>
       <text class="label-text" style="" :class="{'active': activeIds.includes(item.id)}" :style="attributeStyler"
-            v-for="(item ,index) in labelList" :key="index" @click="chooseLabel(item.id)">{{ item.text }}
+            v-for="(item) in labelList" :key="item.id" @click="chooseLabel(item.id)">{{ item.text }}
       </text>
     </template>
 
@@ -47,34 +47,36 @@ const attributeStyler = computed(() => {
 
 // 选择标签
 const chooseLabel = (ID) => {
-  if (props.disabled) {
+  const {activeIds, checkbox, limit: numLimit, disabled} = props;
+  let limit = +numLimit
+  if (disabled) {
     return;
   }
-
-  const hasSame = props.activeIds.includes(ID);
-  const index = props.activeIds.findIndex(itemId => itemId === ID);
+  const hasSame = activeIds.includes(ID);
+  const index = activeIds.findIndex(itemId => itemId === ID);
 
   // 多选
-  if (props.checkbox) {
+  if (checkbox) {
     if (hasSame) {
       // 取消
-      props.activeIds.splice(index, 1);
+      activeIds.splice(index, 1);
     } else {
-      if (props.limit && props.limit <= props.activeIds.length) {
-        console.warn(`最多可选${props.limit}个`)
+      if (limit && limit <= activeIds.length) {
+        console.warn(`最多可选${limit}个`)
         return;
       }
-      props.activeIds.push(ID);
+      activeIds.push(ID);
     }
   } else {
     // 单选
     if (hasSame) {
-      props.activeIds = []
+      activeIds.pop()
     } else {
-      props.activeIds = [ID];
+      activeIds[0] = ID;
     }
   }
 };
+
 
 </script>
 
