@@ -21,7 +21,7 @@
 
       <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
       <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
-      <button @click="navigateTo('pages/pages3/pages3')">page3</button>
+      <button @click="eventHandler(navigateTo,'pages/pages3/pages3')">page3</button>
       <view>
         111111
       </view>
@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import {navigateTo} from "@/utils/tools";
+import {eventHandler, navigateTo} from "@/utils/tools";
 import {baseImgURL} from "@/http/config";
 import ZshuGrid from "@/components/zshu-components/zshu-grid.vue";
 import {computed, nextTick, onMounted, ref, watch, watchEffect} from "vue";
