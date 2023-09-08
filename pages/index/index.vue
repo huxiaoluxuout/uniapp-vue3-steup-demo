@@ -16,7 +16,8 @@
       <zshu-nav-list v-for="item in navList" :item="item" :key="item.id"/>
 
 
-      <zshu-grid v-model:gridId="gridId"></zshu-grid>
+      <zshu-grid v-model:gridId="gridId" :list="listGrid"></zshu-grid>
+      <button @click="toggleIsHide">Toggle isHide</button>
 
       <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
       <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
@@ -47,14 +48,45 @@ const navList = [
 ]
 
 const gridId = ref(0)
+const foo = (item) => {
+  console.log('foo',item)
+  item.text='XIXI'
+}
 
+const listGrid= ref([
+  {
+    id: 1,
+    text: '111我的收藏',
+    // isHide: true,
+    handler:foo,
+    iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',
+  }, {
+    id: 2,
+    text: '222我的收藏',
+    iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-2.png',
+  }, {
+    id: 3,
+    text: '333我的收藏',
+    iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-3.png',
+    isShare:true,
+    handler:f
+  }
+])
+function f() {
+  console.log('f')
+}
+
+const toggleIsHide = () => {
+  // 随机选择一个项并切换 isHide 属性
+  const randomIndex = Math.floor(Math.random() * listGrid.value.length);
+  listGrid.value[randomIndex]['isHide'] = !listGrid.value[randomIndex]['isHide'];
+};
 
 watch(gridId, (newID) => {
   console.log(newID)
-
 })
 
-const slotName = computed(() => (id) => `down${id}`)
+
 </script>
 
 <style scoped lang="scss">

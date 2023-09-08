@@ -22,8 +22,8 @@ const props = defineProps({
 <template>
   <view class="root-flex-container">
     <view class=" flex-container" :style="cssVar">
-      <view class="flex-item is__view__root" v-for="(slotItem,index) in dataList" :key="slotItem.id">
-        <slot title :item="slotItem"></slot>
+      <view class="flex-item is__view__root" v-for="slotItem in dataList" :key="slotItem.id" v-show="!slotItem.isHide">
+        <slot name="default" :item="slotItem"></slot>
       </view>
     </view>
   </view>
@@ -31,7 +31,6 @@ const props = defineProps({
 </template>
 
 <style scoped lang="scss">
-
 
 
 .root-flex-container {

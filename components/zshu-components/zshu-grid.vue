@@ -1,13 +1,13 @@
 <template>
   <view class="root-zshu-grid">
 
-    <zshu-flex-container :cssVar="`--num-columns:${list?.length}`" :dataList="list">
+    <zshu-flex-container :cssVar="`--num-columns:${columns}`" :dataList="list">
       <template #default="{item}">
-        <view class="zshu-grid__container" @click="clickHandler(item?.id)">
+        <view class="zshu-grid__container" @click="clickHandler(item)">
 
           <view class="container__up">
 
-            <image class="up-icon" :src="item?.iconUrl"/>
+            <image class="up-icon" mode="aspectFill" :src="item?.iconUrl"/>
 
           </view>
           <view class="container__down">
@@ -17,6 +17,7 @@
           </view>
           <!--分享-->
           <button v-if="item?.isShare" class="share" open-type="share" @click.stop="()=>{}"></button>
+          <view v-if="isFunction(item?.handler)" class="share share-mask"></view>
 
         </view>
       </template>
@@ -30,6 +31,7 @@
 
 
 import ZshuFlexContainer from "@/components/zshu-components/zshu-layout-flex-container.vue";
+import {computed} from "vue";
 
 const emits = defineEmits(['update:gridId', 'clickGrid',])
 
@@ -62,10 +64,31 @@ const props = defineProps({
 })
 
 
-const clickHandler = (ID) => {
-  console.log('clickHandler', ID)
-  emits('update:gridId', ID)
-  emits('clickGrid', ID)
+const filteredList = computed(() => {
+  return props.list.filter(item => !item['isHide'])
+})
+
+const columns = computed(() => {
+  return filteredList.value.length
+})
+
+/*isHide
+isShare
+*/
+function isFunction(value) {
+  return typeof value === 'function';
+}
+
+const clickHandler = (item) => {
+
+  if (isFunction(item.handler)) {
+    item.handler(item);
+  } else {
+    console.log('clickHandler', item.id)
+    emits('update:gridId', item.id)
+    emits('clickGrid', item.id)
+  }
+
 }
 </script>
 
@@ -122,6 +145,11 @@ const clickHandler = (ID) => {
   &:after {
     border: none;
   }
+}
+
+.share-mask {
+  z-index: 101;
+
 }
 
 </style>
