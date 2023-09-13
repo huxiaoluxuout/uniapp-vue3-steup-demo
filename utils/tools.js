@@ -1,3 +1,6 @@
+
+import {baseURL} from "@/http/config";
+
 // 封装语音授权判断和引导函数
 function checkAndGuideRecordAuth() {
     return new Promise((resolve, reject) => {
@@ -394,6 +397,55 @@ const getCacheUserInfo = () => {
     })
 
 }
+
+
+// 封装图片上传函数
+function uploadImages(filePaths, config = {}) {
+    return new Promise((resolve, reject) => {
+        uni.showLoading({ title: '上传中', mask: true });
+
+        const defaultConfig = {
+            url: baseURL + '/api/common/upload',
+        };
+        config = { ...defaultConfig, ...config };
+
+        const uploadPromises = filePaths.map(filePath => {
+            return new Promise((resolve, reject) => {
+                uni.uploadFile({
+                    filePath: filePath,
+                    name: 'file', // 服务端接受的文件字段名
+                    ...config,
+                    success: res => {
+                        resolve(JSON.parse(res.data));
+                    },
+                    fail: err => {
+                        reject(filePath);
+                    }
+                });
+            });
+        });
+
+        Promise.all(uploadPromises)
+            .then(results => {
+                uni.hideLoading();
+                resolve(results);
+            })
+            .catch(failedFilePaths => {
+                uni.hideLoading();
+                const successFiles = filePaths.filter(filePath => !failedFilePaths.includes(filePath));
+                reject({
+                    code: -1,
+                    msg: '部分图片上传失败',
+                    data: {
+                        success: successFiles,
+                        fail: failedFilePaths
+                    }
+                });
+            });
+    });
+}
+
+
 const test = () => {
 
     console.log('test')
@@ -420,6 +472,7 @@ export {
     getPages,
     getCacheUserInfo,
     handleEvent,
+    uploadImages,
     test
 }
 
