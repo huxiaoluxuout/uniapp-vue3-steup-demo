@@ -21,7 +21,8 @@
 
       <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
       <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
-      <button @click="eventHandler(navigateTo,'pages/pages3/pages3')">page3</button>
+
+      <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/pages3/pages3')">进入页面3</button>
       <view>
         111111
       </view>
@@ -32,7 +33,7 @@
 </template>
 
 <script setup>
-import {eventHandler, navigateTo} from "@/utils/tools";
+import {eventHandler, handleEvent, navigateTo} from "@/utils/tools";
 import {baseImgURL} from "@/http/config";
 import ZshuGrid from "@/components/zshu-components/zshu-grid.vue";
 import {computed, nextTick, onMounted, ref, watch, watchEffect} from "vue";
@@ -49,16 +50,16 @@ const navList = [
 
 const gridId = ref(0)
 const foo = (item) => {
-  console.log('foo',item)
-  item.text='XIXI'
+  console.log('foo', item)
+  item.text = 'XIXI'
 }
 
-const listGrid= ref([
+const listGrid = ref([
   {
     id: 1,
     text: '111我的收藏',
     // isHide: true,
-    handler:foo,
+    handler: foo,
     iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-1.png',
   }, {
     id: 2,
@@ -68,10 +69,11 @@ const listGrid= ref([
     id: 3,
     text: '333我的收藏',
     iconUrl: 'https://xcx.jxgxsmt.com/static/images/mine/icon-list-item-3.png',
-    isShare:true,
-    handler:f
+    isShare: true,
+    handler: f
   }
 ])
+
 function f() {
   console.log('f')
 }
@@ -86,6 +88,13 @@ watch(gridId, (newID) => {
   console.log(newID)
 })
 
+// 示例条件变量
+let isPageAccessible = false;
+
+// 错误回调函数 - 页面不可访问
+const onPageInaccessible = () => {
+  console.log('无法访问页面');
+}
 
 </script>
 

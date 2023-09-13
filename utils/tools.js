@@ -1,6 +1,4 @@
 // 封装语音授权判断和引导函数
-import {r} from "@/unpackage/dist/dev/mp-weixin/common/vendor";
-
 function checkAndGuideRecordAuth() {
     return new Promise((resolve, reject) => {
         uni.getSetting({
@@ -275,8 +273,7 @@ const toTargetPage = (pagePath, callback) => {
 
 const navigateTo = (pagePath) => {
     toTargetPage(pagePath, () => {
-        console.log(filterPath(pagePath))
-        return
+
         uni.navigateTo({
             url: filterPath(pagePath),
             fail: function (fail) {
@@ -287,19 +284,17 @@ const navigateTo = (pagePath) => {
     })
 }
 
-const eventHandler = (func, ...args) => {
+// 事件处理器函数，根据条件执行操作或回调
+const handleEvent = ({condition, errorCallback}, actionFunction, ...actionArgs) => {
     const context = this;
-
-    const isAuthorized = Math.random() > 0.5;
-
-    if (isAuthorized) {
-        func.apply(context, args)
+    if (condition) {
+        // 执行操作函数
+        actionFunction.apply(context, actionArgs);
     } else {
-        console.log('不同意，方法被拦截')
-
+        // 调用错误回调
+        errorCallback();
     }
-}
-
+};
 
 const redirectTo = (pagePath) => {
     toTargetPage(pagePath, () => {
@@ -423,7 +418,7 @@ export {
     queryString,
     getPages,
     getCacheUserInfo,
-    eventHandler,
+    handleEvent,
     test
 }
 
