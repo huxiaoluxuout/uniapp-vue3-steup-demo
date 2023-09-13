@@ -33,10 +33,10 @@
 </template>
 
 <script setup>
-import {eventHandler, handleEvent, navigateTo} from "@/utils/tools";
+import {handleEvent, navigateTo} from "@/utils/tools";
 import {baseImgURL} from "@/http/config";
 import ZshuGrid from "@/components/zshu-components/zshu-grid.vue";
-import {computed, nextTick, onMounted, ref, watch, watchEffect} from "vue";
+import {ref, watch} from "vue";
 
 const navList = [
   {id: 1, iconUrl: baseImgURL + '/mine/icon-list-item-1.png', text: '我的收藏', pagePath: 'pages/pages3/pages3'},
@@ -89,7 +89,7 @@ watch(gridId, (newID) => {
 })
 
 // 示例条件变量
-let isPageAccessible = false;
+let isPageAccessible = true;
 
 // 错误回调函数 - 页面不可访问
 const onPageInaccessible = () => {

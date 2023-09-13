@@ -97,29 +97,6 @@ const clickOn = () => {
 // ======================================================================
 
 // ======================================================================
-/*import useDataReady from "@/common/hooks/useDataReady";
-
-const {dataReady, callData} = useDataReady();
-const loadData = []
-// 模拟异步数据加载
-setTimeout(() => {
-  // 加载完成后调用数据就绪回调
-  loadData.push({name: 'xl'})
-  callData();
-}, 1000);
-
-
-// 当数据准备好时的回调函数
-dataReady(() => {
-  console.log('数据已经准备好，可以执行相应操作');
-  // 在这里执行数据就绪后的操作
-  console.log('loadData', loadData)
-});*/
-
-// ======================================================================
-
-
-// ======================================================================
 import usePullDownRefresh from "@/common/hooks/usePullDownRefresh";
 
 const foo = (cc) => {
@@ -140,12 +117,12 @@ pullDownRefreshReload(() => {
 
 const dataListView = ref([])
 
-import {nextPageManager} from "@/common/hooks/nextPageManager";
+import {useNextPageManager} from "@/common/hooks/useNextPageManager";
 import {getNoticeList} from "@/http/apis/message";
 // import {attributeStylers} from "@/components/zshu-components/attributeStylers";
 
 
-const nexPageContext = nextPageManager;
+const nexPageContext = useNextPageManager;
 
 pullDownRefreshAddFunctions(nexPageContext.reload.bind(nexPageContext))
 

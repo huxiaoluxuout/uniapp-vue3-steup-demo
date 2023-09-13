@@ -1,8 +1,4 @@
 import {getCurrentInstance,onMounted} from "vue";
-
-const uniSelectorQuery = () => {
-
-}
 export const getViewInfo = (selector,callback) => {
     const instance = getCurrentInstance(); // 获取组件实例上下文
 

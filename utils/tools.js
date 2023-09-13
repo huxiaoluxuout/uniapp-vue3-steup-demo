@@ -286,10 +286,11 @@ const navigateTo = (pagePath) => {
 
 // 事件处理器函数，根据条件执行操作或回调
 const handleEvent = ({condition, errorCallback}, actionFunction, ...actionArgs) => {
-    const context = this;
+    // const context = this;
     if (condition) {
         // 执行操作函数
-        actionFunction.apply(context, actionArgs);
+        // actionFunction.apply(context, actionArgs);
+        actionFunction(...actionArgs);
     } else {
         // 调用错误回调
         errorCallback();

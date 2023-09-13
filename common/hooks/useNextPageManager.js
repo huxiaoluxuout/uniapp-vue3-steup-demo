@@ -3,13 +3,15 @@ import {onReachBottom} from "@dcloudio/uni-app";
 import {throttle} from "@/utils/tools";
 
 import useDoQueue from "@/common/hooks/useuseDoQueue"
-import useDataReady from "@/common/hooks/useDataReady"
+
+import useCallbackOnDataReady from "@/common/hooks/useCallbackOnDataReady"
+
 
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
-const {onEmitCallback, emitCallback} = useDataReady();
+const { registerCallback, triggerCallbacks,unregisterCallback } = useCallbackOnDataReady();
 
-export const nextPageManager = {
+export const useNextPageManager = {
     // 当前页码
     page: 1,
     // 每页数量
@@ -17,15 +19,13 @@ export const nextPageManager = {
     // 列表数据
     dataList: [],
 
-
     notFullLen: 0,
-
 
     // 初始化监听触底加载下一页
     onReachBottom() {
         onReachBottom(throttle(() => {
             // 加载下一页数据
-            console.log('加载下一页数据')
+            console.log('开始加载下一页数据')
             this.nexPageDoFunQueue()
         }))
         return this
@@ -37,7 +37,7 @@ export const nextPageManager = {
         this.pageSize = 10
         // this.dataList = [];
         // console.log('重新加载===', this)
-        emitCallback();
+        triggerCallbacks();
         return this
 
         // uni.$emit('reloadHandler')
@@ -66,7 +66,7 @@ export const nextPageManager = {
                 this.notFullLen = newResDataList.length;
             } else {
 
-                throw new Error('数据加载完成，尝试刷新页面');
+                console.warn('数据加载完成，尝试刷新页面');
             }
         }
 
@@ -93,7 +93,7 @@ export const nextPageManager = {
     },
 
     // 响应重新加载
-    onNexPageReload: onEmitCallback
+    onNexPageReload: registerCallback
 
 
 }

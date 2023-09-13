@@ -1,11 +1,12 @@
 import {onPullDownRefresh} from "@dcloudio/uni-app";
 import useDoQueue from "@/common/hooks/useuseDoQueue"
 
+import useCallbackOnDataReady from "@/common/hooks/useCallbackOnDataReady";
+
+
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
-import useDataReady from "@/common/hooks/useDataReady"
-
-const {onEmitCallback, emitCallback} = useDataReady();
+const { registerCallback, triggerCallbacks ,unregisterCallback} = useCallbackOnDataReady();
 
 // 下拉刷新完成
 const funQueue = () => {
@@ -14,7 +15,7 @@ const funQueue = () => {
 
     uni.stopPullDownRefresh();
 
-    emitCallback()
+    triggerCallbacks()
     console.log('下拉刷新完成')
 }
 
@@ -26,7 +27,7 @@ export default function () {
         pullDownRefreshSetFunctions: setFunctions,
         pullDownRefreshAddFunctions: addFunctions,
         // 刷新重置回调
-        pullDownRefreshReload: onEmitCallback,
+        pullDownRefreshReload: registerCallback,
     }
 
 }
