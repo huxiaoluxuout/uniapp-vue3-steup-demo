@@ -9,7 +9,7 @@ import useCallbackOnDataReady from "@/common/hooks/useCallbackOnDataReady"
 
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
-const { registerCallback, triggerCallbacks,unregisterCallback } = useCallbackOnDataReady();
+const {registerCallback, triggerCallbacks, unregisterCallback} = useCallbackOnDataReady();
 
 export const useNextPageManager = {
     // 当前页码
@@ -19,7 +19,7 @@ export const useNextPageManager = {
     // 列表数据
     dataList: [],
 
-    notFullLen: 0,
+    isLastPage: false,
 
     // 初始化监听触底加载下一页
     onReachBottom() {
@@ -50,20 +50,21 @@ export const useNextPageManager = {
             throw new Error('传入数据只能是数组');
         }
 
-        const isFullPage = newResDataList.length % this.pageSize === 0;
+        let isCanGetNextPage = newResDataList.length % this.pageSize === 0
 
-        if (isFullPage) {
+        if (isCanGetNextPage) {
 
             this.page++;
-            this.notFullLen = 0;
+            this.isLastPage = false;
             this.dataList = oldDataList.concat(newResDataList);
 
         } else {
-            if (!this.notFullLen) {
+            if (!this.isLastPage) {
 
                 this.dataList = oldDataList.concat(newResDataList);
 
-                this.notFullLen = newResDataList.length;
+                this.isLastPage = true
+
             } else {
 
                 console.warn('数据加载完成，尝试刷新页面');
