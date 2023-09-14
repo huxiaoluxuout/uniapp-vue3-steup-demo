@@ -1,41 +1,51 @@
 <template>
-  <view class="zshu-upload-images-videos">
+
+  <view class="flex-container page-gap" style="--num-columns:2;--gap:30rpx">
     <!--图片-->
-    <view class="image-item" v-for="(item,index) in filePathsView" :key="item.url" v-if="type==='image'">
-      <view class="img-container">
-        <image class="img" :src="item.url" mode="aspectFill" @click="previewImage(index)"/>
-        <view class="del" @click.stop="del(index)">
-          <uni-icons type="close" color="#ff3c3c" size="22"></uni-icons>
-        </view>
-        <view class="mask" v-show="!item.hideMask"></view>
-      </view>
+    <view class="flex-item flex-item__scale" v-for="(item,index) in filePathsView" :key="item.url" v-if="type==='image'">
+
+      <image class="img" mode="aspectFill" :src="type==='image'?baseImgURL+'/add-img.png':baseImgURL+'/add-video.png'"/>
+
     </view>
 
-    <!--视频-->
-    <view class="image-item" v-for="(item,index) in filePathsView" :key="item.url" v-else-if="type==='video'">
+
+
+    <!--    <view class="flex-item image-item" v-for="(item,index) in filePathsView" :key="item.url" v-if="type==='image'">
       <view class="img-container">
-        <video class="img" :src="item.url" :poster="item.poster"/>
-        <view class="del" @click.stop="del(index)">
-          <uni-icons type="close" color="#ff3c3c" size="22"></uni-icons>
+        <image class="img" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
+        <view class="del" @click.stop="delFn(index)">
+          <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
         </view>
-        <view class="mask" v-show="!item.hideMask"></view>
+        <view class="loading-view" v-show="item.isShowLoading">
+          <zshu-loading></zshu-loading>
+        </view>
       </view>
     </view>
-    <!--图片视频上传-->
+    &lt;!&ndash;图片 视频 上传&ndash;&gt;
     <view class="image-item" @click="chooseFile" v-show="isShowUpload">
       <view class="img-container">
         <slot>
           <image class="img" mode="aspectFill" :src="type==='image'?baseImgURL+'/add-img.png':baseImgURL+'/add-video.png'"/>
         </slot>
       </view>
-    </view>
+    </view>-->
   </view>
-</template>
 
+</template>
+<script>
+export default {
+  options: { styleIsolation: 'shared' }
+}
+</script>
 <script setup>
-import {uploadsFile} from "./utils";
-import {computed, defineExpose, nextTick, reactive, watch, watchEffect} from "vue"
-import {baseImgURL} from "@/http/request";
+
+import {computed, defineExpose, reactive} from "vue"
+import {baseImgURL} from "@/http/config";
+import {uploadImages} from "@/utils/tools";
+
+const emits = defineEmits(['update:srcUrl',])
+
+
 // https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png
 // https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/00aef3741528faf6e24befddff0f6fd3.mp4
 
@@ -55,46 +65,27 @@ const props = defineProps({
   type: {
     type: String,
     default: 'image',// image|video
+  },
+  srcUrl: {
+    type: Array,
+    default: () => {
+      return []
+    },
   }
 })
 
-const initUrl = reactive([])
+// const initUrl = reactive([])
 
-const filePaths = reactive([])
-const postUrl = reactive([])
-
-const filePathsView = computed(() => {
-  filePaths.forEach((item => item.hideMask = true))
-  return [...initUrl, ...filePaths]
-})
-
-watchEffect(() => {
-  // console.log('watchEffect----initUrl', initUrl)
-  postUrl.push(...initUrl)
-})
-
-watchEffect(() => {
-  // console.log('watchEffect---postUrl', postUrl)
-  emits('update:filePaths', postUrl)
-})
+const filePaths = reactive([...props.srcUrl])
 
 
-const flexItem = computed(() => {
-  return Number(props.defaultFlexItem)
-  // 大小自适应
-  /*if (filePathsView.value.length) {
-    if (filePathsView.value.length >= props.rowLimit) {
-      return props.rowLimit
-    } else {
-      return props.rowLimit >= filePathsView.value.length + 1 ? filePathsView.value.length + 1 : filePathsView.value.length
-    }
-  } else {
-    return props.defaultFlexItem
-  }*/
-});
+const filePathsView = computed(() => [...filePaths])
+
+
 const isShowUpload = computed(() => {
   return props.alwaysShowUpload ? props.alwaysShowUpload : Number(props.rowLimit) > filePathsView.value.length;
 });
+
 const chooseCountLimit = computed(() => {
   return props.alwaysShowUpload ? Number(props.rowLimit) : Number(props.rowLimit) - filePathsView.value.length;
 });
@@ -107,15 +98,47 @@ const chooseFile = () => {
     sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
     sourceType: ['album', 'camera'],
     success: function (res) {
-      console.log('0-chooseFile', res)
       if (res?.errMsg === "chooseImage:ok") {
-        const tempFilePaths = res.tempFilePaths.map(item => ({url: item}));
-        filePaths.push(...tempFilePaths)
+        const tempFilePaths = res.tempFilePaths
+        console.log('tempFilePaths', tempFilePaths)
+        let tempUrl = tempFilePaths.map(item => {
+          return {
+            url: item,
+            urlId: item,
+            isShowLoading: true
+          }
+        })
+        filePaths.push(...tempUrl)
+        console.log('tempUrl', tempUrl)
+        console.log('filePaths', filePaths)
+        /*   setTimeout(()=>{
+             filePaths.forEach(item=>{
+               item.isShowLoading= Math.floor(Math.random() * (2 - 1 + 1) + 1) <2;
+             })
+           },5000)*/
+
+        uploadImages(tempFilePaths).then(res => {
+          if (res.length === tempFilePaths.length) {
+            res.forEach((item, index) => {
+              filePaths[index].urlId = item.data?.fullurl
+              filePaths[index].isShowLoading = false
+            })
+          }
+
+          emits('update:srcUrl', filePaths)
+
+        }).catch(error => {
+          console.error('部分图片上传失败', error);
+
+          if (error.data && error.data.fail) {
+            const failedFilePaths = error.data.fail;
+            console.log('上传失败的文件路径：', failedFilePaths);
+          }
+        });
       } else if (res?.errMsg === "chooseVideo:ok") {
-        const tempFilePaths = [{poster: res?.thumbTempFilePath, url: res?.tempFilePath}]
-        filePaths.push(...tempFilePaths)
+
       }
-      uploadFile(res)
+
     },
     fail: function (fail) {
       console.warn(fail)
@@ -123,36 +146,20 @@ const chooseFile = () => {
   });
 
 }
-const uploadFile = (res) => {
-  console.log('1-uploadFile===', res)
-  const tempFilePaths = filePaths.map(item => item.url)
-  uploads(tempFilePaths)
-
-}
-// 上传到后台
-const emits = defineEmits(['update:filePaths',])
-
-const uploads = (tempFilePaths) => {
-  console.log('uploads----tempFilePaths', tempFilePaths)
-  /*const postimg = tempFilePaths.map(item => {
-    return {
-      url: item + '?=123',
-      hideMask: true
-    }
-  })
-  postUrl.push(...postimg)*/
-
-  uploadsFile(tempFilePaths).then(res => {
-    const postImg = res.map(item => JSON.parse(item).data)
-    postUrl.push(...postImg)
-  })
-}
 
 
-const del = (index) => {
+const delFn = (index) => {
   uni.showModal({
     title: '确定删除吗?',
     success: function (res) {
+      if (res.confirm) {
+        filePaths.splice(index, 1)
+        emits('update:srcUrl', filePaths)
+      } else if (res.cancel) {
+        console.log('用户点击取消');
+      }
+    }
+    /*   success: function (res) {
       if (res.confirm) {
         if (initUrl.length && index <= initUrl.length - 1) {
           initUrl.splice(index, 1)
@@ -164,7 +171,7 @@ const del = (index) => {
       } else if (res.cancel) {
         console.log('用户点击取消');
       }
-    }
+    }*/
   });
 }
 
@@ -180,54 +187,49 @@ const previewImage = (index) => {
 defineExpose({
   chooseFile,
   filePaths,
-  initUrl,
 })
 </script>
 
 <style scoped>
+.loading-view {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #000;
+}
+
 .zshu-upload-images-videos {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+//display: flex; //align-items: center; //flex-wrap: wrap;
 }
 
 .image-item {
-  height: calc((750rpx - 2 * 30rpx) / v-bind(flexItem));
-  width: calc((750rpx - 2 * 30rpx) / v-bind(flexItem));
+
   position: relative;
+  border: 1px solid #000;
 }
 
 .del {
   position: absolute;
-  top: 15rpx;
-  right: 15rpx;
+  top: 20rpx;
+  right: 20rpx;
   box-sizing: border-box;
 }
 
 .img-container {
-  height: 100%;
+  //height: var(--item-width);
+
+/*  height: 100%;
   border-radius: 10rpx;
   box-sizing: border-box;
   padding: 10rpx;
-  position: relative;
+  position: relative;*/
 }
 
-.mask {
-  position: absolute;
-  top: 10rpx;
-  bottom: 10rpx;
-  left: 10rpx;
-  right: 10rpx;
-  z-index: 10;
-  border-radius: 10rpx;
-  background-color: rgba(0, 0, 0, .3);
-}
 
 .img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 5px;
+  /*display: block;*/
+  //height: var(--item-width);
+  //width: var(--item-width);
+  //border-radius: 5px;
 }
 
 </style>

@@ -28,10 +28,11 @@ page {
 
 
 .flex-container {
-
+  --scale: 1;
   --num-columns: 2;
   --gap: var(--page-gap);
-  --item-width: calc(100% / var(--num-columns) - var(--gap));
+  --item-width: calc(750rpx / var(--num-columns) - var(--gap));
+  --img-height: calc(var(--img-width) / var(--scale));
 
 
   gap: var(--gap);
@@ -47,6 +48,9 @@ page {
     box-sizing: border-box;
     position: relative;
     //border: 1px solid blue;
+  }
+  .flex-item__scale{
+    height: var(--img-height);
   }
 
 }

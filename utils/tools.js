@@ -402,7 +402,7 @@ const getCacheUserInfo = () => {
 // 封装图片上传函数
 function uploadImages(filePaths, config = {}) {
     return new Promise((resolve, reject) => {
-        uni.showLoading({ title: '上传中', mask: true });
+
 
         const defaultConfig = {
             url: baseURL + '/api/common/upload',
@@ -413,7 +413,7 @@ function uploadImages(filePaths, config = {}) {
             return new Promise((resolve, reject) => {
                 uni.uploadFile({
                     filePath: filePath,
-                    name: 'file', // 服务端接受的文件字段名
+                    name: 'file',
                     ...config,
                     success: res => {
                         resolve(JSON.parse(res.data));
@@ -427,11 +427,11 @@ function uploadImages(filePaths, config = {}) {
 
         Promise.all(uploadPromises)
             .then(results => {
-                uni.hideLoading();
+
                 resolve(results);
             })
             .catch(failedFilePaths => {
-                uni.hideLoading();
+
                 const successFiles = filePaths.filter(filePath => !failedFilePaths.includes(filePath));
                 reject({
                     code: -1,

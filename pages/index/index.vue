@@ -26,6 +26,7 @@
       <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/login/login')">进入登录页面</button>
       <view>
         111111
+        <zshu-upload-images-videos v-model:srcUrl="imgUrl"></zshu-upload-images-videos>
       </view>
 
     </view>
@@ -96,7 +97,21 @@ let isPageAccessible = true;
 const onPageInaccessible = () => {
   console.log('无法访问页面');
 }
-
+const imgUrl=ref([
+  {
+    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230914/4f0f962a712b9dc277d6ed0c7b00e632.jpg',
+    isShowLoading:false
+  }, {
+    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
+    isShowLoading:false
+  }, {
+    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
+    isShowLoading:false
+  },
+])
+watch(imgUrl,(newVal)=>{
+  console.log('imgUrl',newVal)
+})
 </script>
 
 <style scoped lang="scss">
