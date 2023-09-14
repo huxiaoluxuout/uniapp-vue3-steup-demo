@@ -5,7 +5,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  disableStop: Boolean,
+  stop: Boolean,
 })
 
 const emits = defineEmits(['update:checked'])
@@ -19,11 +19,11 @@ const toggleChecked = () => {
 </script>
 
 <template>
-  <view class="edit" v-if="!props.disableStop" @click.stop="toggleChecked">
+  <view class="edit" v-if="!props.stop" @click.stop="toggleChecked">
     <uni-icons v-show="!checked" type="circle" color="#929292" size="26"></uni-icons>
     <uni-icons v-show="checked" type="checkbox" color="#FD814A" size="26"></uni-icons>
   </view>
-  <view class="edit" v-if="props.disableStop" @click="toggleChecked">
+  <view class="edit" v-if="props.stop" @click="toggleChecked">
     <uni-icons v-show="!checked" type="circle" color="#929292" size="26"></uni-icons>
     <uni-icons v-show="checked" type="checkbox" color="#FD814A" size="26"></uni-icons>
   </view>

@@ -100,6 +100,8 @@ const clickHandler = (item) => {
   display: flex;
   gap: 20rpx;
   background-color: #fff;
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
 
 }
 
@@ -107,9 +109,9 @@ const clickHandler = (item) => {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 10rpx;
   align-items: center;
-  padding: 8rpx;
+
   box-sizing: border-box;
   position: relative;
 

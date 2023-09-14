@@ -28,29 +28,27 @@ page {
 
 
 .flex-container {
-  --scale: 1;
+  --scale: 1; //宽高比例（不能直接写成分数形式）
   --num-columns: 2;
+  --view-width: 100%;
   --gap: var(--page-gap);
-  --item-width: calc(750rpx / var(--num-columns) - var(--gap));
-  --img-height: calc(var(--img-width) / var(--scale));
-
+  --item-width: calc((var(--view-width) / var(--num-columns)) - (var(--gap)));
+  --item-height-scale: calc( var(--item-width) / var(--scale));
 
   gap: var(--gap);
   margin-right: calc(-1 * var(--gap));
   display: flex;
   flex-wrap: wrap;
   box-sizing: border-box;
-  //padding: var(--gap) 0 var(--gap) var(--gap);
-  //border: 1px solid red;
 
   .flex-item {
     width: var(--item-width);
     box-sizing: border-box;
     position: relative;
-    //border: 1px solid blue;
   }
-  .flex-item__scale{
-    height: var(--img-height);
+
+  .flex-item__scale {
+    height: var(--item-height-scale);
   }
 
 }

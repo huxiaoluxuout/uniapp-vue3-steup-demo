@@ -25,7 +25,7 @@
       <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/pages3/pages3')">进入页面3</button>
       <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/login/login')">进入登录页面</button>
       <view>
-        111111
+
         <zshu-upload-images-videos v-model:srcUrl="imgUrl"></zshu-upload-images-videos>
       </view>
 
@@ -105,6 +105,15 @@ const imgUrl=ref([
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
     isShowLoading:false
   }, {
+    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
+    isShowLoading:false
+  },{
+    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
+    isShowLoading:false
+  },{
+    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
+    isShowLoading:false
+  },{
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
     isShowLoading:false
   },

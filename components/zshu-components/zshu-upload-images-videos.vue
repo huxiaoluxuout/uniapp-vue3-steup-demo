@@ -1,71 +1,76 @@
 <template>
 
-  <view class="flex-container page-gap" style="--num-columns:2;--gap:30rpx">
+  <view class="flex-container page-gap"
+        style=" --view-width:calc(750rpx - 30rpx); --scale:calc(1);" :style="{'--num-columns':columnsLimit}">
+
     <!--图片-->
-    <view class="flex-item flex-item__scale" v-for="(item,index) in filePathsView" :key="item.url" v-if="type==='image'">
-
-      <image class="img" mode="aspectFill" :src="type==='image'?baseImgURL+'/add-img.png':baseImgURL+'/add-video.png'"/>
-
-    </view>
-
-
-
-    <!--    <view class="flex-item image-item" v-for="(item,index) in filePathsView" :key="item.url" v-if="type==='image'">
-      <view class="img-container">
-        <image class="img" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
-        <view class="del" @click.stop="delFn(index)">
-          <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
-        </view>
-        <view class="loading-view" v-show="item.isShowLoading">
-          <zshu-loading></zshu-loading>
+    <template v-if="uploadType==='image'">
+      <view class="flex-item flex-item__scale image-container "
+            v-for="(item,index) in filePathsView" :key="item.url">
+        <view class=item_container>
+          <image class="container-item" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
+          <view class="del" @click.stop="delFn(index)">
+            <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
+          </view>
+          <view class="loading-view" v-show="item.isShowLoading">
+            <zshu-loading></zshu-loading>
+          </view>
         </view>
       </view>
-    </view>
-    &lt;!&ndash;图片 视频 上传&ndash;&gt;
-    <view class="image-item" @click="chooseFile" v-show="isShowUpload">
-      <view class="img-container">
+    </template>
+    <template v-else-if="uploadType==='video'">
+      <view class="flex-item flex-item__scale image-container "
+            v-for="(item,index) in filePathsView" :key="item.url">
+        <view class=item_container>
+          <image class="container-item" :src="item.url" mode="aspectFill" />
+          <view class="del" @click.stop="delFn(index)">
+            <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
+          </view>
+          <view class="loading-view" v-show="item.isShowLoading">
+            <zshu-loading></zshu-loading>
+          </view>
+        </view>
+      </view>
+    </template>
+
+    <!--图片 视频 上传-->
+    <view class="image-container flex-item__scale image-container" @click="chooseFile" v-show="isShowUpload">
+      <view class="item_container">
         <slot>
-          <image class="img" mode="aspectFill" :src="type==='image'?baseImgURL+'/add-img.png':baseImgURL+'/add-video.png'"/>
+          <image class="container-item" mode="aspectFill" :src="uploadDefaultIcon"/>
         </slot>
       </view>
-    </view>-->
+    </view>
   </view>
 
 </template>
-<script>
-export default {
-  options: { styleIsolation: 'shared' }
-}
-</script>
+
 <script setup>
 
 import {computed, defineExpose, reactive} from "vue"
+
 import {baseImgURL} from "@/http/config";
 import {uploadImages} from "@/utils/tools";
 
-const emits = defineEmits(['update:srcUrl',])
-
-
-// https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png
-// https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/00aef3741528faf6e24befddff0f6fd3.mp4
+const emits = defineEmits(['update:srcUrl'])
 
 const props = defineProps({
-  alwaysShowUpload: {
-    type: Boolean,
-    default: false
-  },
-  rowLimit: {
+  // 总共允许上传数量
+  limit: {
     type: [Number, String],
-    default: 3
+    default: 6
   },
-  defaultFlexItem: {
+  // 一行有几列
+  columnsLimit: {
     type: [Number, String],
-    default: 3
+    default: 2
   },
-  type: {
+
+  uploadType: {
     type: String,
     default: 'image',// image|video
   },
+
   srcUrl: {
     type: Array,
     default: () => {
@@ -74,25 +79,27 @@ const props = defineProps({
   }
 })
 
-// const initUrl = reactive([])
-
-const filePaths = reactive([...props.srcUrl])
-
-
-const filePathsView = computed(() => [...filePaths])
-
-
 const isShowUpload = computed(() => {
-  return props.alwaysShowUpload ? props.alwaysShowUpload : Number(props.rowLimit) > filePathsView.value.length;
+  return Number(props.limit) > filePathsView.value.length;
 });
 
 const chooseCountLimit = computed(() => {
-  return props.alwaysShowUpload ? Number(props.rowLimit) : Number(props.rowLimit) - filePathsView.value.length;
+  return Number(props.limit) - filePathsView.value.length;
 });
+
+const uploadDefaultIcon = computed(() => {
+  return props.uploadType === 'image' ? baseImgURL + '/add-img.png' : baseImgURL + '/add-video.png'
+});
+
+// https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png
+// https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/00aef3741528faf6e24befddff0f6fd3.mp4
+
+const filePaths = reactive([...props.srcUrl])
+const filePathsView = computed(() => [...filePaths])
 
 // 选择
 const chooseFile = () => {
-  const api = props.type === 'image' ? 'chooseImage' : 'chooseVideo'
+  const api = props.uploadType === 'image' ? 'chooseImage' : 'chooseVideo'
   uni[api]({
     count: chooseCountLimit.value,
     sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
@@ -147,7 +154,7 @@ const chooseFile = () => {
 
 }
 
-
+// 删除
 const delFn = (index) => {
   uni.showModal({
     title: '确定删除吗?',
@@ -159,19 +166,6 @@ const delFn = (index) => {
         console.log('用户点击取消');
       }
     }
-    /*   success: function (res) {
-      if (res.confirm) {
-        if (initUrl.length && index <= initUrl.length - 1) {
-          initUrl.splice(index, 1)
-        } else {
-          filePaths.splice(index - (initUrl.length), 1)
-        }
-        postUrl.splice(index, 1)
-        emits('update:filePaths', postUrl)
-      } else if (res.cancel) {
-        console.log('用户点击取消');
-      }
-    }*/
   });
 }
 
@@ -184,10 +178,7 @@ const previewImage = (index) => {
   })
 }
 
-defineExpose({
-  chooseFile,
-  filePaths,
-})
+defineExpose({})
 </script>
 
 <style scoped>
@@ -197,14 +188,11 @@ defineExpose({
   border: 1px solid #000;
 }
 
-.zshu-upload-images-videos {
-//display: flex; //align-items: center; //flex-wrap: wrap;
+.image-container {
+  position: relative;
 }
 
-.image-item {
-
-  position: relative;
-  border: 1px solid #000;
+.item_container {
 }
 
 .del {
@@ -214,22 +202,11 @@ defineExpose({
   box-sizing: border-box;
 }
 
-.img-container {
-  //height: var(--item-width);
-
-/*  height: 100%;
-  border-radius: 10rpx;
-  box-sizing: border-box;
-  padding: 10rpx;
-  position: relative;*/
-}
-
-
-.img {
-  /*display: block;*/
-  //height: var(--item-width);
-  //width: var(--item-width);
-  //border-radius: 5px;
+.container-item {
+  display: block;
+  height: var(--item-height-scale);
+  width: var(--item-width);
+  border-radius: 5px;
 }
 
 </style>
