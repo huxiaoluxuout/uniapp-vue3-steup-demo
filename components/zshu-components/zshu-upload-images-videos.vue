@@ -1,45 +1,48 @@
 <template>
 
   <view class="flex-container page-gap"
-        style=" --view-width:calc(750rpx - 30rpx); --scale:calc(1);" :style="{'--num-columns':columnsLimit}">
+        :style="{'--num-columns':columnsLimit,'--scale':scale,'--view-width':width}">
 
     <!--图片-->
     <template v-if="uploadType==='image'">
-      <view class="flex-item flex-item__scale image-container "
+      <view class="flex-item flex-item__scale image-video-container "
             v-for="(item,index) in filePathsView" :key="item.url">
-        <view class=item_container>
-          <image class="container-item" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
-          <view class="del" @click.stop="delFn(index)">
-            <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
-          </view>
-          <view class="loading-view" v-show="item.isShowLoading">
-            <zshu-loading></zshu-loading>
-          </view>
+        <image class="image-item" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
+        <view class="del-icon" @click.stop="delFn(index)">
+          <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
         </view>
+        <view class="loading-view" v-show="item.isShowLoading">
+          <zshu-loading></zshu-loading>
+        </view>
+
       </view>
     </template>
+    <!--视频-->
     <template v-else-if="uploadType==='video'">
-      <view class="flex-item flex-item__scale image-container "
+      <view class="flex-item flex-item__scale image-video-container"
             v-for="(item,index) in filePathsView" :key="item.url">
-        <view class=item_container>
-          <image class="container-item" :src="item.url" mode="aspectFill" />
-          <view class="del" @click.stop="delFn(index)">
-            <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
-          </view>
-          <view class="loading-view" v-show="item.isShowLoading">
-            <zshu-loading></zshu-loading>
-          </view>
+        <video id="video" class="video-item"
+               :src="item.url"
+               @fullscreenchange="fullscreenchange($event)"
+               @pause="pauseHandler"
+               @play="playHandler"
+        />
+        <view class="del-icon" @click.stop="delFn(index)">
+          <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
+        </view>
+        <image v-show="isShowPlayIcon" @click="playVideo" class="icon__play" :src="baseImgURL+'/icon-play.png'"></image>
+        <view class="loading-view" v-show="item.isShowLoading">
+          <zshu-loading></zshu-loading>
         </view>
       </view>
+
     </template>
 
     <!--图片 视频 上传-->
-    <view class="image-container flex-item__scale image-container" @click="chooseFile" v-show="isShowUpload">
-      <view class="item_container">
-        <slot>
-          <image class="container-item" mode="aspectFill" :src="uploadDefaultIcon"/>
-        </slot>
-      </view>
+    <view class="flex-item__scale image-video-container" @click="chooseFile" v-show="isShowUpload">
+      <slot>
+        <image class="image-item" mode="aspectFill" :src="uploadDefaultIcon"/>
+      </slot>
     </view>
   </view>
 
@@ -47,7 +50,7 @@
 
 <script setup>
 
-import {computed, defineExpose, reactive} from "vue"
+import {computed, defineExpose, getCurrentInstance, reactive, ref} from "vue"
 
 import {baseImgURL} from "@/http/config";
 import {uploadImages} from "@/utils/tools";
@@ -64,6 +67,16 @@ const props = defineProps({
   columnsLimit: {
     type: [Number, String],
     default: 2
+  },
+  // 宽高比例
+  scale: {
+    type: [Number, String],
+    default: `calc(${16 / 9})`
+  },
+  // 当前可用总宽度
+  width: {
+    type: [Number, String],
+    default: `calc(750rpx - 30rpx)`
   },
 
   uploadType: {
@@ -178,6 +191,48 @@ const previewImage = (index) => {
   })
 }
 
+
+// 视频
+
+const instance = getCurrentInstance();
+
+const isFullScreen = ref(false)
+const isShowPlayIcon = ref(true)
+const videoContext = ref(null)
+
+videoContext.value = uni.createVideoContext('video', instance.proxy)
+
+// 点击播放
+function playVideo() {
+  videoContext.value.play()
+  isShowPlayIcon.value = false
+
+}
+
+
+//退出全屏时停止
+function fullscreenchange() {
+  if (isFullScreen.value) {
+    videoContext.value.pause() //暂停播放
+    isFullScreen.value = false
+    isShowPlayIcon.value = true
+
+  } else {
+    isFullScreen.value = true
+    isShowPlayIcon.value = false
+
+  }
+
+}
+function pauseHandler() {
+  // isFullScreen.value = false
+  isShowPlayIcon.value = true
+}
+function playHandler() {
+  // isFullScreen.value = false
+  isShowPlayIcon.value = false
+}
+
 defineExpose({})
 </script>
 
@@ -188,21 +243,39 @@ defineExpose({})
   border: 1px solid #000;
 }
 
-.image-container {
+.image-video-container {
   position: relative;
 }
 
-.item_container {
-}
-
-.del {
+.del-icon {
   position: absolute;
   top: 20rpx;
   right: 20rpx;
   box-sizing: border-box;
+  z-index: 1;
 }
 
-.container-item {
+.icon__play {
+  width: 40px;
+  height: 40px;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+
+.image-item {
+  display: block;
+  height: var(--item-height-scale);
+  width: var(--item-width);
+  border-radius: 5px;
+}
+
+.video-item {
   display: block;
   height: var(--item-height-scale);
   width: var(--item-width);

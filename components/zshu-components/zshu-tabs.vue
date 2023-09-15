@@ -19,8 +19,7 @@
 </template>
 <script setup>
 
-import {computed, ref, nextTick, getCurrentInstance} from "vue";
-import {onReady} from "@dcloudio/uni-app";
+import {computed, ref, getCurrentInstance} from "vue";
 
 
 const instance = getCurrentInstance(); // 获取组件实例上下文
