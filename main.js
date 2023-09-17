@@ -16,7 +16,7 @@ import { createSSRApp } from 'vue'
 import store from './store/index';
 import {test} from "@/utils/tools"
 
-console.log(test)
+// console.log(test)
 export function createApp() {
   const app = createSSRApp(App)
   app.use(store);

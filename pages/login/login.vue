@@ -2,8 +2,23 @@
   <view class="login-wrapper">
 
     <view class="avatar-wrapper">
+      <!-- #ifdef MP-WEIXIN-->
       <button class="open-type-btn" open-type="chooseAvatar" @chooseavatar="onChooseAvatar($event)"/>
       <image class="user-avatar" :src="avatarPath" mode="aspectFill"></image>
+      <!-- #endif-->
+
+      <!--#ifdef WEB -->
+      <zshu-upload-images-videos
+          isHiddenIcon
+          v-model:srcUrl="imgUrl"
+          limit="2" columns-limit="1"
+          gap="0px"
+          width="80px"
+      ></zshu-upload-images-videos>
+
+      <!--#endif-->
+
+
     </view>
 
     <input v-model="nickName" @blur="getNickName($event)"
@@ -24,17 +39,20 @@
 import store from '@/store/index.js';
 
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {getApiPhone, registerUser} from "@/http/apis/login";
 import {getLoginCode, uploadImages} from "@/utils/tools";
-
 
 
 console.log(store.state.inviteId);
 
 
-
-const avatarPath = ref('https://xcx.jxgxsmt.com/static/images/defat.png')
+const avatarPath = ref('https://z1.ax1x.com/2023/09/16/pPfel3d.png')
+const imgUrl=ref([{url:avatarPath.value}])
+watch(()=>imgUrl.value[0].url,(newValUrl)=>{
+  console.log('newValUrl',newValUrl)
+  avatarPath.value = newValUrl
+})
 
 // 临时头像地址转换成真实地址
 const onChooseAvatar = (e) => {
@@ -62,7 +80,7 @@ const getphonenumber = (e) => {
 
 const loginIn = async (phoneNumber) => {
   const {code} = await getLoginCode()
-  if(!nickName.value){
+  if (!nickName.value) {
     console.log('昵称必填')
     return
   }
@@ -84,14 +102,18 @@ const loginIn = async (phoneNumber) => {
 
 <style scoped>
 .login-wrapper {
-  margin-top: 100px;
+  padding-top: 100px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .avatar-wrapper {
   position: relative;
-  width: 70px;
-  height: 70px;
-  margin: 50px auto;
+  width: 80px;
+  height: 80px;
+
 }
 
 
@@ -120,8 +142,8 @@ const loginIn = async (phoneNumber) => {
   padding: 0 10px;
   box-sizing: border-box;
   width: 60%;
-  margin: 50px auto;
   height: 40px;
+  margin-top: 100rpx;
 }
 
 .btn-phone {
@@ -131,6 +153,8 @@ const loginIn = async (phoneNumber) => {
   padding-bottom: 0px;
   color: #fff;
   background-color: #4953ef;
+  margin-top: 100rpx;
+
 }
 
 .btn-phone:after {

@@ -1,18 +1,18 @@
 <template>
 
   <view class="flex-container page-gap"
-        :style="{'--num-columns':columnsLimit,'--scale':scale,'--view-width':width}">
+        :style="{'--num-columns':columnsLimit,'--scale':scale,'--view-width':width,'--gap':gap}">
 
     <!--图片-->
     <template v-if="uploadType==='image'">
-      <view class="flex-item flex-item__scale image-video-container "
+      <view class="flex-item flex-item__scale image-video-container" :class="{'position-ab':hiddenIcon}"
             v-for="(item,index) in filePathsView" :key="item.url">
         <image class="image-item" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
-        <view class="del-icon" @click.stop="delFn(index)">
+        <view v-if="!hiddenIcon" class="del-icon" @click.stop="delFn(index)">
           <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
         </view>
         <view class="loading-view" v-show="item.isShowLoading">
-          <zshu-loading></zshu-loading>
+          <!--          <zshu-loading></zshu-loading>-->
         </view>
 
       </view>
@@ -27,20 +27,22 @@
                @pause="pauseHandler"
                @play="playHandler"
         />
-        <view class="del-icon" @click.stop="delFn(index)">
+        <view v-if="!hiddenIcon" class="del-icon" @click.stop="delFn(index)">
           <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
         </view>
         <image v-show="isShowPlayIcon" @click="playVideo" class="icon__play" :src="baseImgURL+'/icon-play.png'"></image>
         <view class="loading-view" v-show="item.isShowLoading">
-          <zshu-loading></zshu-loading>
+          <!--          <zshu-loading></zshu-loading>-->
         </view>
       </view>
 
     </template>
 
     <!--图片 视频 上传-->
-    <view class="flex-item__scale image-video-container" @click="chooseFile" v-show="isShowUpload">
-      <slot>
+    <view class="flex-item__scale image-video-container upload-icon-position"
+          :class="{'upload-icon-ab':hiddenIcon}"
+          @click="chooseFile" v-show="isShowUpload">
+      <slot v-if="!hiddenIcon">
         <image class="image-item" mode="aspectFill" :src="uploadDefaultIcon"/>
       </slot>
     </view>
@@ -71,12 +73,16 @@ const props = defineProps({
   // 宽高比例
   scale: {
     type: [Number, String],
-    default: `calc(${16 / 9})`
+    default: `calc(${1})`
   },
   // 当前可用总宽度
   width: {
     type: [Number, String],
     default: `calc(750rpx - 30rpx)`
+  },
+  gap: {
+    type: String,
+    default: `30rpx`
   },
 
   uploadType: {
@@ -89,11 +95,16 @@ const props = defineProps({
     default: () => {
       return []
     },
-  }
+  },
+
+  isHiddenIcon: Boolean
 })
 
+const hiddenIcon = ref(props.isHiddenIcon)
+console.log(hiddenIcon.value)
 const isShowUpload = computed(() => {
-  return Number(props.limit) > filePathsView.value.length;
+
+  return hiddenIcon.value ? hiddenIcon.value : Number(props.limit) > filePathsView.value.length;
 });
 
 const chooseCountLimit = computed(() => {
@@ -128,18 +139,38 @@ const chooseFile = () => {
             isShowLoading: true
           }
         })
+        // 上传icon和展示view合为一体
+        if (hiddenIcon.value) {
+          filePaths.length = 0
+        }
         filePaths.push(...tempUrl)
         console.log('tempUrl', tempUrl)
         console.log('filePaths', filePaths)
-        /*   setTimeout(()=>{
-             filePaths.forEach(item=>{
-               item.isShowLoading= Math.floor(Math.random() * (2 - 1 + 1) + 1) <2;
-             })
-           },5000)*/
+        console.log('filePathsView', filePathsView)
+
+        emits('update:srcUrl', [{
+          url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230916/d0f33e02ee176dd572b153a1f23cf209.png'
+
+        }])
+
+
+        let resUrlList=['https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230916/d0f33e02ee176dd572b153a1f23cf209.png']
+        setTimeout(() => {
+
+          filePaths.forEach(item => {
+            // item.isShowLoading = Math.floor(Math.random() * (2 - 1 + 1) + 1) < 2;
+          })
+
+
+        }, 2000)
+
+
+        return
 
         uploadImages(tempFilePaths).then(res => {
           if (res.length === tempFilePaths.length) {
             res.forEach((item, index) => {
+              filePaths[index].url = item.data?.fullurl
               filePaths[index].urlId = item.data?.fullurl
               filePaths[index].isShowLoading = false
             })
@@ -224,23 +255,46 @@ function fullscreenchange() {
   }
 
 }
+
 function pauseHandler() {
   // isFullScreen.value = false
   isShowPlayIcon.value = true
 }
+
 function playHandler() {
   // isFullScreen.value = false
   isShowPlayIcon.value = false
 }
 
+
 defineExpose({})
 </script>
 
 <style scoped>
+
 .loading-view {
   position: absolute;
+  z-index: 2;
+  border-radius: 5px;
+  background-color: rgba(130, 130, 130, .5);
   inset: 0;
-  border: 1px solid #000;
+}
+
+.loading-view:after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background: url("/static/loading.svg") no-repeat;
+  animation: uni-loading 1s steps(12) infinite;
+  background-size: 100%;
+  scale: .5;
+
+
+}
+
+.page-gap {
+  position: relative;
 }
 
 .image-video-container {
@@ -261,8 +315,8 @@ defineExpose({})
   display: block;
   position: absolute;
   top: 50%;
-  left:50%;
-  transform: translate(-50%,-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
   box-sizing: border-box;
   z-index: 1;
 }
@@ -280,6 +334,29 @@ defineExpose({})
   height: var(--item-height-scale);
   width: var(--item-width);
   border-radius: 5px;
+}
+
+.upload-icon-position {
+
+}
+
+.upload-icon-ab {
+  position: absolute;
+  left: 0;
+  bottom: calc(-1 * var(--item-height-scale));
+  right: calc(-1 * var(--gap));
+  z-index: 4;
+  height: calc(var(--item-height-scale) / 2 - 30rpx);
+  background-color: rgba(45, 45, 45, .6);
+}
+
+.position-ab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: calc(-1 * var(--gap));
+
 }
 
 </style>

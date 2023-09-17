@@ -103,7 +103,7 @@ const imgUrl=ref([
   {
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230914/4f0f962a712b9dc277d6ed0c7b00e632.jpg',
     isShowLoading:false
-  }, {
+  }, /*{
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
     isShowLoading:false
   }, {
@@ -118,10 +118,11 @@ const imgUrl=ref([
   },{
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
     isShowLoading:false
-  },
+  },*/
 ])
-watch(imgUrl,(newVal)=>{
-  console.log('imgUrl',newVal)
+watch(()=>imgUrl.value,(newValUrl)=>{
+  console.log('newValUrl',newValUrl)
+  // imgUrl.value = newValUrl
 })
 
 const videoUrl=ref([

@@ -33,13 +33,14 @@ page {
   --view-width: 100%;
   --gap: var(--page-gap);
   --item-width: calc((var(--view-width) / var(--num-columns)) - (var(--gap)));
-  --item-height-scale: calc( var(--item-width) / var(--scale));
+  --item-height-scale: calc(var(--item-width) / var(--scale));
 
   gap: var(--gap);
   margin-right: calc(-1 * var(--gap));
   display: flex;
   flex-wrap: wrap;
   box-sizing: border-box;
+
 
   .flex-item {
     width: var(--item-width);
