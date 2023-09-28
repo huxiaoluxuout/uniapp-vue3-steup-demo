@@ -32,7 +32,7 @@
       </view>
 
     </view>
-    <tabbar :flag="1"></tabbar>
+    <tabbar :INDEX="1"></tabbar>
   </view>
 </template>
 

@@ -43,7 +43,7 @@
 
 
     </view>
-    <tabbar :flag="2"></tabbar>
+    <tabbar :INDEX="2"></tabbar>
   </view>
 </template>
 

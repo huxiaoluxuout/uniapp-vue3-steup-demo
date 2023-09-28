@@ -15,9 +15,7 @@
           gap="0px"
           width="80px"
       ></zshu-upload-images-videos>
-
       <!--#endif-->
-
 
     </view>
 

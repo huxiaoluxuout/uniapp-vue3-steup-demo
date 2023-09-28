@@ -35,7 +35,7 @@
 
 
     </view>
-    <tabbar :flag="0"></tabbar>
+    <tabbar :INDEX="0"></tabbar>
   </view>
 </template>
 

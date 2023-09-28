@@ -1,20 +1,20 @@
 <template>
   <view class="root-tabbar" :style="{ '--ios-bottom-height':iosBottomHeight +'px'}">
     <view class="tabbar-container">
-      <view class="item-wrapper" v-for="(item, index) in list" :key="item.text"
-            @click="clickHandler(navigateTo,item.pagePath)">
+      <view class="item-wrapper" v-for="(item, itemIndex) in list" :key="item.text"
+            @click="clickNavHandler(navigateTo,itemIndex)">
 
         <view class="item-container">
 
-          <image v-if="flag ===index" mode="aspectFit" class="icon-item" :class="{'icon-item-big':index===1}"
+          <image v-if="INDEX ===itemIndex" mode="aspectFit" class="icon-item" :class="{'icon-item-big':itemIndex===1}"
                  :src="filterPath(item.selectedIconPath)"/>
 
-          <image v-else mode="aspectFit" class="icon-item" :class="{'icon-item-big':index===1}"
+          <image v-else mode="aspectFit" class="icon-item" :class="{'icon-item-big':itemIndex===1}"
                  :src="filterPath(item.iconPath)"/>
 
-          <view class="foot-text" :style="{color:flag === index?selectedColor:color}">{{ item.text }}</view>
+          <view class="foot-text" :style="{color:INDEX === itemIndex?selectedColor:color}">{{ item.text }}</view>
 
-          <view class="notice" v-show="false">0</view>
+          <view class="notice" v-show="false">消息角标</view>
 
         </view>
       </view>
@@ -22,19 +22,19 @@
     <view class="ios__bottom-tabbar__height"></view>
   </view>
 </template>
+
 <script setup>
 import {getCurrentInstance, onMounted} from "vue";
 
 import {onHide, onShow,} from "@dcloudio/uni-app";
 
-
 import {getIOSBottomHeight, navigateTo, filterPath} from '@/utils/tools';
-
 
 import pagesConfig from "@/pages.json";
 
 
 const {tabBar: {list, color, selectedColor}} = pagesConfig
+
 
 const iosBottomHeight = getIOSBottomHeight()
 
@@ -42,26 +42,26 @@ const iosBottomHeight = getIOSBottomHeight()
 uni.hideTabBar()
 
 
-defineProps({
-  flag: {
+const props = defineProps({
+  INDEX: {
     type: Number,
     default: 1,
   }
 })
-import {getAllAreaList, webConfig} from "@/http/apis/common";
-const { $test1 } = getCurrentInstance().appContext.config.globalProperties
 
-const emits = defineEmits(['click'])
-const clickHandler = (fun, pagePath) => {
-  fun(pagePath)
-  // $test1()
 
-  /*  webConfig().then(res => {
-      console.log('webConfig', res)
-    })
-    getAllAreaList().then(res => {
-      console.log('getAllAreaList', res)
-    })*/
+const globalProperties = getCurrentInstance().appContext.config.globalProperties
+
+const emits = defineEmits(['tabBarClick'])
+
+const clickNavHandler = (fun, itemIndex) => {
+  console.log('itemIndex', itemIndex)
+
+  const item = list[itemIndex]
+
+  emits('tabBarClick')
+
+  fun(item.pagePath)
 }
 
 
@@ -166,7 +166,7 @@ onHide(() => {
   height: 1.4em;
   text-align: center;
   line-height: 1.4em;
-  transform: translate(50%,-50%);
+  transform: translate(50%, -50%);
 
 }
 
