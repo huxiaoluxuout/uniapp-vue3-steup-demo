@@ -26,9 +26,9 @@
       <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/login/login')">进入登录页面</button>
       <view>
 
-<!--        <zshu-upload-images-videos  upload-type="video" :scale="9/16" limit="1" columns-limit="1" v-model:srcUrl="videoUrl"></zshu-upload-images-videos>-->
+<!--        <zshu-upload-image upload-type="video" :scale="9/16" limit="1" columns-limit="1" v-model:srcUrl="videoUrl"></zshu-upload-image>-->
 
-        <zshu-upload-images-videos  v-model:srcUrl="imgUrl"></zshu-upload-images-videos>
+        <zshu-upload-image  v-model:srcUrl="imgUrl"></zshu-upload-image>
       </view>
 
     </view>
@@ -102,7 +102,7 @@ const onPageInaccessible = () => {
 const imgUrl=ref([
   {
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230914/4f0f962a712b9dc277d6ed0c7b00e632.jpg',
-    isShowLoading:false
+
   }, /*{
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
     isShowLoading:false

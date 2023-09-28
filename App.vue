@@ -3,12 +3,23 @@
 import store from "@/store";
 
 export default {
-  onLaunch: function () {
+  onLaunch: function (options) {
     // console.log('App Launch')
+    uni.getSystemInfo({
+      success(res) {
+        if (res.brand !== "devtools" && process.env.NODE_ENV === 'development') {
+          // 打开调试
+          uni.setEnableDebug({
+            enableDebug: options.query?.isDebugger === '1'
+          })
+        }
+      }
+    })
   },
   onShow: function (options) {
     // console.log('App onShow', options)
     // store.dispatch('updateActionInviteId', {type: 156})
+
   },
   onHide: function () {
     // console.log('App Hide')

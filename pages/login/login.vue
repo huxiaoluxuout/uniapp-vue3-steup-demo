@@ -8,13 +8,13 @@
       <!-- #endif-->
 
       <!--#ifdef WEB -->
-      <zshu-upload-images-videos
+      <zshu-upload-image
           isHiddenIcon
           v-model:srcUrl="imgUrl"
           limit="2" columns-limit="1"
           gap="0px"
           width="80px"
-      ></zshu-upload-images-videos>
+      ></zshu-upload-image>
       <!--#endif-->
 
     </view>

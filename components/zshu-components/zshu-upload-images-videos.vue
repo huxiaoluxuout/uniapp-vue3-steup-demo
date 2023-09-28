@@ -1,196 +1,224 @@
 <template>
-
-  <view class="flex-container page-gap"
-        :style="{'--num-columns':columnsLimit,'--scale':scale,'--view-width':width,'--gap':gap}">
-
+  <view class="zshu-upload-images-videos">
     <!--图片-->
-    <template v-if="uploadType==='image'">
-      <view class="flex-item flex-item__scale image-video-container" :class="{'position-ab':hiddenIcon}"
-            v-for="(item,index) in filePathsView" :key="item.url">
-        <image class="image-item" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
-        <view v-if="!hiddenIcon" class="del-icon" @click.stop="delFn(index)">
-          <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
+    <view class="image-item" v-for="(item,index) in filePathsView" :key="item.url" v-if="type==='image'"
+    >
+      <view class="img-container">
+        <image class="img" :src="item.url" mode="aspectFill" @click.stop="previewImage(index)"/>
+        <view class="del" @click.stop="del(index)">
+          <uni-icons type="close" color="#ff3c3c" size="22"></uni-icons>
         </view>
-        <view class="loading-view" v-show="item.isShowLoading">
-          <!--          <zshu-loading></zshu-loading>-->
+        <view class="mask-loading" v-show="item.showLoading">
+          <view class="ac">
+            <uni-icons type="spinner-cycle" color="#fafafa" size="40"></uni-icons>
+          </view>
         </view>
-
       </view>
-    </template>
+    </view>
+
     <!--视频-->
-    <template v-else-if="uploadType==='video'">
-      <view class="flex-item flex-item__scale image-video-container"
-            v-for="(item,index) in filePathsView" :key="item.url">
-        <video id="video" class="video-item"
-               :src="item.url"
-               @fullscreenchange="fullscreenchange($event)"
-               @pause="pauseHandler"
-               @play="playHandler"
-        />
-        <view v-if="!hiddenIcon" class="del-icon" @click.stop="delFn(index)">
-          <uni-icons type="close" color="#ff3c3c" size="26"></uni-icons>
+    <view class="video-item" v-for="(item,index) in filePathsView" :key="item.url" v-else-if="type==='video'">
+      <view class="img-container">
+        <video class="img" :src="item.url" :poster="item.poster"/>
+        <view class="del" @click.stop="del(index)">
+          <uni-icons type="close" color="#ff3c3c" size="22"></uni-icons>
         </view>
-        <image v-show="isShowPlayIcon" @click="playVideo" class="icon__play" :src="baseImgURL+'/icon-play.png'"></image>
-        <view class="loading-view" v-show="item.isShowLoading">
-          <!--          <zshu-loading></zshu-loading>-->
+        <view class="mask-loading" v-show="item.showLoading">
+          <view class="ac">
+            <uni-icons type="spinner-cycle" color="#fafafa" size="40"></uni-icons>
+          </view>
         </view>
+        <!--        <view class="mask-loading" v-if="item.showCompress">
+                  <view class="ac2">
+                    <view style="position: absolute; font-size: 12px; color: #fff;">视频压缩中</view>
+                    <view class="lds-ring">
+                      <view></view>
+                      <view></view>
+                      <view></view>
+                      <view></view>
+                    </view>
+                  </view>
+                </view>-->
+
+
       </view>
-
-    </template>
-
-    <!--图片 视频 上传-->
-    <view class="flex-item__scale image-video-container upload-icon-position"
-          :class="{'upload-icon-ab':hiddenIcon}"
-          @click="chooseFile" v-show="isShowUpload">
-      <slot v-if="!hiddenIcon">
-        <image class="image-item" mode="aspectFill" :src="uploadDefaultIcon"/>
-      </slot>
+    </view>
+    <!--图片视频上传-->
+    <view class="image-item" @click="chooseFile" v-show="isShowUpload">
+      <view class="img-container">
+        <slot>
+          <image class="img" mode="aspectFill" :src="type==='image'?baseImgURL+'/add-img.png':baseImgURL+'/add-video.png'"/>
+        </slot>
+      </view>
     </view>
   </view>
-
 </template>
 
 <script setup>
 
-import {computed, defineExpose, getCurrentInstance, reactive, ref} from "vue"
+import {computed, defineExpose, reactive, ref, watch} from "vue"
+import {baseImgURL} from "@/http/request";
+import {getOssSignature} from "@/http/apis/common";
+import {$msg} from "@/utils/tools";
+import {compressVideoHandler} from "@/components/zshu-components/utils";
 
-import {baseImgURL} from "@/http/config";
-import {uploadImages} from "@/utils/tools";
-
-const emits = defineEmits(['update:srcUrl'])
 
 const props = defineProps({
-  // 总共允许上传数量
-  limit: {
-    type: [Number, String],
-    default: 6
+  alwaysShowUpload: {
+    type: Boolean,
+    default: false
   },
-  // 一行有几列
-  columnsLimit: {
+  rowLimit: {
     type: [Number, String],
-    default: 2
-  },
-  // 宽高比例
-  scale: {
-    type: [Number, String],
-    default: `calc(${1})`
-  },
-  // 当前可用总宽度
-  width: {
-    type: [Number, String],
-    default: `calc(750rpx - 30rpx)`
-  },
-  gap: {
-    type: String,
-    default: `30rpx`
+    default: 3
   },
 
-  uploadType: {
+  /*  limitCount:{
+      type: [Number, String],
+      default: 1
+    },*/
+
+  type: {
     type: String,
+    validator: function (value) {
+      // 这个值必须是 'image' 或 'video'
+      return ['image', 'video'].includes(value);
+    },
     default: 'image',// image|video
   },
-
-  srcUrl: {
-    type: Array,
-    default: () => {
-      return []
-    },
-  },
-
-  isHiddenIcon: Boolean
+  uploadNow: Boolean
 })
 
-const hiddenIcon = ref(props.isHiddenIcon)
-console.log(hiddenIcon.value)
+
+const initUrl = reactive([])
+const postOssUrl = ref([])
+const tempViewUrl = ref([])
+const currentTempUrl = ref([])
+
+
+const filePathsView = computed(() => initUrl.concat(tempViewUrl.value))
+
+const postUrl = computed(() => initUrl.concat(postOssUrl.value))
+
+
+const emits = defineEmits(['update:filePaths'])
+
+
+watch(postUrl, (newVal) => {
+  console.log('最终提交的 url', newVal)
+  emits('update:filePaths', newVal)
+
+})
+
+
+// 显示上传点击图标
 const isShowUpload = computed(() => {
-
-  return hiddenIcon.value ? hiddenIcon.value : Number(props.limit) > filePathsView.value.length;
+  return props.alwaysShowUpload || Number(props.rowLimit) > filePathsView.value.length;
 });
 
+// 计算当前上传可以图片的个数
 const chooseCountLimit = computed(() => {
-  return Number(props.limit) - filePathsView.value.length;
+  return props.alwaysShowUpload ? Number(props.rowLimit) : Number(props.rowLimit) - filePathsView.value.length;
+
 });
 
-const uploadDefaultIcon = computed(() => {
-  return props.uploadType === 'image' ? baseImgURL + '/add-img.png' : baseImgURL + '/add-video.png'
-});
-
-// https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png
-// https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/00aef3741528faf6e24befddff0f6fd3.mp4
-
-const filePaths = reactive([...props.srcUrl])
-const filePathsView = computed(() => [...filePaths])
-
-// 选择
+// 获取上传地址
 const chooseFile = () => {
-  const api = props.uploadType === 'image' ? 'chooseImage' : 'chooseVideo'
+
+  const api = props.type === "image" ? "chooseImage" : "chooseVideo";
+  const config = props.type === "image" ? {count: chooseCountLimit.value, sizeType: ["compressed","original"]} : {compressed: false};
+
+
   uni[api]({
-    count: chooseCountLimit.value,
-    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-    sourceType: ['album', 'camera'],
+    ...config,
     success: function (res) {
-      if (res?.errMsg === "chooseImage:ok") {
-        const tempFilePaths = res.tempFilePaths
-        console.log('tempFilePaths', tempFilePaths)
-        let tempUrl = tempFilePaths.map(item => {
-          return {
-            url: item,
-            urlId: item,
-            isShowLoading: true
-          }
-        })
-        // 上传icon和展示view合为一体
-        if (hiddenIcon.value) {
-          filePaths.length = 0
-        }
-        filePaths.push(...tempUrl)
-        console.log('tempUrl', tempUrl)
-        console.log('filePaths', filePaths)
-        console.log('filePathsView', filePathsView)
+      if (res.errMsg === "chooseImage:ok") {
 
-        emits('update:srcUrl', [{
-          url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230916/d0f33e02ee176dd572b153a1f23cf209.png'
+        currentTempUrl.value = res.tempFilePaths.map((item) => ({url: item, urlId: item}));
+        tempViewUrl.value.push(...currentTempUrl.value);
 
-        }])
+        getOssSig()
 
+      } else if (res.errMsg === "chooseVideo:ok") {
 
-        let resUrlList=['https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230916/d0f33e02ee176dd572b153a1f23cf209.png']
-        setTimeout(() => {
+        currentTempUrl.value = [
+          {
+            urlId: res.tempFilePath,
+            url: res.tempFilePath,
+            showLoading: false,
+            showCompress: true,
+          },
+        ];
+        tempViewUrl.value.push(...currentTempUrl.value);
 
-          filePaths.forEach(item => {
-            // item.isShowLoading = Math.floor(Math.random() * (2 - 1 + 1) + 1) < 2;
+        /*currentTempUrl.value.forEach(item=>{
+          compressVideoHandler(item.url).then(res=>{
+            // tempViewUrl.value.find(item=>item.urlId===res.tempFilePath).showCompress=false
+            tempViewUrl.value.find(item=>item.urlId===res.tempFilePath).urlId=item.url
+
+            currentTempUrl.value.length = 0
+            currentTempUrl.value.push(
+                {
+                  urlId:res.tempFilePath,
+                  url: res.tempFilePath,
+                }
+            )
+            console.log('currentTempUrl',currentTempUrl.value);
+
+            getOssSig()
+            resolve()
           })
+        })*/
 
 
-        }, 2000)
-
-
-        return
-
-        uploadImages(tempFilePaths).then(res => {
-          if (res.length === tempFilePaths.length) {
-            res.forEach((item, index) => {
-              filePaths[index].url = item.data?.fullurl
-              filePaths[index].urlId = item.data?.fullurl
-              filePaths[index].isShowLoading = false
-            })
+        /*currentTempUrl.value = [
+          {
+            poster: res.thumbTempFilePath,
+            urlId: res.tempFilePath,
+            url: res.tempFilePath,
+            showLoading: false,
+            showCompress: true
           }
+        ]
+        tempViewUrl.value.push(...currentTempUrl.value)
 
-          emits('update:srcUrl', filePaths)
+        let startTime = new Date()
+        console.log('压缩中...')
 
-        }).catch(error => {
-          console.error('部分图片上传失败', error);
+        uni.compressVideo({
+          src: res.tempFilePath,
+          quality: 'medium',
+          bitrate: 1268,
+          fps: 24,
+          resolution: 1,
+          success(success) {
 
-          if (error.data && error.data.fail) {
-            const failedFilePaths = error.data.fail;
-            console.log('上传失败的文件路径：', failedFilePaths);
+
+            console.log('压缩成功',(success.size / 1024)+'Mb', ((new Date() - startTime) / 1000) + 's')
+            console.log('compressVideo-success', success)
+
+            tempViewUrl.value.find(item=>item.urlId===res.tempFilePath).showCompress=false
+            tempViewUrl.value.find(item=>item.urlId===res.tempFilePath).urlId=success.tempFilePath
+
+            currentTempUrl.value.length = 0
+            currentTempUrl.value.push(
+              {
+                poster: success.tempFilePath,
+                urlId:success.tempFilePath,
+                url: success.tempFilePath,
+              }
+            )
+
+            getOssSig()
+          },
+          complete(complete) {
+            console.log(complete)
           }
-        });
-      } else if (res?.errMsg === "chooseVideo:ok") {
-
+        })*/
       }
 
     },
+
     fail: function (fail) {
       console.warn(fail)
     }
@@ -198,16 +226,182 @@ const chooseFile = () => {
 
 }
 
-// 删除
-const delFn = (index) => {
+let resultFormData = []
+
+const getOssSig = async () => {
+  for (const tempItem of currentTempUrl.value) {
+    const index = tempItem.url.lastIndexOf(".");
+    const ext = tempItem.url.substr(index + 1);
+    await ossSignature(tempItem.url, ext);
+  }
+};
+
+
+const ossSignature = async (itemFilePath, ext) => {
+  try {
+    const result = await getOssSignature({ext: ext});
+    resultFormData.push({
+      itemFilePath: itemFilePath,
+      formData: result.data,
+    });
+
+
+
+    if(props.type==='image'){
+      console.log("开始立即上传");
+      toUploadsOss().then()
+      console.log("开始立即上传1111111");
+
+    }
+
+  } catch (error) {
+    console.error("Error getting OSS signature:", error);
+  }
+};
+
+
+// 上传到阿里云OSS
+const toUploadsOss = async () => {
+
+
+  return new Promise(async resolve => {
+
+    if(props.type!=='image'){
+      // 防止不是立即上传如果手动调用报错
+      if (!props.uploadNow) {
+        resolve(true)
+        return
+      }
+    }
+
+
+    if (props.type === 'video') {
+      await updateVideoFilePath();
+    }
+
+    if (!currentTempUrl.value.length) {
+      resolve(true)
+      return
+    }
+
+    let startTime = new Date()
+    console.log('上传中...')
+
+    filePathsView.value.forEach(tempItem => {
+      if (typeof tempItem.showLoading !== 'undefined') {
+        tempItem.showLoading = true
+      }
+    });
+
+
+    let uploadPromises = resultFormData.map(resultFormItem => {
+
+      return new Promise((resolve, reject) => {
+
+        uni.uploadFile({
+          url: resultFormItem.formData.host,
+          filePath: resultFormItem.itemFilePath,
+          fileType: props.type,
+          name: 'file',
+          formData: {
+            key: resultFormItem.formData.key,
+            policy: resultFormItem.formData.policy,
+            OSSAccessKeyId: resultFormItem.formData.accessKeyId,
+            signature: resultFormItem.formData.signature,
+            success_action_status: '200'
+          },
+          success: (successRes) => {
+            if (successRes.statusCode === 200) {
+              postOssUrl.value.push({urlId: resultFormItem.itemFilePath, fullurl: resultFormItem.formData.url, url: resultFormItem.formData.url})
+              console.log('上传成功', ((new Date() - startTime) / 1000) + 's');
+              resolve(successRes);
+            }
+          },
+          fail: err => {
+            reject(err);
+            console.warn('fail', err);
+          }
+        });
+      });
+    });
+    Promise.all(uploadPromises).then(() => {
+      tempViewUrl.value.forEach(tempItem => {
+        const hasSame = postOssUrl.value.find(item => tempItem.urlId === item.urlId);
+        if (hasSame) {
+          tempItem.showLoading = false
+        }
+      });
+      resultFormData = []
+      currentTempUrl.value = []
+      resolve(true)
+    }).catch((err) => {
+      console.log('Some files failed to upload', err);
+    });
+
+  })
+}
+
+const updateVideoFilePath = () => {
+  return new Promise((resolve) => {
+    if (currentTempUrl.value.length === 0) {
+      resolve()
+      return
+    }
+
+    let urlItem = currentTempUrl.value[0]
+    filePathsView.value.find(itemView => itemView.url === urlItem.url).showLoading = true
+    compressVideoHandler(urlItem.url).then((res) => {
+      tempViewUrl.value.find(itemView => itemView.url === urlItem.url).urlId = res.tempFilePath
+      currentTempUrl.value.length = 0;
+      currentTempUrl.value.push({
+        urlId: urlItem.url,
+        url: res.tempFilePath,
+      });
+      return getOssSig()
+
+    }).then(() => {
+      resolve()
+    })
+
+  });
+};
+
+const del = (index) => {
   uni.showModal({
     title: '确定删除吗?',
     success: function (res) {
       if (res.confirm) {
-        filePaths.splice(index, 1)
-        emits('update:srcUrl', filePaths)
+
+        if (initUrl.length === 0) {
+
+          tempViewUrl.value.splice(index, 1)
+          postOssUrl.value.splice(index, 1)
+
+        } else {
+          let initLen = initUrl.length
+          console.log({initLen, index})
+
+          if (index >= initLen) {
+            console.log('删除新上传')
+            postOssUrl.value.splice(index - initLen, 1)
+            tempViewUrl.value.splice(index - initLen, 1)
+
+          } else {
+            console.log('删除回显initUrl')
+            initUrl.splice(index, 1)
+
+          }
+        }
+        /*console.log('initUrl', initUrl)
+        console.log('postOssUrl', postOssUrl.value)
+        console.log('postUrl', postUrl.value)
+        console.log('tempFilePaths', tempViewUrl.value)
+*/
+
+
       } else if (res.cancel) {
-        console.log('用户点击取消');
+
+
       }
     }
   });
@@ -216,147 +410,163 @@ const delFn = (index) => {
 
 // 预览图片
 const previewImage = (index) => {
+
   uni.previewImage({
-    urls: filePaths.map(item => item.url),
-    current: filePaths[index].url,
+    urls: filePathsView.value.map(item => item.url),
+    current: filePathsView.value[index].url,
   })
 }
 
-
-// 视频
-
-const instance = getCurrentInstance();
-
-const isFullScreen = ref(false)
-const isShowPlayIcon = ref(true)
-const videoContext = ref(null)
-
-videoContext.value = uni.createVideoContext('video', instance.proxy)
-
-// 点击播放
-function playVideo() {
-  videoContext.value.play()
-  isShowPlayIcon.value = false
-
-}
-
-
-//退出全屏时停止
-function fullscreenchange() {
-  if (isFullScreen.value) {
-    videoContext.value.pause() //暂停播放
-    isFullScreen.value = false
-    isShowPlayIcon.value = true
-
-  } else {
-    isFullScreen.value = true
-    isShowPlayIcon.value = false
-
-  }
-
-}
-
-function pauseHandler() {
-  // isFullScreen.value = false
-  isShowPlayIcon.value = true
-}
-
-function playHandler() {
-  // isFullScreen.value = false
-  isShowPlayIcon.value = false
-}
-
-
-defineExpose({})
+defineExpose({
+  chooseFile,
+  filePaths: tempViewUrl,
+  initUrl,
+  toUploadsOss,
+})
 </script>
 
 <style scoped>
 
-.loading-view {
-  position: absolute;
-  z-index: 2;
-  border-radius: 5px;
-  background-color: rgba(130, 130, 130, .5);
-  inset: 0;
+
+.zshu-upload-images-videos {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
-
-.loading-view:after {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  background: url("/static/loading.svg") no-repeat;
-  animation: uni-loading 1s steps(12) infinite;
-  background-size: 100%;
-  scale: .5;
-
-
-}
-
-.page-gap {
-  position: relative;
-}
-
-.image-video-container {
-  position: relative;
-}
-
-.del-icon {
-  position: absolute;
-  top: 20rpx;
-  right: 20rpx;
-  box-sizing: border-box;
-  z-index: 1;
-}
-
-.icon__play {
-  width: 40px;
-  height: 40px;
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-sizing: border-box;
-  z-index: 1;
-}
-
 
 .image-item {
-  display: block;
-  height: var(--item-height-scale);
-  width: var(--item-width);
-  border-radius: 5px;
+  --item-num: 3;
+  height: calc((750rpx - 2 * 30rpx) / var(--item-num));
+  width: calc((750rpx - 2 * 30rpx) / var(--item-num));
+  position: relative;
 }
 
 .video-item {
+  --scale-video: calc(16 / 9);
+  --video-width: calc((750rpx - 2 * 30rpx));
+
+  width: var(--video-width);
+  height: calc(var(--video-width) / var(--scale-video));
+
+  position: relative;
+}
+
+.del {
+  position: absolute;
+  top: 15rpx;
+  right: 15rpx;
+  box-sizing: border-box;
+}
+
+.img-container {
+  height: 100%;
+  border-radius: 10rpx;
+  box-sizing: border-box;
+  padding: 10rpx;
+  position: relative;
+}
+
+
+.img {
   display: block;
-  height: var(--item-height-scale);
-  width: var(--item-width);
+  width: 100%;
+  height: 100%;
   border-radius: 5px;
 }
 
-.upload-icon-position {
-
-}
-
-.upload-icon-ab {
+.mask-loading {
   position: absolute;
-  left: 0;
-  bottom: calc(-1 * var(--item-height-scale));
-  right: calc(-1 * var(--gap));
-  z-index: 4;
-  height: calc(var(--item-height-scale) / 2 - 30rpx);
-  background-color: rgba(45, 45, 45, .6);
+  inset: 10rpx;
+  z-index: 100;
+  background-color: rgba(134, 134, 134, .6);
+  border-radius: 10rpx;
+  /*display: flex;
+  align-items: center;
+  justify-content: center;*/
+
 }
 
-.position-ab {
+/*.mask-loading:after {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: calc(-1 * var(--gap));
+  content: '';
+  inset: 0;
+  scale: .5;
+
+  border-radius: 50%;
+  border: 6px solid #999;
+  border-top-color: #fff;
+  animation: loading 0.8s infinite linear;
+}*/
+
+.ac {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: loading 0.8s infinite linear;
 
 }
 
+
+@keyframes loading {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ac2 {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.lds-ring view {
+  box-sizing: border-box;
+  position: absolute;
+  border-radius: 50%;
+  border-top: 0.3rem solid #f8f8f8;
+  border-right: 0.3rem solid transparent;
+  border-bottom: 0.3rem solid transparent;
+  border-left: 0.3rem solid transparent;
+
+  width: 200rpx;
+  height: 200rpx;
+  animation: lds-ring 1.2s cubic-bezier(.5, 0, .5, 1) infinite;
+}
+
+.lds-ring view:nth-child(1) {
+  animation-delay: -.45s;
+}
+
+.lds-ring view:nth-child(2) {
+  animation-delay: -.3s;
+}
+
+.lds-ring view:nth-child(3) {
+  animation-delay: -.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0)
+  }
+
+  to {
+    transform: rotate(360deg)
+  }
+}
 </style>

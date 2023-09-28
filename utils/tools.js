@@ -1,4 +1,3 @@
-
 import {baseURL} from "@/http/config";
 
 // 封装语音授权判断和引导函数
@@ -401,13 +400,16 @@ const getCacheUserInfo = () => {
 
 // 封装图片上传函数
 function uploadImages(filePaths, config = {}) {
+    if (!Array.isArray(filePaths)) {
+        console.warn('filePaths 必须是数组')
+        return
+    }
     return new Promise((resolve, reject) => {
-
 
         const defaultConfig = {
             url: baseURL + '/api/common/upload',
         };
-        config = { ...defaultConfig, ...config };
+        config = {...defaultConfig, ...config};
 
         const uploadPromises = filePaths.map(filePath => {
             return new Promise((resolve, reject) => {
