@@ -7,7 +7,7 @@ export default {
     // console.log('App Launch')
     uni.getSystemInfo({
       success(res) {
-        if (res.brand !== "devtools" && process.env.NODE_ENV === 'development') {
+        if (res.brand && res.brand !== "devtools" && process.env.NODE_ENV === 'development') {
           // 打开调试
           uni.setEnableDebug({
             enableDebug: options.query?.isDebugger === '1'
@@ -15,6 +15,7 @@ export default {
         }
       }
     })
+
   },
   onShow: function (options) {
     // console.log('App onShow', options)

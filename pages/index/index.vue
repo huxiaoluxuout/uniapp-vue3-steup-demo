@@ -19,16 +19,15 @@
       <zshu-grid v-model:gridId="gridId" :list="listGrid"></zshu-grid>
       <button @click="toggleIsHide">Toggle isHide</button>
 
-      <!--      <button @click="navigateTo('pages/page1/page1')">page1</button>-->
-      <!--      <button @click="navigateTo('pages/pages2/pages2')">page2</button>-->
 
       <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/pages3/pages3')">进入页面3</button>
-      <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/login/login')">进入登录页面</button>
+      <button @click="navigateTo('pages/login/login')">进入登录页面</button>
+
       <view>
 
-<!--        <zshu-upload-image upload-type="video" :scale="9/16" limit="1" columns-limit="1" v-model:srcUrl="videoUrl"></zshu-upload-image>-->
+        <!--        <zshu-upload-image upload-type="video" :scale="9/16" limit="1" columns-limit="1" v-model:srcUrl="videoUrl"></zshu-upload-image>-->
 
-        <zshu-upload-image  v-model:srcUrl="imgUrl"></zshu-upload-image>
+        <zshu-upload-image v-model:srcUrl="imgUrl"></zshu-upload-image>
       </view>
 
     </view>
@@ -40,7 +39,9 @@
 import {handleEvent, navigateTo} from "@/utils/tools";
 import {baseImgURL} from "@/http/config";
 import ZshuGrid from "@/components/zshu-components/zshu-grid.vue";
-import {ref, watch} from "vue";
+import {ref, watch, defineExpose} from "vue";
+import {onLoad, onShow} from "@dcloudio/uni-app";
+
 
 const navList = [
   {id: 1, iconUrl: baseImgURL + '/mine/icon-list-item-1.png', text: '我的收藏', pagePath: 'pages/pages3/pages3'},
@@ -99,9 +100,9 @@ let isPageAccessible = true;
 const onPageInaccessible = () => {
   console.log('无法访问页面');
 }
-const imgUrl=ref([
+const imgUrl = ref([
   {
-    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230914/4f0f962a712b9dc277d6ed0c7b00e632.jpg',
+    url: 'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230914/4f0f962a712b9dc277d6ed0c7b00e632.jpg',
 
   }, /*{
     url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/feb59186c664c4f3b11acd1d06bd6416.png',
@@ -120,18 +121,42 @@ const imgUrl=ref([
     isShowLoading:false
   },*/
 ])
-watch(()=>imgUrl.value,(newValUrl)=>{
-  console.log('newValUrl',newValUrl)
+watch(() => imgUrl.value, (newValUrl) => {
+  console.log('newValUrl', newValUrl)
   // imgUrl.value = newValUrl
 })
 
-const videoUrl=ref([
+const videoUrl = ref([
   {
-    url:'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/00aef3741528faf6e24befddff0f6fd3.mp4',
-    isShowLoading:false
+    url: 'https://jxgx88.oss-cn-shenzhen.aliyuncs.com/uploads/20230608/00aef3741528faf6e24befddff0f6fd3.mp4',
+    isShowLoading: false
   },
 ])
+const getPage=()=>{
+  return videoUrl
+}
+uni.$on('getNextPage',()=>{
+  console.log('getNextPage')
+  uni.$emit('getPage', {getPage})
+})
+
+onShow(()=>{
+
+})
+
+onLoad(() => {
+  console.log('index--onLoad')
+
+})
+
+
+
+defineExpose({
+  videoUrl,
+})
+
 </script>
+
 
 <style scoped lang="scss">
 

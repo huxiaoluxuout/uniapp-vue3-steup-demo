@@ -1,9 +1,11 @@
 import {getCurrentInstance,onMounted} from "vue";
-export const getViewInfo = (selector,callback) => {
+import store from "@/store";
+export const getPageInfo = (pageInfo) => {
     const instance = getCurrentInstance(); // 获取组件实例上下文
-
+    console.log(instance.proxy)
     onMounted(()=>{
-        uni.createSelectorQuery()
+
+        /*uni.createSelectorQuery()
             .in(instance.proxy)
             .select(selector)
             .boundingClientRect((rect) => {
@@ -11,6 +13,7 @@ export const getViewInfo = (selector,callback) => {
                 callback(rect)
 
             })
-            .exec()
+            .exec()*/
+        store.dispatch('updatePageInfo', {type: 156,...pageInfo})
     })
 }

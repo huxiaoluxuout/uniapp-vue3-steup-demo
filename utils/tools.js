@@ -230,14 +230,22 @@ const $msg = (title, duration = 1500, mask = true, icon = 'none') => {
 }
 
 // 获取页面栈
-const getPages = (callback, task = 1) => {
+const getPageInfo = (callback, task = 1) => {
+    // #ifndef H5
     const pages = getCurrentPages();
     if (pages.length < task + 1) {
         console.error('获取的页面不在栈内')
         return
     }
+
     const {$vm, options, route: pagePath, onLoad, $page: {fullPath}} = pages[pages.length - 1 - task];
     callback && callback({...$vm, options, pagePath, onLoad, fullPath});
+    // #endif
+    // #ifdef H5
+    console.error('H5暂不支持')
+
+    // #endif
+
 
 }
 
@@ -471,7 +479,7 @@ export {
     checkAndGuideRecordAuth,
     checkAndGuideLocationAuth,
     queryString,
-    getPages,
+    getPageInfo,
     getCacheUserInfo,
     handleEvent,
     uploadImages,

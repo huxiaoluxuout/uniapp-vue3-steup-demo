@@ -1,6 +1,6 @@
 import {ref} from 'vue';
 import {onShareAppMessage} from "@dcloudio/uni-app";
-import {filterPath, getCacheUserInfo, getPages} from "@/utils/tools";
+import {filterPath, getCacheUserInfo, getPageInfo} from "@/utils/tools";
 
 
 /*onReady((options) => {
@@ -39,7 +39,7 @@ export const useShare = () => {
             })
 
 
-            getPages(({pagePath, fullPath}) => {
+            getPageInfo(({pagePath, fullPath}) => {
                 pagePathStr = filterPath(pagePath)
                 fullPathStr = fullPath
             })
