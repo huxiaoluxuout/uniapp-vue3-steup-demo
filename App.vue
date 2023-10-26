@@ -4,6 +4,7 @@ import store from "@/store";
 
 export default {
   onLaunch: function (options) {
+    uni.$on('getPage',()=>{})
     // console.log('App Launch')
     uni.getSystemInfo({
       success(res) {

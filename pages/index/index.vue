@@ -21,7 +21,7 @@
 
 
       <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/pages3/pages3')">进入页面3</button>
-      <button @click="navigateTo('pages/login/login')">进入登录页面</button>
+<!--      <button @click="navigateTo('pages/login/login')">进入登录页面</button>-->
 
       <view>
 

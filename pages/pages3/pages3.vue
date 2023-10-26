@@ -28,11 +28,14 @@ const {pullDownRefreshSetFunctions, pullDownRefreshAddFunctions, pullDownRefresh
 
 })*/
 
-uni.$emit('getNextPage')
 
-uni.$on('getPage', (crrPage) => {
-  console.log('crrPage', crrPage.getPage().value)
+onLoad(()=>{
+  uni.$once('post:' + 1, (data) => {
+    console.log('data :>> ', data);
+  })
+  uni.$emit('get:' + 1)
 })
+
 
 
 

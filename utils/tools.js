@@ -289,6 +289,13 @@ const navigateTo = (pagePath) => {
             fail: function (fail) {
                 $msg(fail.errMsg)
                 console.error(fail.errMsg);
+            },
+            success: function(res) {
+                // 通过eventChannel向被打开页面传送数据
+
+                uni.$once('get:' + 1, () => {
+                    uni.$emit('post:' + 1, {'data':32231231231});
+                })
             }
         })
     })
