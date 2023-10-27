@@ -6,7 +6,7 @@ import useCallbackOnDataReady from "@/common/hooks/useCallbackOnDataReady";
 
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
-const { registerCallback, triggerCallbacks ,unregisterCallback} = useCallbackOnDataReady();
+const { readyCallback, registerCallbacks ,unReadyCallback} = useCallbackOnDataReady();
 
 // 下拉刷新完成
 const funQueue = () => {
@@ -15,7 +15,7 @@ const funQueue = () => {
 
     uni.stopPullDownRefresh();
 
-    triggerCallbacks()
+    registerCallbacks()
     console.log('下拉刷新完成')
 }
 
@@ -27,7 +27,7 @@ export default function () {
         pullDownRefreshSetFunctions: setFunctions,
         pullDownRefreshAddFunctions: addFunctions,
         // 刷新重置回调
-        pullDownRefreshReload: registerCallback,
+        pullDownRefreshReload: readyCallback,
     }
 
 }

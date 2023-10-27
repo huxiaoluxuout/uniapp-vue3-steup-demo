@@ -20,7 +20,9 @@
       <button @click="toggleIsHide">Toggle isHide</button>
 
 
-      <button @click="handleEvent({ condition: isPageAccessible, errorCallback: onPageInaccessible}, navigateTo,'pages/pages3/pages3')">进入页面3</button>
+      <button @click="handleEvent({
+       condition: isPageAccessible, errorCallback: onPageInaccessible
+       }, navigateTo,'pages/pages3/pages3',{videoUrl,fccc})">进入页面3</button>
 <!--      <button @click="navigateTo('pages/login/login')">进入登录页面</button>-->
 
       <view>
@@ -149,10 +151,13 @@ onLoad(() => {
 
 })
 
-
+const fccc = (e) => {
+  console.log(e,videoUrl.value)
+}
 
 defineExpose({
   videoUrl,
+  fccc
 })
 
 </script>

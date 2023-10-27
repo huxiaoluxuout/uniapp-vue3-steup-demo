@@ -231,7 +231,9 @@ const $msg = (title, duration = 1500, mask = true, icon = 'none') => {
 
 // 获取页面栈
 const getPageInfo = (callback, task = 1) => {
+
     // #ifndef H5
+
     const pages = getCurrentPages();
     if (pages.length < task + 1) {
         console.error('获取的页面不在栈内')
@@ -239,13 +241,14 @@ const getPageInfo = (callback, task = 1) => {
     }
 
     const {$vm, options, route: pagePath, onLoad, $page: {fullPath}} = pages[pages.length - 1 - task];
-    callback && callback({...$vm, options, pagePath, onLoad, fullPath});
+    callback && callback({...$vm, options, pagePath, onLoad, fullPath})
+
     // #endif
+
+
     // #ifdef H5
-    console.error('H5暂不支持')
-
+    console.error('H5')
     // #endif
-
 
 }
 
@@ -260,8 +263,16 @@ const filterPath = (path) => {
     return /^\//.test(path) ? path : '/' + path
 };
 
-const toTargetPage = (pagePath, callback) => {
-    // console.log('pagePath', pagePath)
+const uuid = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+const toTargetPage = (pagePath, parse = {}, api) => {
+
     if (!pagePath) {
         return;
     }
@@ -276,30 +287,37 @@ const toTargetPage = (pagePath, callback) => {
             }
         })
     } else {
-        callback && callback()
-    }
-}
+        const eventId = uuid() // 事件标识
+        let env = pagePath.indexOf('?') === -1 ? '?' : '&'
 
-
-const navigateTo = (pagePath) => {
-    toTargetPage(pagePath, () => {
-
-        uni.navigateTo({
-            url: filterPath(pagePath),
+        uni[api]({
+            url: filterPath(pagePath + env + 'eventId=' + eventId),
             fail: function (fail) {
                 $msg(fail.errMsg)
                 console.error(fail.errMsg);
             },
-            success: function(res) {
-                // 通过eventChannel向被打开页面传送数据
-
-                uni.$once('get:' + 1, () => {
-                    uni.$emit('post:' + 1, {'data':32231231231});
+            success: function (res) {
+                uni.$once('get:' + eventId, () => {
+                    uni.$emit('post:' + eventId, {...parse});
                 })
             }
         })
-    })
+    }
 }
+
+
+const navigateTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'navigateTo');
+const redirectTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'redirectTo');
+
+const getPageEvent = (eventId, callback) => {
+    uni.$once('post:' + eventId, (data) => {
+        console.log('post:======')
+        callback(data)
+    })
+    uni.$emit('get:' + eventId)
+
+}
+
 
 // 事件处理器函数，根据条件执行操作或回调
 const handleEvent = ({condition, errorCallback}, actionFunction, ...actionArgs) => {
@@ -314,39 +332,35 @@ const handleEvent = ({condition, errorCallback}, actionFunction, ...actionArgs) 
     }
 };
 
-const redirectTo = (pagePath) => {
-    toTargetPage(pagePath, () => {
-        uni.redirectTo({
-            url: filterPath(pagePath),
-            fail: function (fail) {
-                $msg(fail.errMsg)
-            }
-        })
-    })
-}
-
 // 页面路由跳转 --end
 
 
-const queryString = (params) => {
-    return '&' + Object.keys(params)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-        .join('&');
-}
-
-const objectString = (params) => {
-    return '?' + Object.keys(params)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-        .join('&');
-}
-
-const stringObject = (options) => {
-    const decodedObj = {};
-    for (const [key, value] of Object.entries(options)) {
-        decodedObj[key] = decodeURIComponent(value);
+const convertToQueryString = (params) => {
+    if (Object.keys(params).length === 0) {
+        return '';
     }
-    return decodedObj;
+
+    const separator = Object.keys(params)[0] === '?' ? '' : '&';
+    return separator + Object.keys(params)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+        .join('&');
 }
+
+const parseQueryString = (queryString) => {
+    const params = {};
+
+    if (queryString.startsWith('?')) {
+        queryString = queryString.slice(1);
+    }
+
+    const keyValues = queryString.split('&');
+    keyValues.forEach(keyValue => {
+        const [key, value] = keyValue.split('=');
+        params[decodeURIComponent(key)] = decodeURIComponent(value);
+    });
+
+    return params;
+};
 
 
 /**
@@ -463,12 +477,6 @@ function uploadImages(filePaths, config = {}) {
 }
 
 
-const test = () => {
-
-    console.log('test')
-
-}
-
 export {
     throttle,
     debounce,
@@ -478,18 +486,19 @@ export {
     getLoginCode,
     navigateTo,
     redirectTo,
-    objectString,
-    stringObject,
+    convertToQueryString,
+    parseQueryString,
     payMoney,
     getMyLocation,
     getChooseLocation,
     checkAndGuideRecordAuth,
     checkAndGuideLocationAuth,
-    queryString,
     getPageInfo,
     getCacheUserInfo,
     handleEvent,
     uploadImages,
-    test
+    uuid,
+    getPageEvent,
+
 }
 

@@ -9,7 +9,7 @@ import useCallbackOnDataReady from "@/common/hooks/useCallbackOnDataReady"
 
 const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
 
-const {registerCallback, triggerCallbacks, unregisterCallback} = useCallbackOnDataReady();
+const {registerCallbacks, readyCallback, unReadyCallback} = useCallbackOnDataReady();
 
 export const useNextPageManager = {
     // 当前页码
@@ -37,7 +37,7 @@ export const useNextPageManager = {
         this.pageSize = 10
         // this.dataList = [];
         // console.log('重新加载===', this)
-        triggerCallbacks();
+        registerCallbacks();
         return this
 
         // uni.$emit('reloadHandler')
@@ -94,7 +94,7 @@ export const useNextPageManager = {
     },
 
     // 响应重新加载
-    onNexPageReload: registerCallback
+    onNexPageReload: readyCallback
 
 
 }

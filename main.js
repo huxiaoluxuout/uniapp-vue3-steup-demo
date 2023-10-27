@@ -14,14 +14,14 @@ app.$mount()
 // #ifdef VUE3
 import { createSSRApp } from 'vue'
 import store from './store/index';
-import {test} from "@/utils/tools"
+
 
 // console.log(test)
 export function createApp() {
   const app = createSSRApp(App)
   app.use(store);
   app.config.globalProperties.$test ='test123'
-  app.config.globalProperties.$test1 =test
+
   return {
     app
   }

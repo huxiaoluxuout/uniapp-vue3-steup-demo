@@ -4,8 +4,8 @@ export default function useCallbackOnDataReady() {
     // 判断数据是否已准备好
     let isDataReady = false;
 
-    // 触发回调函数
-    const triggerCallbacks = () => {
+    // 注册回调函数
+    const registerCallbacks = () => {
         // 数据已准备好
         isDataReady = true;
         // 遍历回调函数集合，执行每个回调函数
@@ -13,8 +13,8 @@ export default function useCallbackOnDataReady() {
             callback();
         });
     };
-    // 注册回调函数
-    const registerCallback = (callback) => {
+    // 触发回调函数
+    const readyCallback = (callback) => {
 
         if (typeof callback !== 'function') {
             throw new Error('必须是一个函数');
@@ -29,14 +29,14 @@ export default function useCallbackOnDataReady() {
         }
     };
     // 取消注册回调函数
-    const unregisterCallback = (callback) => {
+    const unReadyCallback = (callback) => {
         // 从集合中删除指定的回调函数
         callbacks.delete(callback);
     };
 
     return {
-        registerCallback,
-        triggerCallbacks,
-        unregisterCallback
+        registerCallbacks,
+        readyCallback,
+        unReadyCallback
     };
 }
