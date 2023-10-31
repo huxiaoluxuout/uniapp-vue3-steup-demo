@@ -271,46 +271,54 @@ const uuid = () => {
     });
 }
 
+
+function getTabBarParams(pagePath) {
+    // 对输入的pagePath进行验证和过滤，确保安全性
+    if (typeof pagePath !== 'string') {
+        throw new Error('Invalid pagePath');
+    }
+    let paramsStr = pagePath;
+    const paramsIndex = paramsStr.indexOf('??');
+    if (paramsIndex > -1) {
+        const matchResult = paramsStr.match(/([^?]+)\?{2}(.*)/);
+        if (!matchResult) {
+            throw new Error('Invalid pagePath');
+        }
+        const url = matchResult[1];
+        const paramString = matchResult[2];
+        const params = {};
+        paramString.split('&&').forEach((pair) => {
+            const [key, value] = pair.split('=');
+            // 对键和值进行验证和过滤，确保安全性
+            if (typeof key === 'string' && typeof value === 'string') {
+                params[key] = value;
+            }
+        });
+        console.log('URL:', url);
+        console.log('参数:', params);
+        return {
+            url,
+            params
+        };
+    } else {
+        return {
+            url: pagePath,
+            params: ''
+        };
+    }
+}
+
 const toTargetPage = (pagePath, parse = {}, api) => {
-    console.log('pagePath',pagePath)
+    console.log('pagePath', pagePath)
     if (!pagePath) {
         return;
     }
 
-
     // ?? tabbar 传参
-    // pages/group_buying/group_buying??currentId=1
 
-    let paramsStr = pagePath
-    if (paramsStr.indexOf('??') > -1) {
-        pagePath = paramsStr.split('??')[0]
-
-
-        let params = convertToQueryString(paramsStr,'??')
-        console.log('params',params)
-
-
-        //获取参数
-        /*let params = paramsStr.match(/(\?|&)(\w+)=([^&]+)/g);
-        if (params) {
-            params.forEach(param => {
-                let [key, value] = param.substr(1).split('=');
-                if (key === 'currentId') {
-                    uni.setStorageSync('onLoadOptions', {currentId:value})
-                }
-            });
-        }*/
-    }
-
-    /*onShow(() => {
-        const options = uni.getStorageSync('onLoadOptions') || ''
-        if (options) {
-            console.log('有参数传来', options)
-            uni.setStorageSync('onLoadOptions', '')
-        }
-
-    })*/
-
+    let {url, params} = getTabBarParams(pagePath)
+    pagePath = url
+    uni.setStorageSync('onLoadOptions', params)
 
     // tabbar 传参
 
@@ -375,7 +383,7 @@ const handleEvent = ({condition, errorCallback}, actionFunction, ...actionArgs) 
 
 
 // 将参数转换为查询字符串
-const convertToQueryString = (params,starStr='?') => {
+const convertToQueryString = (params, starStr = '?') => {
     if (Object.keys(params).length === 0) {
         return '';
     }

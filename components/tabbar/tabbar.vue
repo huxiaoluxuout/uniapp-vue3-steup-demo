@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import {getCurrentInstance, onMounted} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 
 import {onHide, onShow,} from "@dcloudio/uni-app";
 
@@ -55,12 +55,13 @@ const globalProperties = getCurrentInstance().appContext.config.globalProperties
 const emits = defineEmits(['tabBarClick'])
 
 const clickNavHandler = (fun, itemIndex) => {
-  console.log('itemIndex', itemIndex)
+  // console.log('itemIndex', itemIndex)
 
   const item = list[itemIndex]
 
   emits('tabBarClick')
 
+  // fun(item.pagePath)
   fun(item.pagePath+'??tabbarId='+itemIndex)
 }
 
@@ -68,12 +69,14 @@ const clickNavHandler = (fun, itemIndex) => {
 onMounted(() => {
 
 })
-
+const tabbarId=ref('')
 // tabbar 获取参数
 onShow(() => {
   const Options = uni.getStorageSync('onLoadOptions') || ''
   if (Options) {
-    console.log('有参数传来', Options)
+    console.log('tabBar有参数传来', Options)
+    tabbarId.value=Options.tabbarId
+
     uni.setStorageSync('onLoadOptions', '')
   }
 
