@@ -272,10 +272,49 @@ const uuid = () => {
 }
 
 const toTargetPage = (pagePath, parse = {}, api) => {
-
+    console.log('pagePath',pagePath)
     if (!pagePath) {
         return;
     }
+
+
+    // ?? tabbar 传参
+    // pages/group_buying/group_buying??currentId=1
+
+    let paramsStr = pagePath
+    if (paramsStr.indexOf('??') > -1) {
+        pagePath = paramsStr.split('??')[0]
+
+
+        let params = convertToQueryString(paramsStr,'??')
+        console.log('params',params)
+
+
+        //获取参数
+        /*let params = paramsStr.match(/(\?|&)(\w+)=([^&]+)/g);
+        if (params) {
+            params.forEach(param => {
+                let [key, value] = param.substr(1).split('=');
+                if (key === 'currentId') {
+                    uni.setStorageSync('onLoadOptions', {currentId:value})
+                }
+            });
+        }*/
+    }
+
+    /*onShow(() => {
+        const options = uni.getStorageSync('onLoadOptions') || ''
+        if (options) {
+            console.log('有参数传来', options)
+            uni.setStorageSync('onLoadOptions', '')
+        }
+
+    })*/
+
+
+    // tabbar 传参
+
+
     const isTabBarPage = tabBarPages.map(item => filterPath(item.pagePath)).includes(filterPath(pagePath));
 
 
@@ -335,17 +374,19 @@ const handleEvent = ({condition, errorCallback}, actionFunction, ...actionArgs) 
 // 页面路由跳转 --end
 
 
-const convertToQueryString = (params) => {
+// 将参数转换为查询字符串
+const convertToQueryString = (params,starStr='?') => {
     if (Object.keys(params).length === 0) {
         return '';
     }
 
-    const separator = Object.keys(params)[0] === '?' ? '' : '&';
+    const separator = Object.keys(params)[0] === starStr ? '' : '&';
     return separator + Object.keys(params)
         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
         .join('&');
 }
 
+// 解析查询字符串
 const parseQueryString = (queryString) => {
     const params = {};
 

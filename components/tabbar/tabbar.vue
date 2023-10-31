@@ -61,7 +61,7 @@ const clickNavHandler = (fun, itemIndex) => {
 
   emits('tabBarClick')
 
-  fun(item.pagePath)
+  fun(item.pagePath+'??tabbarId='+itemIndex)
 }
 
 
@@ -69,8 +69,13 @@ onMounted(() => {
 
 })
 
+// tabbar 获取参数
 onShow(() => {
-
+  const Options = uni.getStorageSync('onLoadOptions') || ''
+  if (Options) {
+    console.log('有参数传来', Options)
+    uni.setStorageSync('onLoadOptions', '')
+  }
 
 })
 
