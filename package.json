@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "@dcloudio/uni-app": "^2.0.2-3071120230427001"
+  },
+  "dependencies": {
+    "mitt": "^3.0.1"
   }
 }

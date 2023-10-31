@@ -232,22 +232,22 @@ const $msg = (title, duration = 1500, mask = true, icon = 'none') => {
 // 获取页面栈
 const getPageInfo = (callback, task = 1) => {
 
-    // #ifndef H5
+    // #ifdef MP
 
     const pages = getCurrentPages();
     if (pages.length < task + 1) {
         console.error('获取的页面不在栈内')
         return
     }
-
+    console.log('pages',pages[pages.length - 1 - task].$vm)
     const {$vm, options, route: pagePath, onLoad, $page: {fullPath}} = pages[pages.length - 1 - task];
     callback && callback({...$vm, options, pagePath, onLoad, fullPath})
 
     // #endif
 
 
-    // #ifdef H5
-    console.error('H5')
+    // #ifdef WEB
+    console.error('WEB')
     // #endif
 
 }
@@ -255,6 +255,7 @@ const getPageInfo = (callback, task = 1) => {
 // 页面路由跳转 --start
 
 import pagesConfig from "@/pages.json";
+import bus from "@/utils/bus";
 
 const {tabBar: {list: tabBarPages}} = pagesConfig
 
@@ -344,9 +345,17 @@ const toTargetPage = (pagePath, parse = {}, api) => {
                 console.error(fail.errMsg);
             },
             success: function (res) {
-                uni.$once('get:' + eventId, () => {
-                    uni.$emit('post:' + eventId, {...parse});
+                console.log('success',res)
+
+                bus.on('get' + eventId, () => {
+                    console.log('uni--uni---uni')
+                    bus.emit('post' + eventId, {...parse});
                 })
+
+                /*uni.$on('get' + eventId, () => {
+                    console.log('uni--uni---uni')
+                    uni.$emit('post' + eventId, {...parse});
+                })*/
             }
         })
     }
@@ -357,13 +366,21 @@ const navigateTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'navigateT
 const redirectTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'redirectTo');
 
 const getPageEvent = (eventId, callback) => {
-    uni.$once('post:' + eventId, (data) => {
+    console.log('00000000=result',eventId)
+    bus.on('post' + eventId, (data) => {
         console.log('post:======')
         callback(data)
     })
-    uni.$emit('get:' + eventId)
+    bus.emit('get' + eventId)
+
+    /*uni.$once('post' + eventId, (data) => {
+        console.log('post:======')
+        callback(data)
+    })
+    uni.$emit('get' + eventId)*/
 
 }
+
 
 
 // 事件处理器函数，根据条件执行操作或回调

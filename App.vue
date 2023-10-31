@@ -4,16 +4,19 @@ import store from "@/store";
 
 export default {
   onLaunch: function (options) {
-    uni.$on('getPage',()=>{})
+
     // console.log('App Launch')
     uni.getSystemInfo({
       success(res) {
+        // #ifdef MP
         if (res.brand && res.brand !== "devtools" && process.env.NODE_ENV === 'development') {
           // 打开调试
           uni.setEnableDebug({
             enableDebug: options.query?.isDebugger === '1'
           })
         }
+        // #endif
+
       }
     })
 
