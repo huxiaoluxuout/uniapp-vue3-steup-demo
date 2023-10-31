@@ -22,6 +22,8 @@ export function createApp() {
   app.use(store);
   app.config.globalProperties.$test ='test123'
 
+  // app.config.globalProperties.$EventBus = new Vue()
+
   return {
     app
   }
