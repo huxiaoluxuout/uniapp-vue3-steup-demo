@@ -347,15 +347,16 @@ const toTargetPage = (pagePath, parse = {}, api) => {
             success: function (res) {
                 console.log('success',res)
 
-                bus.on('get' + eventId, () => {
+                /*bus.on('get' + eventId, () => {
                     console.log('uni--uni---uni')
                     bus.emit('post' + eventId, {...parse});
-                })
+                })*/
 
-                /*uni.$on('get' + eventId, () => {
+
+                uni.$on('get' + eventId, () => {
                     console.log('uni--uni---uni')
                     uni.$emit('post' + eventId, {...parse});
-                })*/
+                })
             }
         })
     }
@@ -366,18 +367,11 @@ const navigateTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'navigateT
 const redirectTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'redirectTo');
 
 const getPageEvent = (eventId, callback) => {
-    console.log('00000000=result',eventId)
-    bus.on('post' + eventId, (data) => {
+    uni.$once('post' + eventId, (data) => {
         console.log('post:======')
         callback(data)
     })
-    bus.emit('get' + eventId)
-
-    /*uni.$once('post' + eventId, (data) => {
-        console.log('post:======')
-        callback(data)
-    })
-    uni.$emit('get' + eventId)*/
+    uni.$emit('get' + eventId)
 
 }
 

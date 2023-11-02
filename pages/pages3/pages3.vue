@@ -64,12 +64,13 @@ const btn = () => {
 
   // #ifdef WEB
   console.log('WEB', pageInfo);
+  pageInfo.onLoad()
   // #endif
 
   // #ifdef MP
   console.log('MP', pageInfo);
   // #endif
-  bus.emit('sayHi', '哈哈哈哈哈哈哈哈哈哈哈哈哈哈');
+  // bus.emit('sayHi', '哈哈哈哈哈哈哈哈哈哈哈哈哈哈');
 
 }
 // 定义一个打招呼的方法

@@ -22,7 +22,7 @@
 
       <button @click="handleEvent({
        condition: isPageAccessible, errorCallback: onPageInaccessible
-       }, navigateTo,'pages/pages3/pages3',{videoUrl,fccc})">进入页面3</button>
+       }, navigateTo,'pages/pages3/pages3',{videoUrl,fccc,onLoad})">进入页面3</button>
 <!--      <button @click="navigateTo('pages/login/login')">进入登录页面</button>-->
 
       <view>
@@ -137,10 +137,7 @@ const videoUrl = ref([
 const getPage=()=>{
   return videoUrl
 }
-uni.$on('getNextPage',()=>{
-  console.log('getNextPage')
-  uni.$emit('getPage', {getPage})
-})
+
 
 onShow(()=>{
 
@@ -157,7 +154,8 @@ const fccc = (e) => {
 
 defineExpose({
   videoUrl,
-  fccc
+  fccc,
+  onLoad
 })
 
 </script>
