@@ -239,7 +239,7 @@ const getPageInfo = (callback, task = 1) => {
         console.error('获取的页面不在栈内')
         return
     }
-    console.log('pages',pages[pages.length - 1 - task].$vm)
+    console.log('pages', pages[pages.length - 1 - task].$vm)
     const {$vm, options, route: pagePath, onLoad, $page: {fullPath}} = pages[pages.length - 1 - task];
     callback && callback({...$vm, options, pagePath, onLoad, fullPath})
 
@@ -252,10 +252,16 @@ const getPageInfo = (callback, task = 1) => {
 
 }
 
+const getRoute = () => {
+    const pages = getCurrentPages();
+    return pages[pages.length - 1].route
+}
+
 // 页面路由跳转 --start
 
 import pagesConfig from "@/pages.json";
-import bus from "@/utils/bus";
+
+import {$DataInfo} from "@/utils/envBus";
 
 const {tabBar: {list: tabBarPages}} = pagesConfig
 
@@ -309,27 +315,19 @@ function getTabBarParams(pagePath) {
     }
 }
 
-const toTargetPage = (pagePath, parse = {}, api) => {
+const toTargetPage = (pagePath, parseInfo = {}, api) => {
     console.log('pagePath', pagePath)
-    if (!pagePath) {
-        return;
-    }
+    if (!pagePath) return;
 
-    // ?? tabbar 传参
+    const pattern = /\/?([^?]+)/;
+    const route = pagePath.match(pattern)[1];
 
-    let {url, params} = getTabBarParams(pagePath)
-    pagePath = url
-    uni.setStorageSync('onLoadOptions', params)
-
-    // tabbar 传参
-
-
-    const isTabBarPage = tabBarPages.map(item => filterPath(item.pagePath)).includes(filterPath(pagePath));
+    const isTabBarPage = tabBarPages.map(item => filterPath(item.pagePath)).includes(filterPath(route));
 
 
     if (isTabBarPage) {
         uni.switchTab({
-            url: filterPath(pagePath),
+            url: filterPath(route),
             fail: function (fail) {
                 $msg(fail.errMsg)
             }
@@ -345,23 +343,14 @@ const toTargetPage = (pagePath, parse = {}, api) => {
                 console.error(fail.errMsg);
             },
             success: function (res) {
-                console.log('success',res)
-
-                /*bus.on('get' + eventId, () => {
-                    console.log('uni--uni---uni')
-                    bus.emit('post' + eventId, {...parse});
-                })*/
-
-
-                uni.$on('get' + eventId, () => {
-                    console.log('uni--uni---uni')
-                    uni.$emit('post' + eventId, {...parse});
-                })
+                $DataInfo.setDataInfo(filterPath(route), {...parseInfo})
             }
         })
     }
 }
-
+export const $getPrevPageInfo = () => {
+    return $DataInfo.getDataInfo(filterPath(getRoute()))
+}
 
 const navigateTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'navigateTo');
 const redirectTo = (pagePath, parse) => toTargetPage(pagePath, parse, 'redirectTo');
@@ -374,7 +363,6 @@ const getPageEvent = (eventId, callback) => {
     uni.$emit('get' + eventId)
 
 }
-
 
 
 // 事件处理器函数，根据条件执行操作或回调

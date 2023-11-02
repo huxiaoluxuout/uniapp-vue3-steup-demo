@@ -22,7 +22,7 @@
 
       <button @click="handleEvent({
        condition: isPageAccessible, errorCallback: onPageInaccessible
-       }, navigateTo,'pages/pages3/pages3',{videoUrl,fccc,onLoad})">进入页面3</button>
+       }, navigateTo,'/pages/pages3/pages3',{videoUrl,initPage})">进入页面3</button>
 <!--      <button @click="navigateTo('pages/login/login')">进入登录页面</button>-->
 
       <view>
@@ -134,28 +134,23 @@ const videoUrl = ref([
     isShowLoading: false
   },
 ])
-const getPage=()=>{
-  return videoUrl
-}
 
 
-onShow(()=>{
-
-})
 
 onLoad(() => {
   console.log('index--onLoad')
 
 })
 
-const fccc = (e) => {
-  console.log(e,videoUrl.value)
+const initPage = (callback) => {
+  console.log('initPage---',videoUrl.value)
+  toggleIsHide()
+  callback&&callback()
 }
 
 defineExpose({
   videoUrl,
-  fccc,
-  onLoad
+  initPage,
 })
 
 </script>

@@ -32,20 +32,16 @@
 
 
 import {onLoad} from "@dcloudio/uni-app";
-import {getPageEvent, getPageInfo} from "@/utils/tools";
-import bus from "@/utils/bus";
+import {$getPrevPageInfo, getPageInfo} from "@/utils/tools";
 
 
 let eventId, pageInfo
 onLoad((options) => {
   eventId = options.eventId
+  pageInfo = $getPrevPageInfo().data
 
   // #ifdef WEB || APP
-  console.log(options.eventId)
-  getPageEvent(options.eventId, (result) => {
-    console.log(result)
-    pageInfo = result
-  })
+
   // #endif
 
 
@@ -64,22 +60,19 @@ const btn = () => {
 
   // #ifdef WEB
   console.log('WEB', pageInfo);
-  pageInfo.onLoad()
+  pageInfo.initPage(()=>{
+    uni.navigateBack()
+  })
+
   // #endif
 
   // #ifdef MP
   console.log('MP', pageInfo);
   // #endif
-  // bus.emit('sayHi', '哈哈哈哈哈哈哈哈哈哈哈哈哈哈');
+
 
 }
-// 定义一个打招呼的方法
-const sayHi = (msg = 'Hello World!') => {
-  console.log('000000000',msg);
-}
 
-// 启用监听
-bus.on('sayHi', sayHi);
 
 </script>
 
