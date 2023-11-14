@@ -1,4 +1,4 @@
-import {baseURL,TOKEN_EXPIRY_INTERVAL} from "@/http/config";
+import {baseURL,TOKEN_EXPIRY_INTERVAL} from "@/Http/config";
 
 
 import {getLoginCode} from "@/utils/tools";

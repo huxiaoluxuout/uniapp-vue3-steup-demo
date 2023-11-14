@@ -57,8 +57,8 @@
 <script setup>
 
 import {computed, defineExpose, reactive, ref, watch} from "vue"
-import {baseImgURL} from "@/http/request";
-import {getOssSignature} from "@/http/apis/common";
+import {baseImgURL} from "@/Http/request";
+import {getOssSignature} from "@/Http/apis/common";
 import {$msg} from "@/utils/tools";
 import {compressVideoHandler} from "@/components/zshu-components/utils";
 

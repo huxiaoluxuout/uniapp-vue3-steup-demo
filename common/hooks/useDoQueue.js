@@ -14,7 +14,7 @@ export default function useDoQueue() {
 
     };
 
-    const setFunctions = (func, ...args) => {
+    const setFunction = (func, ...args) => {
         funcList = [{func, args}]
     }
 
@@ -24,7 +24,7 @@ export default function useDoQueue() {
 
     return {
         addFunctions,
-        setFunctions,
+        setFunction,
         DoFunQueue,
     };
 }

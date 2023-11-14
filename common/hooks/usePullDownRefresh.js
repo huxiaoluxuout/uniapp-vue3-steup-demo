@@ -1,10 +1,10 @@
 import {onPullDownRefresh} from "@dcloudio/uni-app";
-import useDoQueue from "@/common/hooks/useuseDoQueue"
+import useDoQueue from "@/common/hooks/useDoQueue"
 
 import useCallbackOnDataReady from "@/common/hooks/useCallbackOnDataReady";
 
 
-const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
+const {setFunction, addFunctions, DoFunQueue} = useDoQueue()
 
 const { readyCallback, registerCallbacks ,unReadyCallback} = useCallbackOnDataReady();
 
@@ -24,10 +24,10 @@ const funQueue = () => {
 export default function () {
     onPullDownRefresh(funQueue);
     return {
-        pullDownRefreshSetFunctions: setFunctions,
+        pullDownRefreshSetFunctions: setFunction,
         pullDownRefreshAddFunctions: addFunctions,
         // 刷新重置回调
-        pullDownRefreshReload: readyCallback,
+        onReload: readyCallback,
     }
 
 }

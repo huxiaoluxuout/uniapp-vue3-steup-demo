@@ -38,7 +38,7 @@ import store from '@/store/index.js';
 
 
 import {ref, watch} from "vue";
-import {getApiPhone, registerUser} from "@/http/apis/login";
+import {getApiPhone, registerUser} from "@/Http/apis/login";
 import {getLoginCode, uploadImages} from "@/utils/tools";
 
 

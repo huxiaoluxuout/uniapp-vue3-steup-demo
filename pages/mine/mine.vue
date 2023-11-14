@@ -102,12 +102,12 @@ import usePullDownRefresh from "@/common/hooks/usePullDownRefresh";
 const foo = (cc) => {
   console.log('foo', cc)
 }
-const {pullDownRefreshSetFunctions, pullDownRefreshAddFunctions, pullDownRefreshReload} = usePullDownRefresh()
+const {pullDownRefreshSetFunctions, pullDownRefreshAddFunctions, onReload} = usePullDownRefresh()
 
 pullDownRefreshSetFunctions(foo, 444)
 
 
-pullDownRefreshReload(() => {
+onReload(() => {
   currentIds.value = [1]
 })
 
@@ -118,7 +118,7 @@ pullDownRefreshReload(() => {
 const dataListView = ref([])
 
 import {useNextPageManager} from "@/common/hooks/useNextPageManager";
-import {getNoticeList} from "@/http/apis/message";
+import {getNoticeList} from "@/Http/apis/message";
 // import {attributeStylers} from "@/components/zshu-components/attributeStylers";
 
 
@@ -128,7 +128,7 @@ pullDownRefreshAddFunctions(nexPageContext.reload.bind(nexPageContext))
 
 nexPageContext.onReachBottom()
 
-nexPageContext.onNexPageReload(() => {
+nexPageContext.onReload(() => {
   dataListView.value = []
   nexPageContext.dataList = []
 

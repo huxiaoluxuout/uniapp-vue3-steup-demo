@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import {getAllAreaList} from "@/http/apis/common";
+import {getAllAreaList} from "@/Http/apis/common";
 
 const emits = defineEmits(['addressInfo', 'update:isShow'])
 import {reactive, ref, defineExpose} from "vue";

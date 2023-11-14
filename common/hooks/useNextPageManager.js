@@ -2,12 +2,12 @@ import {onReachBottom} from "@dcloudio/uni-app";
 
 import {throttle} from "@/utils/tools";
 
-import useDoQueue from "@/common/hooks/useuseDoQueue"
+import useDoQueue from "@/common/hooks/useDoQueue"
 
 import useCallbackOnDataReady from "@/common/hooks/useCallbackOnDataReady"
 
 
-const {setFunctions, addFunctions, DoFunQueue} = useDoQueue()
+const {setFunction, addFunctions, DoFunQueue} = useDoQueue()
 
 const {registerCallbacks, readyCallback, unReadyCallback} = useCallbackOnDataReady();
 
@@ -80,7 +80,7 @@ export const useNextPageManager = {
 
 
     nexPageSetFunName(func, args) {
-        setFunctions(func, args)
+        setFunction(func, args)
         return this
     },
     nexPageSetFunNames(func, args) {
@@ -94,7 +94,7 @@ export const useNextPageManager = {
     },
 
     // 响应重新加载
-    onNexPageReload: readyCallback
+    onReload: readyCallback
 
 
 }
